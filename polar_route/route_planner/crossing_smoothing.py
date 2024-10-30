@@ -1083,10 +1083,14 @@ class Smoothing:
                 True if this v-additional case has been seen before, or false if not
 
         """
-        edge_a_start_index = edge_a.start['id']
-        edge_b_start_index = edge_b.start['id']
-        edge_a_end_index   = edge_a.end['id']
-        edge_b_end_index   = edge_b.end['id']
+        try:
+            edge_a_start_index = edge_a.start['id']
+            edge_b_start_index = edge_b.start['id']
+            edge_a_end_index   = edge_a.end['id']
+            edge_b_end_index   = edge_b.end['id']
+        except:
+            return True
+
 
         current_v = [edge_a_start_index, edge_a_end_index,
                      edge_b_start_index, edge_b_end_index,
@@ -1365,6 +1369,7 @@ class Smoothing:
                             ii += 1
                             firstpoint = midpoint_prime
                         else:
+                            print(ap.start['id'],target['id'],ap.end['id'],case_a,case_b)
                             edge_a = FindEdge(ap.start, target, case_a)
                             edge_b = FindEdge(target, ap.end, case_b)
 

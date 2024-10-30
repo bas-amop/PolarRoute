@@ -303,9 +303,15 @@ class RoutePlanner:
             logging.info(' Splitting around waypoints !')
             wps_points = [(entry['Lat'], entry['Long']) for _, entry in waypoints_df.iterrows()]
             self.env_mesh.split_points(wps_points)
-            # Rebuild lookup with new env_mesh
+            # # Rebuild lookup with new env_mesh
+            # self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
+            #                          for i in range(len(self.env_mesh.agg_cellboxes))}
+            
+             # Initialise EnvironmentMesh object
+            self.env_mesh = EnvironmentMesh.load_from_json(self.env_mesh.to_json())
             self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
-                                     for i in range(len(self.env_mesh.agg_cellboxes))}
+                                    for i in range(len(self.env_mesh.agg_cellboxes))}
+
 
     def _zero_currents(self, mesh):
         """
@@ -498,20 +504,22 @@ class RoutePlanner:
                     if new_cost < source_wp.get_obj(str(neighbour), self.config['objective_function']):
                         source_wp.update_routing_table(str(neighbour), RoutingInfo(_id, edges))
                 
-        # Updating Dijkstra as long as all the end waypoints are not visited
-        for end_wp in end_wps:
-            if wp.equals(end_wp):
-                continue
-            logging.info(f"Destination waypoint: {end_wp.get_name()}")
-            while not wp.is_visited(end_wp.get_cellbox_indx()):
-                # Determine the index of the cell with the minimum objective function cost that has not yet been visited
-                min_obj_indx = find_min_objective(wp)
-                logging.debug(f"min_obj >>> {min_obj_indx}")
-                # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
-                if min_obj_indx == -1:
-                    break
-                consider_neighbours(wp, min_obj_indx)
-                wp.visit(min_obj_indx)
+        # # Updating Dijkstra as long as all the end waypoints are not visited
+        # for end_wp in end_wps:
+        #     if wp.equals(end_wp):
+        #         continue
+        #     logging.info(f"Destination waypoint: {end_wp.get_name()}")
+
+        # All_run = False
+        while not wp.is_all_visited():
+            # Determine the index of the cell with the minimum objective function cost that has not yet been visited
+            min_obj_indx = find_min_objective(wp)
+            logging.debug(f"min_obj >>> {min_obj_indx}")
+            # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
+            if min_obj_indx == -1:
+                break
+            consider_neighbours(wp, min_obj_indx)
+            wp.visit(min_obj_indx)
 
     def _neighbour_cost(self, node_id, neighbour_id, case):
         """
