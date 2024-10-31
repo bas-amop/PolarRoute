@@ -309,10 +309,10 @@ class RoutePlanner:
         """
         if ('waypoint_splitting' in self.config) and (self.config['waypoint_splitting']):
             logging.info(' Splitting around waypoints !')
-            prior_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if cellbox.agg_data['inaccessible']]
+            prior_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
             wps_points = [(entry['Lat'], entry['Long']) for _, entry in waypoints_df.iterrows()]
             self.env_mesh.split_points(wps_points)
-            new_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if cellbox.agg_data['inaccessible']]
+            new_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
             self._required_nodes += list(set(new_cells) - set(prior_cells))
             self.env_mesh = EnvironmentMesh.load_from_json(self.env_mesh.to_json())
             self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
