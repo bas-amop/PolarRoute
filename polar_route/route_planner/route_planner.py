@@ -245,6 +245,10 @@ class RoutePlanner:
         if 'early_stopping_criterion' not in self.config:
             self.config['early_stopping_criterion'] = True
 
+
+        # Required nodes to visit
+        self._required_nodes = []
+
         # Load mesh json from file or dict
         mesh_json = json_str(mesh_file)
 
@@ -305,13 +309,11 @@ class RoutePlanner:
         """
         if ('waypoint_splitting' in self.config) and (self.config['waypoint_splitting']):
             logging.info(' Splitting around waypoints !')
+            prior_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if cellbox.agg_data['inaccessible']]
             wps_points = [(entry['Lat'], entry['Long']) for _, entry in waypoints_df.iterrows()]
             self.env_mesh.split_points(wps_points)
-            # # Rebuild lookup with new env_mesh
-            # self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
-            #                          for i in range(len(self.env_mesh.agg_cellboxes))}
-            
-             # Initialise EnvironmentMesh object
+            new_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if cellbox.agg_data['inaccessible']]
+            self._required_nodes += list(set(new_cells) - set(prior_cells))
             self.env_mesh = EnvironmentMesh.load_from_json(self.env_mesh.to_json())
             self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
                                     for i in range(len(self.env_mesh.agg_cellboxes))}
@@ -509,9 +511,9 @@ class RoutePlanner:
                         source_wp.update_routing_table(str(neighbour), RoutingInfo(_id, edges))
                 
         
-        if self.config['early_stopping_criterion']:
-            All_run = False
-            while not All_run:
+        if not self.config['early_stopping_criterion']:
+            run_all = False
+            while not run_all:
                 # Determine the index of the cell with the minimum objective function cost that has not yet been visited
                 min_obj_indx = find_min_objective(wp)
                 logging.debug(f"min_obj >>> {min_obj_indx}")
@@ -521,7 +523,7 @@ class RoutePlanner:
                 consider_neighbours(wp, min_obj_indx)
                 wp.visit(min_obj_indx)
         else:
-            while not wp.is_all_visited():
+            while not (wp.is_all_visited() and wp.is_all_cells_visited(self._required_nodes)):
                 # Determine the index of the cell with the minimum objective function cost that has not yet been visited
                 min_obj_indx = find_min_objective(wp)
                 logging.debug(f"min_obj >>> {min_obj_indx}")

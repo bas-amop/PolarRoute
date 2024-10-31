@@ -64,6 +64,8 @@ class SourceWaypoint(Waypoint):
         Returns:
             True if all have been visited and False if not
         """
+        if len(cells) == 0:
+            return True
         for cell in cells:
             if cell not in self.visited_nodes:
                 return False

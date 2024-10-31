@@ -1369,7 +1369,6 @@ class Smoothing:
                             ii += 1
                             firstpoint = midpoint_prime
                         else:
-                            print(ap.start['id'],target['id'],ap.end['id'],case_a,case_b)
                             edge_a = FindEdge(ap.start, target, case_a)
                             edge_b = FindEdge(target, ap.end, case_b)
 
