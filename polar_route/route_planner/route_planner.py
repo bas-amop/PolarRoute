@@ -241,6 +241,14 @@ class RoutePlanner:
         if 'time_unit' not in self.config:
             self.config['time_unit'] = "days"
 
+        # Early Stopping not then define as false:
+        if 'early_stopping_criterion' not in self.config:
+            self.config['early_stopping_criterion'] = True
+
+
+        # Required nodes to visit
+        self._required_nodes = []
+
         # Load mesh json from file or dict
         mesh_json = json_str(mesh_file)
 
@@ -301,11 +309,15 @@ class RoutePlanner:
         """
         if ('waypoint_splitting' in self.config) and (self.config['waypoint_splitting']):
             logging.info(' Splitting around waypoints !')
+            prior_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
             wps_points = [(entry['Lat'], entry['Long']) for _, entry in waypoints_df.iterrows()]
             self.env_mesh.split_points(wps_points)
-            # Rebuild lookup with new env_mesh
+            new_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
+            self._required_nodes += list(set(new_cells) - set(prior_cells))
+            self.env_mesh = EnvironmentMesh.load_from_json(self.env_mesh.to_json())
             self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
-                                     for i in range(len(self.env_mesh.agg_cellboxes))}
+                                    for i in range(len(self.env_mesh.agg_cellboxes))}
+
 
     def _zero_currents(self, mesh):
         """
@@ -498,12 +510,20 @@ class RoutePlanner:
                     if new_cost < source_wp.get_obj(str(neighbour), self.config['objective_function']):
                         source_wp.update_routing_table(str(neighbour), RoutingInfo(_id, edges))
                 
-        # Updating Dijkstra as long as all the end waypoints are not visited
-        for end_wp in end_wps:
-            if wp.equals(end_wp):
-                continue
-            logging.info(f"Destination waypoint: {end_wp.get_name()}")
-            while not wp.is_visited(end_wp.get_cellbox_indx()):
+        
+        if not self.config['early_stopping_criterion']:
+            run_all = False
+            while not run_all:
+                # Determine the index of the cell with the minimum objective function cost that has not yet been visited
+                min_obj_indx = find_min_objective(wp)
+                logging.debug(f"min_obj >>> {min_obj_indx}")
+                # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
+                if min_obj_indx == -1:
+                    break
+                consider_neighbours(wp, min_obj_indx)
+                wp.visit(min_obj_indx)
+        else:
+            while not (wp.is_all_visited() and wp.is_all_cells_visited(self._required_nodes)):
                 # Determine the index of the cell with the minimum objective function cost that has not yet been visited
                 min_obj_indx = find_min_objective(wp)
                 logging.debug(f"min_obj >>> {min_obj_indx}")
