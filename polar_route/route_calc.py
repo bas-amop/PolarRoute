@@ -11,7 +11,7 @@ from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, di
 
 
 # Define ordering of cases in array data
-case_indices = np.array([1, 2, 3, 4, -1, -2, -3, -4])
+direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
 
 def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y='vC', case=0):
@@ -32,7 +32,7 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
             distance (float): the distance along the line segment
     """
 
-    idx = np.where(case_indices==case)[0][0]
+    idx = direction.index(case)
     # Conversion factors from lat/long degrees to metres
     m_long = 111.321 * 1000
     m_lat = 111.386 * 1000
@@ -200,8 +200,7 @@ def find_intersections(df, mesh):
     track_waypoints = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['Long'], df['Lat']))
     tracks = track_waypoints.sort_values(by=['order']).groupby(['id'])['geometry'].apply(
         lambda x: LineString(x.tolist()))
-    tracks = gpd.GeoDataFrame(tracks, crs='EPSG:3857', geometry='geometry')
-    logging.info("CHANGED CODE HERE")
+    tracks = gpd.GeoDataFrame(tracks, crs='EPSG:4326', geometry='geometry')
 
     line_segs_first_points = []
     line_segs_last_points = []
@@ -353,7 +352,7 @@ def route_calc(route_file, mesh_file):
     path_points = user_track['Point']
     path_traveltimes = np.cumsum(traveltimes)
     path_distances = np.cumsum(distances)
-    path_fuels = [traveltimes[idx] * cellboxes[idx]['fuel'][np.where(case_indices==cases[idx])[0][0]] for idx in range(len(traveltimes))]
+    path_fuels = [traveltimes[idx] * cellboxes[idx]['fuel'][direction.index(case)] for idx in range(len(traveltimes))]
     path_fuel = np.cumsum(path_fuels)
 
     # Put path values into geojson format
