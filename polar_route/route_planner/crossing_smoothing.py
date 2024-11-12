@@ -140,9 +140,10 @@ class PathValues:
 
         self.unit_shipspeed='km/hr'
         self.unit_time='days'
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
 
-    def _waypoint_correction(self, path_requested_variables, source_graph, Wp, Cp):
+    def _waypoint_correction(self, path_requested_variables, source_graph, wp, cp):
         """
             Applies an in-cell correction to a path segments to determine 'path_requested_variables'
             defined by the use (e.g. total distance, total traveltime, total fuel usage)
@@ -150,26 +151,29 @@ class PathValues:
             Input:
                 path_requested_variable (dict) - A dictionary of the path requested variables
                 source_graph (dict) - Dictionary of the cell in which the vessel is transiting
-                Wp (tuple) - Start Waypoint location (long,lat)
-                Cp (tuple) - End Waypoint location (long,lat)
+                wp (tuple) - Start Waypoint location (long,lat)
+                cp (tuple) - End Waypoint location (long,lat)
 
             Returns:
                 segment_values (dict) - Dictionary of the segment value information
                 case (int) - Adjacency case type connecting the two points
         """
         # Determine the travel-time and distance between start and end waypoint given
-        #environmental forcing variables
+        # environmental forcing variables
         m_long  = 111.321*1000
         m_lat   = 111.386*1000
-        x = dist_around_globe(Cp[0], Wp[0]) * m_long * np.cos(Wp[1] * (np.pi / 180))
-        y = (Cp[1]-Wp[1]) * m_lat
-        case = case_from_angle(Cp, Wp)
-        Su  = source_graph['Vector_x']
-        Sv  = source_graph['Vector_y']
-        Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = traveltime_in_cell(x, y, Su, Sv, Ssp)
+        # Radius of the Earth in metres
+        r = 6371.1 * 1000.
+
+        y = (cp[1] - wp[1]) * m_lat
+        x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos((wp[1] * (np.pi / 180)) + (y / (2*r)))
+        case = case_from_angle(cp, wp)
+        su  = source_graph['Vector_x']
+        sv  = source_graph['Vector_y']
+        ssp = unit_speed(source_graph['speed'][self.direction.index(case)], self.unit_shipspeed)
+        traveltime = traveltime_in_cell(x, y, su, sv, ssp)
         traveltime = unit_time(traveltime, self.unit_time)
-        distance = rhumb_line_distance(Wp, Cp)
+        distance = rhumb_line_distance(wp, cp)
 
         # Given the traveltime and distance between the two waypoints
         # determine the path related variables (e.g. fuel usage, traveltime)
@@ -186,7 +190,7 @@ class PathValues:
                     # Determining the objective value information. Apply an inplace
                     # metric along the path e.g. cumulative sum of values
                     if type(source_graph[var]) == list:
-                        objective_rate_value = source_graph[var][case]
+                        objective_rate_value = source_graph[var][self.direction.index(case)]
                     else:
                         objective_rate_value = source_graph[var]
                     if path_requested_variables[var]['processing'] is None:
@@ -239,7 +243,7 @@ class PathValues:
             # Adding that value for the segment along the paths
             for var in segment_variable:
                 if type(segment_variable[var]) == np.ndarray:
-                    variables[var]['path_values'][ii+1] = segment_variable[var][segment_case]
+                    variables[var]['path_values'][ii+1] = segment_variable[var][self.direction.index(segment_case)]
                 else:
                     variables[var]['path_values'][ii+1] = segment_variable[var]
 
@@ -289,6 +293,7 @@ class Smoothing:
         self.merge_separation = merge_separation
         self.converged_sep    = converged_sep
         self._g = pyproj.Geod(ellps='WGS84')
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
         for key in self.dijkstra_graph.keys():
             cell = self.dijkstra_graph[key]
@@ -459,8 +464,8 @@ class Smoothing:
         cell_s_v = start['Vector_y']
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
-        speed_s = start['speed'][0]*(1000/(60*60))
-        speed_e = end['speed'][0]*(1000/(60*60))
+        speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
+        speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
 
         if case == 2:   
@@ -630,8 +635,8 @@ class Smoothing:
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
 
-        speed_s = start['speed'][0]*(1000/(60*60))
-        speed_e = end['speed'][0]*(1000/(60*60))
+        speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
+        speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
 
         if case == 4:   

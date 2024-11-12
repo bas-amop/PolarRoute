@@ -294,6 +294,7 @@ class RoutePlanner:
         self.routes_dijkstra = []
         self.routes_smoothed = []
         self.neighbour_legs = {}
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
     def _splitting_around_waypoints(self, waypoints_df):
         """
@@ -547,8 +548,6 @@ class RoutePlanner:
             neighbour_segments (list<Segment>): a list of segments that form the legs of the route from node_id to neighbour_id
 
         """
-        direction = [1, 2, 3, 4, -1, -2, -3, -4]
-
         # Applying Newton distance to determine crossing point between node and its neighbour
         cost_func = self.cost_func(node_id, neighbour_id, self.cellboxes_lookup, case=case,
                                     unit_shipspeed='km/hr', time_unit=self.config['time_unit'])
@@ -567,19 +566,19 @@ class RoutePlanner:
         # Fill segment metrics
         s1.set_travel_time(traveltime[0])
         if 'fuel' in self.config['path_variables']:
-            s1.set_fuel(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['fuel'][direction.index(case)])
+            s1.set_fuel(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['fuel'][self.direction.index(case)])
         if 'battery' in self.config['path_variables']:
-            s1.set_battery(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        s1.set_distance(s1.get_travel_time() * unit_speed(self.cellboxes_lookup[node_id].agg_data['speed'][direction.index(case)],
+            s1.set_battery(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][self.direction.index(case)])
+        s1.set_distance(s1.get_travel_time() * unit_speed(self.cellboxes_lookup[node_id].agg_data['speed'][self.direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
         s2.set_travel_time(traveltime[1])
         if 'fuel' in self.config['path_variables']:
-            s2.set_fuel(s2.get_travel_time() * self.cellboxes_lookup[neighbour_id].agg_data['fuel'][direction.index(case)])
+            s2.set_fuel(s2.get_travel_time() * self.cellboxes_lookup[neighbour_id].agg_data['fuel'][self.direction.index(case)])
         if 'battery' in self.config['path_variables']:
             s2.set_battery(
-                s2.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        s2.set_distance(s2.get_travel_time() * unit_speed(self.cellboxes_lookup[neighbour_id].agg_data['speed'][direction.index(case)],
+                s2.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][self.direction.index(case)])
+        s2.set_distance(s2.get_travel_time() * unit_speed(self.cellboxes_lookup[neighbour_id].agg_data['speed'][self.direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
         neighbour_segments = [s1, s2]
@@ -696,8 +695,9 @@ class RoutePlanner:
                 end_location = route_json['geometry']['coordinates'][1]
                 route_cell = route_json['properties']['CellIndices'][0]
                 route_case = case_from_angle(start_location, end_location)
+                case_idx = self.direction.index(route_case)
                 route_json['properties']['distance'] = [0., rhumb_line_distance(start_location, end_location)]
-                route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][route_case]]
+                route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][case_idx]]
                 for var in self.config['path_variables']:
                     route_json['properties'][var].insert(0, 0.)
                 del route_json['properties']['cases']

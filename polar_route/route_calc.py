@@ -36,8 +36,12 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
     # Conversion factors from lat/long degrees to metres
     m_long = 111.321 * 1000
     m_lat = 111.386 * 1000
-    x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos(wp[1] * (np.pi / 180))
+    # Radius of the Earth in metres
+    r = 6371.1 * 1000.
+
     y = (cp[1] - wp[1]) * m_lat
+    x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos((wp[1] * (np.pi / 180)) + (y / (2*r)))
+
     if (vector_x in cellbox) and (vector_y in cellbox):
         su = cellbox[vector_x]
         sv = cellbox[vector_y]
@@ -115,11 +119,15 @@ def load_route(route_file):
         df = pd.read_csv(route_file)
         to_wp = df['Name'].iloc[-1]
         from_wp = df['Name'].iloc[0]
-    # Loading route from geojson file
+    # Loading route from either geojson route file or full json output with route and mesh
     elif route_file[-4:] == "json":
         with open(route_file, "r") as f:
             route_json = json.load(f)
-        route_coords = route_json['features'][0]['geometry']['coordinates']
+        if "features" in route_json.keys():
+            route_coords = route_json['features'][0]['geometry']['coordinates']
+        else:
+            route_json = route_json['paths']
+            route_coords = route_json['features'][0]['geometry']['coordinates']
         to_wp = route_json['features'][0]['properties']['to']
         from_wp = route_json['features'][0]['properties']['from']
         longs = [c[0] for c in route_coords]
@@ -192,7 +200,8 @@ def find_intersections(df, mesh):
     track_waypoints = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['Long'], df['Lat']))
     tracks = track_waypoints.sort_values(by=['order']).groupby(['id'])['geometry'].apply(
         lambda x: LineString(x.tolist()))
-    tracks = gpd.GeoDataFrame(tracks, crs='EPSG:4326', geometry='geometry')
+    tracks = gpd.GeoDataFrame(tracks, crs='EPSG:3857', geometry='geometry')
+    logging.info("CHANGED CODE HERE")
 
     line_segs_first_points = []
     line_segs_last_points = []
