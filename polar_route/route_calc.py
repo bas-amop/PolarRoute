@@ -50,7 +50,7 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
         sv = 0
     ssp = cellbox[speed][idx] * (1000 / (60 * 60))
     try:
-        traveltime = traveltime_in_cell(x, y, su, sv, ssp)
+        traveltime = traveltime_in_cell(x, y, su, -sv, ssp)
         dist = rhumb_line_distance(cp, wp)
     except:
         traveltime = 0
@@ -266,7 +266,7 @@ def order_track(df, track_points):
                 path_point.append(midpnt)
                 cell_ids.append(track_points['cellID'].iloc[track_id])
 
-        if  distance(end_point_segment,end_point) < 0.05:
+        if  distance(end_point_segment,end_point) < 1E-5:
             path_point.append(end_point_segment)
             cell_ids.append(track_points['cellID'].iloc[track_id])
             pathing = False

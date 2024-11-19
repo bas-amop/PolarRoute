@@ -63,13 +63,33 @@ def _adjust_waypoints(point, cellboxes, max_distance=5):
     cbs = cbs[cbs['inaccessible'] == False]
     # Find nearest cellbox to point that is accessible
     tree = STRtree(wkt.loads(cbs['geometry']))
-    nearest_cb = cbs.iloc[tree.nearest(point)]
-    cb_polygon = wkt.loads(nearest_cb['geometry'])
+    # nearest_idxs = tree.query_nearest(point, max_distance=0, all_matches=True)
+    nearest_idxs = tree.query(point, predicate="intersects")
+    nearest_cbs = cbs.iloc[nearest_idxs].reset_index(drop=True)
+    # print(nearest_cbs)
+    # print(point)
+    # print(cbs)
     
-    if point.within(cb_polygon):
+    if len(nearest_cbs) == 1:
+        nearest_cb = nearest_cbs.iloc[0]
+        cb_polygon = wkt.loads(nearest_cb['geometry'])
+    elif len(nearest_cbs) > 1:
+        for cb in nearest_cbs.iterrows():
+            cb_polygon = wkt.loads(cb[1]['geometry'])
+            if point.x == cb_polygon.bounds[2] or point.y == cb_polygon.bounds[3]:
+                break
+        else:
+            raise Exception("This shouldn't be possible!")
+    else:
+        raise Exception('Point being queried is outside mesh!')
+    
+
+    if point.within(cb_polygon) or point.x == cb_polygon.bounds[2] or point.y == cb_polygon.bounds[3]:
         logging.debug(f'({point.y},{point.x}) in accessible cellbox')
         return point
     else:
+        print(point.x, cb_polygon.bounds[2])
+        print(point.y, cb_polygon.bounds[3])
         logging.debug(f'({point.y},{point.x}) not in accessible cellbox')
         # Create a line between CB centre and point
         cb_centre = Point([nearest_cb['cx'], nearest_cb['cy']])
@@ -182,6 +202,7 @@ def _load_waypoints(waypoints):
                    for index, source in source_waypoints_df.iterrows()]
         dest_wps = [Waypoint(lat=dest['Lat'], long=dest['Long'], name=dest['Name'])
                     for index, dest in dest_waypoints_df.iterrows()]
+
         return src_wps, dest_wps
     except FileNotFoundError:
         raise ValueError(f"Unable to load '{waypoints}', please check file path provided")
@@ -619,7 +640,6 @@ class RoutePlanner:
             if self.config['adjust_waypoints']:
                 logging.debug("Adjusting waypoints in inaccessible cells to nearest accessible location")
                 adjusted_point = _adjust_waypoints(point, self.env_mesh.to_json()['cellboxes'])
-
                 waypoints_df.loc[idx, 'Long'] = adjusted_point.x
                 waypoints_df.loc[idx, 'Lat'] = adjusted_point.y
             else:
@@ -630,6 +650,7 @@ class RoutePlanner:
 
         # Load source and destination waypoints
         src_wps, end_wps = _load_waypoints(waypoints_df)
+
         # Waypoint validation for route planning
         src_wps = self._validate_wps(src_wps)
         end_wps = self._validate_wps(end_wps)
@@ -667,7 +688,6 @@ class RoutePlanner:
         if not self.routes_dijkstra:
             raise Exception('Smoothed routes not constructed as there were no Dijkstra routes created')
         routes = copy.deepcopy(self.routes_dijkstra)
-
         # ====== Determining route info ======
         # Get smoothing parameters from config or set default values
         max_iterations = self.config.get('smoothing_max_iterations', 2000)
@@ -685,7 +705,6 @@ class RoutePlanner:
 
         for route in routes:
             route_json = route.to_json()
-
             # Handle straight line route within same cell
             if len(route_json['properties']['CellIndices']) == 1:
                 logging.info(f"--- Skipping smoothing for {route_json['properties']['name']}, direct route within a"
@@ -711,7 +730,6 @@ class RoutePlanner:
 
             initialised_dijkstra_graph = self.initialise_dijkstra_graph(cellboxes, neighbour_graph, route)
             adjacent_pairs, source_wp, end_wp = initialise_dijkstra_route(initialised_dijkstra_graph, route_json)
-
             sf = Smoothing(initialised_dijkstra_graph,
                            adjacent_pairs,
                            source_wp, end_wp,
