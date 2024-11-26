@@ -241,6 +241,14 @@ class RoutePlanner:
         if 'time_unit' not in self.config:
             self.config['time_unit'] = "days"
 
+        # Early Stopping not then define as false:
+        if 'early_stopping_criterion' not in self.config:
+            self.config['early_stopping_criterion'] = True
+
+
+        # Required nodes to visit
+        self._required_nodes = []
+
         # Load mesh json from file or dict
         mesh_json = json_str(mesh_file)
 
@@ -301,11 +309,15 @@ class RoutePlanner:
         """
         if ('waypoint_splitting' in self.config) and (self.config['waypoint_splitting']):
             logging.info(' Splitting around waypoints !')
+            prior_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
             wps_points = [(entry['Lat'], entry['Long']) for _, entry in waypoints_df.iterrows()]
             self.env_mesh.split_points(wps_points)
-            # Rebuild lookup with new env_mesh
+            new_cells = [cellbox.get_id() for cellbox in self.env_mesh.agg_cellboxes if not cellbox.agg_data['inaccessible']]
+            self._required_nodes += list(set(new_cells) - set(prior_cells))
+            self.env_mesh = EnvironmentMesh.load_from_json(self.env_mesh.to_json())
             self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
-                                     for i in range(len(self.env_mesh.agg_cellboxes))}
+                                    for i in range(len(self.env_mesh.agg_cellboxes))}
+
 
     def _zero_currents(self, mesh):
         """
@@ -490,7 +502,7 @@ class RoutePlanner:
             """
             neighbour_map = self.env_mesh.neighbour_graph.get_neighbour_map(_id) # neighbours and cases for node _id
             for case, neighbours in neighbour_map.items():
-                if len(neighbours) != 0:
+                if neighbours:
                   for neighbour in neighbours:
                     edges = self._neighbour_cost(_id, str(neighbour), int(case))
                     edges_cost = sum(segment.get_variable(self.config['objective_function']) for segment in edges)
@@ -498,12 +510,20 @@ class RoutePlanner:
                     if new_cost < source_wp.get_obj(str(neighbour), self.config['objective_function']):
                         source_wp.update_routing_table(str(neighbour), RoutingInfo(_id, edges))
                 
-        # Updating Dijkstra as long as all the waypoints are not visited or for full graph
-        for end_wp in end_wps:
-            if wp.equals(end_wp):
-                continue
-            logging.info(f"Destination waypoint: {end_wp.get_name()}")
-            while not wp.is_visited(end_wp.get_cellbox_indx()):
+        
+        if not self.config['early_stopping_criterion']:
+            run_all = False
+            while not run_all:
+                # Determine the index of the cell with the minimum objective function cost that has not yet been visited
+                min_obj_indx = find_min_objective(wp)
+                logging.debug(f"min_obj >>> {min_obj_indx}")
+                # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
+                if min_obj_indx == -1:
+                    break
+                consider_neighbours(wp, min_obj_indx)
+                wp.visit(min_obj_indx)
+        else:
+            while not (wp.is_all_visited() and wp.is_all_cells_visited(self._required_nodes)):
                 # Determine the index of the cell with the minimum objective function cost that has not yet been visited
                 min_obj_indx = find_min_objective(wp)
                 logging.debug(f"min_obj >>> {min_obj_indx}")
@@ -579,20 +599,24 @@ class RoutePlanner:
         """
         waypoints_df = pandas_dataframe_str(waypoints)
         # Handle common issues with case/whitespace in Source/Destination fields
-        waypoints_df['Source'] = [s.strip().upper() if type(s) == str else np.nan for s in waypoints_df['Source']]
-        waypoints_df['Destination'] = [s.strip().upper() if type(s) == str else np.nan for s in waypoints_df['Destination']]
+        waypoints_df['Source'] = [s.strip().upper() if isinstance(s, str) else np.nan for s in waypoints_df['Source']]
+        waypoints_df['Destination'] = [s.strip().upper() if isinstance(s, str) else np.nan for s in waypoints_df['Destination']]
         # Validate input waypoints format
         validate_waypoints(waypoints_df)
 
         self.waypoints_df = waypoints_df
 
-        # Move waypoint to the closest accessible cellbox, if it isn't in one already
+        # Check waypoints are within mesh and adjust inaccessible waypoints if required
         mesh_boundary = _mesh_boundary_polygon(self.env_mesh.to_json())
         for idx, row in waypoints_df.iterrows():
             point = Point([row['Long'], row['Lat']])
-            # Only allow waypoints within an existing mesh
-            assert point.within(mesh_boundary), \
-                f"Waypoint {row['Name']} outside of mesh boundary! {point}"
+            # Only allow waypoints that lie within the bounds of the env_mesh
+            if not point.within(mesh_boundary):
+                logging.info(f"Waypoint {row['Name']} at Lat: {row['Lat']}, Long {row['Long']} is outside the mesh and "
+                             f"will be disregarded!")
+                waypoints_df.drop(idx)
+                continue
+            # Move waypoint to the closest accessible cellbox, if it isn't in one already
             if self.config['adjust_waypoints']:
                 logging.debug("Adjusting waypoints in inaccessible cells to nearest accessible location")
                 adjusted_point = _adjust_waypoints(point, self.env_mesh.to_json()['cellboxes'])
@@ -614,13 +638,13 @@ class RoutePlanner:
         # Create SourceWaypoint objects
         src_wps = [SourceWaypoint(wp, end_wps) for wp in src_wps]
         self.src_wps.append(src_wps)
-        if len(src_wps) == 0:
-            raise ValueError('Invalid waypoints. Inaccessible source waypoints')
+        if not src_wps:
+            raise ValueError('Invalid waypoints. No accessible source waypoints specified')
+        if not end_wps:
+            raise ValueError('Invalid waypoints. No accessible destination waypoints specified')
 
         logging.info('============= Dijkstra Route Creation ============')
         logging.info(f" - Objective = {self.config['objective_function']}")
-        if len(end_wps) == 0:
-            end_wps = [Waypoint.load_from_cellbox(cellbox) for cellbox in self.env_mesh.agg_cellboxes] # full graph, use all the cellboxes ids as destination
         for wp in src_wps:
             logging.info('--- Processing Source Waypoint = {}'.format(wp.get_name()))
             self._dijkstra(wp, end_wps)
@@ -641,7 +665,7 @@ class RoutePlanner:
 
         # ====== Routes info =======
         # Check whether any Dijkstra routes exist before running smoothing
-        if len(self.routes_dijkstra) == 0:
+        if not self.routes_dijkstra:
             raise Exception('Smoothed routes not constructed as there were no Dijkstra routes created')
         routes = copy.deepcopy(self.routes_dijkstra)
 
@@ -819,9 +843,9 @@ class RoutePlanner:
             for indx in range(len(self.env_mesh.agg_cellboxes)):
                 if (self.env_mesh.agg_cellboxes[indx].contains_point(wp.get_latitude(), wp.get_longitude())
                         and not self.env_mesh.agg_cellboxes[indx].agg_data['inaccessible']):
-                    wp_id. append(self.env_mesh.agg_cellboxes[indx].get_id())
+                    wp_id.append(self.env_mesh.agg_cellboxes[indx].get_id())
                     wp.set_cellbox_indx(str(self.env_mesh.agg_cellboxes[indx].get_id()))
-            if len(wp_id) == 0:
+            if not wp_id:
                 logging.warning(f'{wp.get_name()} is not an accessible waypoint')
                 valid_wps.remove(wp)
         
