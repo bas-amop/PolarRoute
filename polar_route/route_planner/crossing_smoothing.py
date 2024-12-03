@@ -54,6 +54,51 @@ def rhumb_line_distance(start_waypoint, end_waypoint):
 
     return distance
 
+def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
+    """
+    Calculates traveltime in a cellbox based off of rhumbline distance
+
+    Args:
+        cellbox (dict): Cellbox containing line segment being analysed
+        cp (ndarray): End waypoint coordinates   (long,lat)
+        sp (ndarray): Start waypoint coordinates (long,lat)
+        s (str): Key for ship speed
+        u (str): Key for currents x-velocity
+        v (str): Key for currents y-velocity
+
+    Returns:
+        _type_: Traveltime
+    """
+    cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox.geometry.bounds
+    # If vertical case
+    if cp[1] in (cb_min_lat, cb_max_lat) or sp[1] in (cb_min_lat, cb_max_lat):
+        x = (cp[0] - sp[0]) *111.386*1000.
+        y = (cp[1] - sp[1]) *111.321*1000.*np.cos(cp[1]*(np.pi/180))
+        λ = sp[1]*(np.pi/180)
+        θ = cp[1]*(np.pi/180)
+        C1 = s**2 - u**2 - v**2
+        z = x*np.cos(θ)
+        r1 = np.cos(λ) / np.cos(θ)
+        d1 = np.sqrt(x**2 + (r1*y)**2)
+        D1 = x*u + r1*v*y
+    # If horizontal case
+    elif cp[0] in (cb_min_lon, cb_max_lon) or sp[0] in (cb_min_lon, cb_max_lon):
+        x = (cp[0] - sp[0]) *111.386*1000.
+        y = (cp[1] - sp[1]) *111.321*1000.*np.cos(cp[1]*(np.pi/180))
+        λ = sp[1]*(np.pi/180)
+        θ = y/(2*6371*1000) + λ #cp[1]*(np.pi/180)
+        C1 = s**2 - u**2 - v**2
+        z = x*np.cos(θ)
+        r1 = np.cos(λ) / np.cos(θ)
+        D1 = z*u + y*v
+        d1 = np.sqrt(z**2 + y**2)
+    else:
+        raise Exception('Something went wrong')
+    
+    X1 = np.sqrt(D1**2 + C1*(d1**2))
+    tt = (X1 - D1)/C1
+
+    return tt
 
 class FindEdge:
     """
@@ -167,7 +212,7 @@ class PathValues:
         Su  = source_graph['Vector_x']
         Sv  = source_graph['Vector_y']
         Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = traveltime_in_cell(x, y, Su, Sv, Ssp)
+        traveltime = rhumb_traveltime_in_cell(source_graph, Cp, Wp, Ssp, Su, Sv)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(Wp, Cp)
 

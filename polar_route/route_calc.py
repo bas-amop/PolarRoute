@@ -7,7 +7,7 @@ from shapely import wkt, distance
 from shapely.geometry import Point, LineString, MultiLineString, Polygon
 from polar_route.utils import gpx_route_import
 from polar_route.route_planner.crossing import traveltime_in_cell
-from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, dist_around_globe
+from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, dist_around_globe, rhumb_traveltime_in_cell
 
 
 # Define ordering of cases in array data
@@ -46,7 +46,7 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
         sv = 0
     ssp = cellbox[speed][idx] * (1000 / (60 * 60))
     try:
-        traveltime = traveltime_in_cell(x, y, su, sv, ssp)
+        traveltime = rhumb_traveltime_in_cell(cellbox, cp, wp, ssp, su, sv)
         dist = rhumb_line_distance(cp, wp)
     except:
         traveltime = 0
