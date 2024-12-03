@@ -170,7 +170,7 @@ class Route:
         su = cellbox.agg_data['uC']
         sv = cellbox.agg_data['vC']
         ssp = unit_speed(cellbox.agg_data['speed'][case], self.conf['unit_shipspeed'])
-        traveltime, distance = traveltime_in_cell(x, y, su, sv, ssp, tt_dist=True)
+        traveltime, distance = traveltime_in_cell(cellbox.to_json(), x, y, su, sv, ssp, tt_dist=True)
         logging.debug(f"WP_correction >> tt >> {traveltime}")
         logging.debug(f"WP_correction >> distance >> {distance}")
         logging.debug(f"WP_correction >> case >> {case}")

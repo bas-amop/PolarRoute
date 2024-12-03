@@ -10,11 +10,12 @@ from polar_route.utils import unit_time, unit_speed
 np.seterr(divide='ignore', invalid='ignore')
 
 
-def traveltime_in_cell(xdist, ydist, u, v, s, tt_dist=None):
+def traveltime_in_cell(cellbox, xdist, ydist, u, v, s, tt_dist=None):
     """
         Determine the traveltime within a cell
 
         Args:
+            cellbox (dict): Cell containing the line segment
             xdist (float): Longitude distance between two points in km
             ydist (float): Latitude distance between two points in km
             u (float): U-Component for the forcing vector
@@ -25,6 +26,10 @@ def traveltime_in_cell(xdist, ydist, u, v, s, tt_dist=None):
             traveltime (float): the travel time within the cell
             dist (float): the distance within the cell
     """
+    # Catching cases in dev where function called in the old way
+    assert isinstance(cellbox, dict), f"Invaldid format for cellbox \n{cellbox}"
+
+
     dist = np.sqrt(xdist**2 + ydist**2)
     cval = np.sqrt(u**2 + v**2)
 
@@ -217,7 +222,7 @@ class NewtonianDistance:
         Su  = self.source_cellbox.agg_data['uC'] 
         Sv  = self.source_cellbox.agg_data['vC'] 
         Ssp = self.source_speed
-        traveltime = traveltime_in_cell(x, y, Su, Sv, Ssp)
+        traveltime = traveltime_in_cell(self.source_cellbox, x, y, Su, Sv, Ssp)
         return unit_time(traveltime, self.unit_time)
 
     def _longitude(self):
@@ -403,8 +408,8 @@ class NewtonianDistance:
         cell_points  = [n_cx, n_cy]
 
         # Determining traveltime
-        t1 = traveltime_in_cell(dx1, dy1, Su, Sv, Ssp)
-        t2 = traveltime_in_cell(dx2, dy2, Nu, Nv, Nsp)
+        t1 = traveltime_in_cell(self.source_cellbox.to_json(), dx1, dy1, Su, Sv, Ssp)
+        t2 = traveltime_in_cell(self.source_cellbox.to_json(), dx2, dy2, Nu, Nv, Nsp)
         travel_time  = unit_time(np.array([t1, t2]), self.unit_time)
 
         if travel_time[0] < 0 or travel_time[1] < 0:

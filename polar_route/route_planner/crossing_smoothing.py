@@ -167,7 +167,7 @@ class PathValues:
         Su  = source_graph['Vector_x']
         Sv  = source_graph['Vector_y']
         Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = traveltime_in_cell(x, y, Su, Sv, Ssp)
+        traveltime = traveltime_in_cell(source_graph, x, y, Su, Sv, Ssp)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(Wp, Cp)
 
