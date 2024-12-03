@@ -2,6 +2,7 @@ import numpy as np
 import pyproj
 import logging
 from polar_route.route_planner.crossing import traveltime_in_cell
+from shapely import from_wkt
 from polar_route.utils import unit_time, unit_speed, case_from_angle
 
 
@@ -69,7 +70,8 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     Returns:
         _type_: Traveltime
     """
-    cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox.geometry.bounds
+    cellbox_geometry = from_wkt(cellbox['geometry'])
+    cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
     if cp[1] in (cb_min_lat, cb_max_lat) or sp[1] in (cb_min_lat, cb_max_lat):
         x = (cp[0] - sp[0]) *111.386*1000.
