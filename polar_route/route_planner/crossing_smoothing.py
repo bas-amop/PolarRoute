@@ -1252,7 +1252,8 @@ class Smoothing:
         while not converged:
             # Early stopping criterion
             if self.jj == self.max_iterations:
-                break
+                raise Exception(f'Failed to converge in {self.max_iteration} steps')
+                # break
 
             path_length = len(self.aps)
             firstpoint = self.start_waypoint
