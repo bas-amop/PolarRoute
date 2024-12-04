@@ -79,7 +79,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
     if cp[1] in (cb_min_lat, cb_max_lat) or sp[1] in (cb_min_lat, cb_max_lat):
-        x = (cp[0] - sp[0]) *111.386*1000.
+        x = (cp[0] - sp[0]) *111.386*1000.*np.cos(cp[1])
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
         θ = cp[1]*(np.pi/180)
@@ -90,7 +90,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         D1 = x*u + r1*v*y
     # If horizontal case
     elif cp[0] in (cb_min_lon, cb_max_lon) or sp[0] in (cb_min_lon, cb_max_lon):
-        x = (cp[0] - sp[0]) *111.386*1000.
+        x = (cp[0] - sp[0]) *111.386*1000.*np.cos(cp[1])
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
         θ = y/(2*6371*1000) + λ #cp[1]*(np.pi/180)
