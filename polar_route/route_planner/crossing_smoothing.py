@@ -2,7 +2,7 @@ import numpy as np
 import pyproj
 import logging
 from polar_route.route_planner.crossing import traveltime_in_cell
-from shapely import from_wkt
+import shapely
 from polar_route.utils import unit_time, unit_speed, case_from_angle
 
 
@@ -70,7 +70,12 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     Returns:
         _type_: Traveltime
     """
-    cellbox_geometry = from_wkt(cellbox['geometry'])
+    if isinstance(cellbox['geometry'], str):
+        cellbox_geometry = shapely.from_wkt(cellbox['geometry'])
+    elif isinstance(cellbox['geometry'], shapely.geometry.polygon.Polygon):
+        cellbox_geometry = cellbox['geometry']
+    else:
+        raise TypeError(f'Unknown input type {type(cellbox['geometry'])}')
     cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
     if cp[1] in (cb_min_lat, cb_max_lat) or sp[1] in (cb_min_lat, cb_max_lat):
@@ -95,11 +100,11 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
     else:
+        logging.info(f'in fn: {tt}')
         raise Exception('Something went wrong')
     
     X1 = np.sqrt(D1**2 + C1*(d1**2))
     tt = (X1 - D1)/C1
-
     return tt
 
 class FindEdge:
@@ -217,6 +222,7 @@ class PathValues:
         traveltime = rhumb_traveltime_in_cell(source_graph, Cp, Wp, Ssp, Su, Sv)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(Wp, Cp)
+
 
         # Given the traveltime and distance between the two waypoints
         # determine the path related variables (e.g. fuel usage, traveltime)
