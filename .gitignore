@@ -32,4 +32,3 @@ docs/build/*
 dev_venv/*
 *.ipynb
 *.log
-/testing/
