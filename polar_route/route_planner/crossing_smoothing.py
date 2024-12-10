@@ -561,7 +561,7 @@ class Smoothing:
                             y0 = Y
                         else:
                             y0 = 0
-                if iter_number > self.max_iterations:
+                if iter_number > 1000:
                     raise Exception('Newton Curve Issue - Latitude Case')
             return y0
 
