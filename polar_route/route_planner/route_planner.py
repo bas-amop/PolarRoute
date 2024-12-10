@@ -10,6 +10,7 @@ import geopandas as gpd
 import logging
 import itertools
 import copy
+import math
 
 from polar_route.route_planner.route import Route
 from polar_route.route_planner.source_waypoint import SourceWaypoint
@@ -555,7 +556,12 @@ class RoutePlanner:
         # Updating the Dijkstra graph with the new information
         traveltime, crossing_points, cell_points, case = cost_func.value()
         # Save travel time and crossing point values for use in smoothing
-        self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
+
+        if not math.isnan(traveltime[0]) and \
+            not math.isnan(traveltime[1]):
+            self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
+        else:
+            logging.debug(f"Travel time is NaN for {node_id} to {neighbour_id}")
 
         # Create segments and set their travel time based on the returned 3 points and the remaining obj accordingly (travel_time * node speed/fuel)
         s1 = Segment(Waypoint.load_from_cellbox(self.cellboxes_lookup[node_id]), Waypoint(crossing_points[1],
