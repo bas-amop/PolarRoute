@@ -59,3 +59,8 @@ class Waypoint:
 
     def to_point(self):
         return [self.get_longitude(), self.get_latitude()]
+
+    def to_json(self):
+        return {"latitude": self.get_latitude(), 
+        "longitude": self.get_longitude(), 
+        "name": self.get_name()}
