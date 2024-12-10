@@ -10,7 +10,6 @@ import geopandas as gpd
 import logging
 import itertools
 import copy
-import math
 
 from polar_route.route_planner.route import Route
 from polar_route.route_planner.source_waypoint import SourceWaypoint
@@ -556,12 +555,7 @@ class RoutePlanner:
         # Updating the Dijkstra graph with the new information
         traveltime, crossing_points, cell_points, case = cost_func.value()
         # Save travel time and crossing point values for use in smoothing
-
-        if not math.isnan(traveltime[0]) and \
-            not math.isnan(traveltime[1]):
-            self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
-        else:
-            print(f"Travel time is NaN for {node_id} to {neighbour_id}")
+        self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
 
         # Create segments and set their travel time based on the returned 3 points and the remaining obj accordingly (travel_time * node speed/fuel)
         s1 = Segment(Waypoint.load_from_cellbox(self.cellboxes_lookup[node_id]), Waypoint(crossing_points[1],
@@ -576,7 +570,6 @@ class RoutePlanner:
             s1.set_fuel(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['fuel'][direction.index(case)])
         if 'battery' in self.config['path_variables']:
             s1.set_battery(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        
         s1.set_distance(s1.get_travel_time() * unit_speed(self.cellboxes_lookup[node_id].agg_data['speed'][direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
@@ -586,7 +579,6 @@ class RoutePlanner:
         if 'battery' in self.config['path_variables']:
             s2.set_battery(
                 s2.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        
         s2.set_distance(s2.get_travel_time() * unit_speed(self.cellboxes_lookup[neighbour_id].agg_data['speed'][direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
@@ -805,7 +797,6 @@ class RoutePlanner:
             dijkstra_graph_dict[cell_id]['neighbourIndex'] = np.array(neighbour_index)
             neighbour_travel_legs = []
             neighbour_crossing_points = []
-
             for i, neighbour in enumerate(neighbour_index):
                 leg_id = str(cell_id) + "to" + str(neighbour)
                 if leg_id in self.neighbour_legs:
