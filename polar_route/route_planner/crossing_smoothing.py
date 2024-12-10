@@ -561,7 +561,7 @@ class Smoothing:
                             y0 = Y
                         else:
                             y0 = 0
-                if iter_number > 1000:
+                if iter_number > self.max_iterations:
                     raise Exception('Newton Curve Issue - Latitude Case')
             return y0
 
@@ -1086,7 +1086,7 @@ class Smoothing:
 
         # Prevents crashing is edge_b is empty.
         if edge_b.start == None:
-            print('Edge B Start is None')
+            logging.debug('Edge_b is empty')
             return True
             
         edge_a_start_index = edge_a.start['id']
