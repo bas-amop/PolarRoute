@@ -266,11 +266,15 @@ class RoutePlanner:
         self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
                                  for i in range(len(self.env_mesh.agg_cellboxes))}
 
+        # Check for totally inaccessible mesh
+        if all(cb.agg_data['inaccessible'] for cb in self.cellboxes_lookup.values()):
+            raise ValueError('The environment mesh contains no accessible cells, routing is impossible!')
+
         # Check that the provided mesh has vector information (ex. current)
         self.vector_names = self.config['vector_names']
         for name in self.vector_names: 
              if not any(name in cb.agg_data for cb in self.cellboxes_lookup.values()):
-                 raise ValueError(f'The env mesh cellboxes do not have {name} data and it is a prerequisite for the '
+                 raise ValueError(f'The environment mesh does not contain {name} data and it is a prerequisite for the '
                                   f'route planner!')
         # Check for SIC data, used in smoothed route construction
         if not any('SIC' in cb.agg_data for cb in self.cellboxes_lookup.values()):
