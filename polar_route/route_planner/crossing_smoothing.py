@@ -76,9 +76,10 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         cellbox_geometry = cellbox['geometry']
     else:
         raise TypeError(f'Unknown input type {type(cellbox['geometry'])}')
+
     cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
-    if cp[1] in (cb_min_lat, cb_max_lat) or sp[1] in (cb_min_lat, cb_max_lat):
+    if cp[1] in (cb_min_lat, cb_max_lat) and sp[1] in (cb_min_lat, cb_max_lat):
         x = (cp[0] - sp[0]) *111.386*1000.
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
@@ -89,7 +90,8 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         d1 = np.sqrt(x**2 + (r1*y)**2)
         D1 = x*u + r1*v*y
     # If horizontal case
-    elif cp[0] in (cb_min_lon, cb_max_lon) or sp[0] in (cb_min_lon, cb_max_lon):
+    # elif cp[0] in (cb_min_lon, cb_max_lon) or sp[0] in (cb_min_lon, cb_max_lon):
+    else:
         x = (cp[0] - sp[0]) *111.386*1000.
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
@@ -99,9 +101,9 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         r1 = np.cos(λ) / np.cos(θ)
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
-    else:
-        logging.info(f'in fn: {tt}')
-        raise Exception('Something went wrong')
+    # else:
+    #     logging.info(f'in fn: {tt}')
+    #     raise Exception('Something went wrong')
     
     X1 = np.sqrt(D1**2 + C1*(d1**2))
     tt = (X1 - D1)/C1
