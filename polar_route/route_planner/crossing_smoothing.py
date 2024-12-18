@@ -1083,6 +1083,12 @@ class Smoothing:
                 True if this v-additional case has been seen before, or false if not
 
         """
+
+        # Prevents crashing is edge_b is empty.
+        if edge_b.start == None:
+            logging.debug('Edge_b is empty')
+            return True
+            
         edge_a_start_index = edge_a.start['id']
         edge_b_start_index = edge_b.start['id']
         edge_a_end_index   = edge_a.end['id']

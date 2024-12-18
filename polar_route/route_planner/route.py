@@ -184,7 +184,7 @@ class Route:
             self.segments[indx].set_fuel(cellbox.agg_data['fuel'][direction.index(case)] * traveltime)
             logging.debug(f"WP_correction >> fuel >> {cellbox.agg_data['fuel'][direction.index(case)] * traveltime}")
         if 'battery' in self.conf['path_variables']:
-            self.segments[indx].set_fuel(cellbox.agg_data['battery'][direction.index(case)] * traveltime)
+            self.segments[indx].set_battery(cellbox.agg_data['battery'][direction.index(case)] * traveltime)
             logging.debug(f"WP_correction >> battery >> {cellbox.agg_data['battery'][direction.index(case)] * traveltime}")
 
     def get_points(self):
