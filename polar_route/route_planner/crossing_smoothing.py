@@ -75,7 +75,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     elif isinstance(cellbox['geometry'], shapely.geometry.polygon.Polygon):
         cellbox_geometry = cellbox['geometry']
     else:
-        raise TypeError(f'Unknown input type {type(cellbox['geometry'])}')
+        raise TypeError(f"Unknown input type {type(cellbox['geometry'])}")
 
     cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
