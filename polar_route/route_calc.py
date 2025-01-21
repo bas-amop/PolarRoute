@@ -8,7 +8,6 @@ from shapely.geometry import Point, LineString, MultiLineString, Polygon
 from polar_route.utils import gpx_route_import
 from polar_route.route_planner.crossing import traveltime_in_cell
 from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, dist_around_globe
-from polar_route.route_planner.exceptions import WayPointOutOfBounds, NoRouteFound
 
 
 # Define ordering of cases in array data

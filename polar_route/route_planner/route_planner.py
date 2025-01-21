@@ -22,7 +22,7 @@ from polar_route.route_planner.crossing_smoothing import Smoothing, FindEdge, Pa
 from polar_route.config_validation.config_validator import validate_route_config
 from polar_route.config_validation.config_validator import validate_waypoints
 from polar_route.utils import json_str, unit_speed, pandas_dataframe_str, case_from_angle, timed_call
-from polar_route.exceptions import WayPointOutOfBounds, NoRouteFound, InaccessibleWaypoint, RouteCouldNotSmooth, InvalidMesh
+from polar_route.exceptions import WayPointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteCouldNotSmoothError, InvalidMeshError
 
 from meshiphi import Boundary
 from meshiphi.mesh_generation.environment_mesh import EnvironmentMesh
@@ -270,13 +270,13 @@ class RoutePlanner:
 
         # Check for totally inaccessible mesh
         if all(cb.agg_data['inaccessible'] for cb in self.cellboxes_lookup.values()):
-            raise InvalidMesh('The environment mesh contains no accessible cells, routing is impossible!')
+            raise InvalidMeshError('The environment mesh contains no accessible cells, routing is impossible!')
 
         # Check that the provided mesh has vector information (ex. current)
         self.vector_names = self.config['vector_names']
         for name in self.vector_names: 
              if not any(name in cb.agg_data for cb in self.cellboxes_lookup.values()):
-                 raise InvalidMesh(f'The environment mesh does not contain {name} data and it is a prerequisite for the '
+                 raise InvalidMeshError(f'The environment mesh does not contain {name} data and it is a prerequisite for the '
                                   f'route planner!')
         # Check for SIC data, used in smoothed route construction
         if not any('SIC' in cb.agg_data for cb in self.cellboxes_lookup.values()):
@@ -284,12 +284,12 @@ class RoutePlanner:
         
         # Check if speed is defined in the environment mesh
         if not any('speed' in cb.agg_data for cb in self.cellboxes_lookup.values()):
-            raise InvalidMesh('Vessel speed not in the mesh information! Please run vessel performance')
+            raise InvalidMeshError('Vessel speed not in the mesh information! Please run vessel performance')
         
         # Check if objective function is in the environment mesh (e.g. speed)
         if self.config['objective_function'] != 'traveltime':
             if not any(self.config['objective_function'] in cb.agg_data for cb in self.cellboxes_lookup.values()):
-                raise InvalidMesh(f"Objective Function '{self.config['objective_function']}' requires the mesh cellboxes"
+                raise InvalidMeshError(f"Objective Function '{self.config['objective_function']}' requires the mesh cellboxes"
                                  f" to have '{self.config['objective_function']}' in the aggregated data")
 
         # ====== Defining the cost function ======
@@ -651,9 +651,9 @@ class RoutePlanner:
         src_wps = [SourceWaypoint(wp, end_wps) for wp in src_wps]
         self.src_wps.append(src_wps)
         if not src_wps:
-            raise NoRouteFound('Invalid waypoints. No accessible source waypoints specified')
+            raise NoRouteFoundError('Invalid waypoints. No accessible source waypoints specified')
         if not end_wps:
-            raise NoRouteFound('Invalid waypoints. No accessible destination waypoints specified')
+            raise NoRouteFoundError('Invalid waypoints. No accessible destination waypoints specified')
 
         logging.info('============= Dijkstra Route Creation ============')
         logging.info(f" - Objective = {self.config['objective_function']}")
@@ -678,7 +678,7 @@ class RoutePlanner:
         # ====== Routes info =======
         # Check whether any Dijkstra routes exist before running smoothing
         if not self.routes_dijkstra:
-            raise NoRouteFound("No Dijkstra route before attempting to smooth routes")
+            raise NoRouteFoundError("No Dijkstra route before attempting to smooth routes")
         routes = copy.deepcopy(self.routes_dijkstra)
 
         # ====== Determining route info ======
