@@ -13,6 +13,7 @@ try:
 
     from polar_route.vessel_performance.vessel_performance_modeller import VesselPerformanceModeller as VesselPerformanceModeller
     from polar_route.route_planner.route_planner import RoutePlanner as RoutePlanner
+    from polar_route.exceptions import WayPointOutOfBounds, NoRouteFound, InaccessibleWaypoint, RouteCouldNotSmooth, InvalidMesh
 
 except ModuleNotFoundError as err:
     print(f'{err}\n Is PolarRoute installed correctly?')
