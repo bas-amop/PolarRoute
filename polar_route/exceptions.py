@@ -2,7 +2,7 @@
     This module contains the custom exceptions for the polar_route package.
 """
 
-class WayPointOutOfBoundsError(Exception):
+class WaypointOutOfBoundsError(Exception):
     "Raised when the waypoint is out of bounds of the mesh"
 
     def __init__(self, waypoint, message="Waypoint is out of bounds of the mesh"):
@@ -23,7 +23,7 @@ class InaccessibleWaypointError(Exception):
         self.message = "Waypoint at " + str(waypoint) + " is inaccessible"
         super().__init__(self.message)
 
-class RouteCouldNotSmoothError(Exception):
+class RouteSmoothingError(Exception):
     "Raised when a route cannot be smoothed"
 
     def __init__(self, message="Route could not be smoothed"):

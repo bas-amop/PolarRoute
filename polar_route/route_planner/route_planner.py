@@ -22,7 +22,7 @@ from polar_route.route_planner.crossing_smoothing import Smoothing, FindEdge, Pa
 from polar_route.config_validation.config_validator import validate_route_config
 from polar_route.config_validation.config_validator import validate_waypoints
 from polar_route.utils import json_str, unit_speed, pandas_dataframe_str, case_from_angle, timed_call
-from polar_route.exceptions import WayPointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteCouldNotSmoothError, InvalidMeshError
+from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
 
 from meshiphi import Boundary
 from meshiphi.mesh_generation.environment_mesh import EnvironmentMesh
