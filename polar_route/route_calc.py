@@ -272,23 +272,29 @@ def order_track(df, track_points):
     user_track = pd.DataFrame({'Point': path_point, 'CellID': cell_ids})
     return user_track
 
-def route_calc(route_file, mesh_file):
+def route_calc(df, from_wp, to_wp, mesh, region_poly):
     """
         Function to calculate the fuel/time cost of a user defined route in a given mesh
 
         Args:
-            route_file (str): Path to user defined route
-            mesh_file (str): Path to mesh with vehicle information
+            df (DataFrame): Route info in dataframe format
+            from_wp (str): Name of start waypoint
+            to_wp (str): Name of end waypoint
+            mesh (DataFrame): A DataFrame of a Mesh with encoded vehicle information
+            region_poly (Polygon): A Polygon of the region bounding the mesh
 
         Returns:
             user_path (dict): User defined route in geojson format with calculated cost information
     """
 
+    """
     # Load route info and waypoint names from file
     df, from_wp, to_wp = load_route(route_file)
 
     # Load mesh info from file
     mesh, region_poly = load_mesh(mesh_file)
+
+    """ 
 
     # Check route waypoints contained in mesh bounds
     for idx in range(len(df)):
