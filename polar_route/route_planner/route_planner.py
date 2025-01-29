@@ -10,6 +10,7 @@ import geopandas as gpd
 import logging
 import itertools
 import copy
+import math
 
 from polar_route.route_planner.route import Route
 from polar_route.route_planner.source_waypoint import SourceWaypoint
@@ -21,6 +22,8 @@ from polar_route.route_planner.crossing_smoothing import Smoothing, FindEdge, Pa
 from polar_route.config_validation.config_validator import validate_route_config
 from polar_route.config_validation.config_validator import validate_waypoints
 from polar_route.utils import json_str, unit_speed, pandas_dataframe_str, case_from_angle, timed_call
+from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
+
 from meshiphi import Boundary
 from meshiphi.mesh_generation.environment_mesh import EnvironmentMesh
 from meshiphi.mesh_generation.direction import Direction
@@ -265,11 +268,15 @@ class RoutePlanner:
         self.cellboxes_lookup = {str(self.env_mesh.agg_cellboxes[i].get_id()): self.env_mesh.agg_cellboxes[i]
                                  for i in range(len(self.env_mesh.agg_cellboxes))}
 
+        # Check for totally inaccessible mesh
+        if all(cb.agg_data['inaccessible'] for cb in self.cellboxes_lookup.values()):
+            raise InvalidMeshError('The environment mesh contains no accessible cells, routing is impossible!')
+
         # Check that the provided mesh has vector information (ex. current)
         self.vector_names = self.config['vector_names']
         for name in self.vector_names: 
              if not any(name in cb.agg_data for cb in self.cellboxes_lookup.values()):
-                 raise ValueError(f'The env mesh cellboxes do not have {name} data and it is a prerequisite for the '
+                 raise InvalidMeshError(f'The environment mesh does not contain {name} data and it is a prerequisite for the '
                                   f'route planner!')
         # Check for SIC data, used in smoothed route construction
         if not any('SIC' in cb.agg_data for cb in self.cellboxes_lookup.values()):
@@ -277,12 +284,12 @@ class RoutePlanner:
         
         # Check if speed is defined in the environment mesh
         if not any('speed' in cb.agg_data for cb in self.cellboxes_lookup.values()):
-            raise ValueError('Vessel speed not in the mesh information! Please run vessel performance')
+            raise InvalidMeshError('Vessel speed not in the mesh information! Please run vessel performance')
         
         # Check if objective function is in the environment mesh (e.g. speed)
         if self.config['objective_function'] != 'traveltime':
             if not any(self.config['objective_function'] in cb.agg_data for cb in self.cellboxes_lookup.values()):
-                raise ValueError(f"Objective Function '{self.config['objective_function']}' requires the mesh cellboxes"
+                raise InvalidMeshError(f"Objective Function '{self.config['objective_function']}' requires the mesh cellboxes"
                                  f" to have '{self.config['objective_function']}' in the aggregated data")
 
         # ====== Defining the cost function ======
@@ -554,7 +561,12 @@ class RoutePlanner:
         # Updating the Dijkstra graph with the new information
         traveltime, crossing_points, cell_points, case = cost_func.value()
         # Save travel time and crossing point values for use in smoothing
-        self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
+
+        if not math.isnan(traveltime[0]) and \
+            not math.isnan(traveltime[1]):
+            self.neighbour_legs[node_id+"to"+neighbour_id] = (traveltime, crossing_points)
+        else:
+            logging.debug(f"Travel time is NaN for {node_id} to {neighbour_id}")
 
         # Create segments and set their travel time based on the returned 3 points and the remaining obj accordingly (travel_time * node speed/fuel)
         s1 = Segment(Waypoint.load_from_cellbox(self.cellboxes_lookup[node_id]), Waypoint(crossing_points[1],
@@ -638,9 +650,9 @@ class RoutePlanner:
         src_wps = [SourceWaypoint(wp, end_wps) for wp in src_wps]
         self.src_wps.append(src_wps)
         if not src_wps:
-            raise ValueError('Invalid waypoints. No accessible source waypoints specified')
+            raise NoRouteFoundError('Invalid waypoints. No accessible source waypoints specified')
         if not end_wps:
-            raise ValueError('Invalid waypoints. No accessible destination waypoints specified')
+            raise NoRouteFoundError('Invalid waypoints. No accessible destination waypoints specified')
 
         logging.info('============= Dijkstra Route Creation ============')
         logging.info(f" - Objective = {self.config['objective_function']}")
@@ -665,7 +677,7 @@ class RoutePlanner:
         # ====== Routes info =======
         # Check whether any Dijkstra routes exist before running smoothing
         if not self.routes_dijkstra:
-            raise Exception('Smoothed routes not constructed as there were no Dijkstra routes created')
+            raise NoRouteFoundError("No Dijkstra route before attempting to smooth routes")
         routes = copy.deepcopy(self.routes_dijkstra)
 
         # ====== Determining route info ======
