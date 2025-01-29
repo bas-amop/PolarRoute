@@ -280,8 +280,8 @@ def route_calc(df, from_wp, to_wp, mesh):
             df (DataFrame): Route info in dataframe format
             from_wp (str): Name of start waypoint
             to_wp (str): Name of end waypoint
-            mesh (DataFrame): A DataFrame of a Mesh with encoded vehicle information
-            region_poly (Polygon): A Polygon of the region bounding the mesh
+            mesh (json): A Mesh with encoded vehicle information
+            
 
         Returns:
             user_path (dict): User defined route in geojson format with calculated cost information
