@@ -287,15 +287,6 @@ def route_calc(df, from_wp, to_wp, mesh, region_poly):
             user_path (dict): User defined route in geojson format with calculated cost information
     """
 
-    """
-    # Load route info and waypoint names from file
-    df, from_wp, to_wp = load_route(route_file)
-
-    # Load mesh info from file
-    mesh, region_poly = load_mesh(mesh_file)
-
-    """ 
-
     # Check route waypoints contained in mesh bounds
     for idx in range(len(df)):
         if region_poly.contains(Point((df.iloc[idx]['Long'],df.iloc[idx]['Lat']))):
