@@ -12,7 +12,7 @@ from polar_route import __version__ as version
 from polar_route.utils import setup_logging, timed_call, convert_decimal_days, to_chart_track_csv, extract_geojson_routes
 from polar_route.vessel_performance.vessel_performance_modeller import VesselPerformanceModeller
 from polar_route.route_planner.route_planner import RoutePlanner
-from polar_route.route_calc import route_calc, load_route, load_mesh
+from polar_route.route_calc import route_calc, load_route
 
 fiona.drvsupport.supported_drivers['KML'] = 'rw' # enable KML support which is disabled by default
 
