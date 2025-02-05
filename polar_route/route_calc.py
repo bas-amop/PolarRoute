@@ -272,23 +272,29 @@ def order_track(df, track_points):
     user_track = pd.DataFrame({'Point': path_point, 'CellID': cell_ids})
     return user_track
 
-def route_calc(route_file, mesh_file):
+def route_calc(df, from_wp, to_wp, mesh):
     """
         Function to calculate the fuel/time cost of a user defined route in a given mesh
 
         Args:
-            route_file (str): Path to user defined route
-            mesh_file (str): Path to mesh with vehicle information
+            df (DataFrame): Route info in dataframe format
+            from_wp (str): Name of start waypoint
+            to_wp (str): Name of end waypoint
+            mesh (json): A Mesh with encoded vehicle information
+            
 
         Returns:
             user_path (dict): User defined route in geojson format with calculated cost information
     """
 
-    # Load route info and waypoint names from file
-    df, from_wp, to_wp = load_route(route_file)
+    mesh_df = pd.DataFrame(mesh['cellboxes'])
+    mesh_df['geometry'] = mesh_df['geometry'].apply(wkt.loads)
+    mesh_gdf = gpd.GeoDataFrame(mesh_df, crs='EPSG:4326', geometry='geometry')
 
-    # Load mesh info from file
-    mesh, region_poly = load_mesh(mesh_file)
+    region = mesh['config']['mesh_info']['region']
+    region_poly = Polygon(((region['long_min'], region['lat_min']), (region['long_min'], region['lat_max']),
+                           (region['long_max'], region['lat_max']), (region['long_max'], region['lat_min'])))
+
 
     # Check route waypoints contained in mesh bounds
     for idx in range(len(df)):
@@ -300,7 +306,7 @@ def route_calc(route_file, mesh_file):
             return None
 
     # Find points where route crosses mesh
-    track_points = find_intersections(df, mesh)
+    track_points = find_intersections(df, mesh_gdf)
 
     # Loop through crossing points to order them into a track along the route
     user_track = order_track(df, track_points)
@@ -309,14 +315,14 @@ def route_calc(route_file, mesh_file):
     # Initialise segment costs with zero values at start point of path
     traveltimes = [0.0]
     distances = [0.0]
-    cellboxes = [mesh.iloc[user_track['CellID'].iloc[0]]]
+    cellboxes = [mesh_gdf.iloc[user_track['CellID'].iloc[0]]]
     cases = [1]
 
     # Calculate cost of each segment in the path
     for idx in range(len(user_track)-1):
         start_point = np.array((user_track['Point'].iloc[idx].xy[0][0], user_track['Point'].iloc[idx].xy[1][0]))
         end_point = np.array((user_track['Point'].iloc[idx+1].xy[0][0], user_track['Point'].iloc[idx+1].xy[1][0]))
-        cell_box = mesh.iloc[user_track['CellID'].iloc[idx]]
+        cell_box = mesh_gdf.iloc[user_track['CellID'].iloc[idx]]
         case = case_from_angle(start_point, end_point)
         # Check for inaccessible cells on user defined route
         if cell_box['inaccessible']:
@@ -327,7 +333,7 @@ def route_calc(route_file, mesh_file):
             # Go back along path to find previous accessible cell
             while cell_box['inaccessible']:
                 i += 1
-                cell_box = mesh.iloc[user_track['CellID'].iloc[idx-i]]
+                cell_box = mesh_gdf.iloc[user_track['CellID'].iloc[idx-i]]
 
         traveltime_s, distance_m = traveltime_distance(cell_box, start_point, end_point, speed='speed', vector_x='uC',
                                                    vector_y='vC', case=case)
