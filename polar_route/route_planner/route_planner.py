@@ -684,6 +684,7 @@ class RoutePlanner:
         # Get smoothing parameters from config or set default values
         max_iterations = self.config.get('smoothing_max_iterations', 2000)
         blocked_sic = self.config.get('smoothing_blocked_sic', 10.0)
+        blocked_metric = self.config.get('smoothing_blocked_metric', 'SIC')
         merge_separation = self.config.get('smoothing_merge_separation', 1e-3)
         converged_sep = self.config.get('smoothing_converged_sep', 1e-3)
 
