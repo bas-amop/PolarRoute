@@ -265,7 +265,7 @@ class PathValues:
 #======================================================
 class Smoothing:
     def __init__(self, dijkstra_graph, adjacent_pairs, start_waypoint, end_waypoint, blocked_metric='SIC',
-                 max_iterations=2000, blocked_sic=10.0, merge_separation=1e-3, converged_sep=1e-3):
+                 max_iterations=2000, blocking_percentage=10.0, merge_separation=1e-3, converged_sep=1e-3):
         """
             Class construct that has all the operations required for path smoothing. Including: Relationship of adjacent pairs,
             edge finding new edges to add and returns a list of the adjacent pairs for the constructed path
@@ -290,7 +290,7 @@ class Smoothing:
         self.end_waypoint = end_waypoint
         self.blocked_metric = blocked_metric
         self.max_iterations = max_iterations
-        self.blocked_sic    = blocked_sic
+        self.blocking_percentage = blocking_percentage
         self.merge_separation = merge_separation
         self.converged_sep    = converged_sep
         self._g = pyproj.Geod(ellps='WGS84')
@@ -925,15 +925,9 @@ class Smoothing:
         """
 
         if self.blocked_metric == 'speed':
-            if self.blocked_speed(new_cell, cell_a, cell_b) or self.blocked_ice(new_cell, cell_a, cell_b):
-                return True
-            else:
-                return False
+            return self.blocked_speed(new_cell, cell_a, cell_b)
         elif self.blocked_metric == 'traveltime':
-            if self.blocked_tt(new_cell, cell_a, cell_b) or self.blocked_ice(new_cell, cell_a, cell_b):
-                return True
-            else:
-                return False
+            return self.blocked_tt(new_cell, cell_a, cell_b)
         else:
             return self.blocked_ice(new_cell, cell_a, cell_b)
 
@@ -960,12 +954,10 @@ class Smoothing:
         speed_diff_1 = (new_speed_start - old_speed_start)/old_speed_start
         speed_diff_2 = (new_speed_end - old_speed_end)/old_speed_end
 
-        if speed_diff_1 < 0:
-            if abs(speed_diff_1) > 0.2:
-                return True
-        elif speed_diff_2 < 0:
-            if abs(speed_diff_2) > 0.2:
-                return True
+        if speed_diff_1 < -self.blocking_percentage/100.:
+            return True
+        elif speed_diff_2 < -self.blocking_percentage/100.:
+            return True
         else:
             return False
 
@@ -991,7 +983,7 @@ class Smoothing:
 
         tt_diff = ((new_tt_start + new_tt_end) - (old_tt_start + old_tt_end))/(old_tt_start + old_tt_end)
 
-        if tt_diff > 0.1:
+        if tt_diff > self.blocking_percentage/100.:
             return True
         else:
             return False
@@ -1015,8 +1007,8 @@ class Smoothing:
 
         percentage_diff1  = (max_new-start)*100
         percentage_diff2  = (max_new-end)*100
-        if ((percentage_diff1 <= self.blocked_sic*start) or (percentage_diff2 <= self.blocked_sic*end)
-                or max_new <= self.blocked_sic):
+        if ((percentage_diff1 <= self.blocking_percentage * start) or (percentage_diff2 <= self.blocking_percentage * end)
+                or max_new <= self.blocking_percentage):
             return False
         else:
             return True

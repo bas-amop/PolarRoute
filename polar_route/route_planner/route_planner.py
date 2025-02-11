@@ -725,14 +725,9 @@ class RoutePlanner:
             initialised_dijkstra_graph = self.initialise_dijkstra_graph(cellboxes, neighbour_graph, route)
             adjacent_pairs, source_wp, end_wp = initialise_dijkstra_route(initialised_dijkstra_graph, route_json)
 
-            sf = Smoothing(initialised_dijkstra_graph,
-                           adjacent_pairs,
-                           source_wp, end_wp,
-                           blocked_metric=blocked_metric,
-                           max_iterations=max_iterations,
-                           blocked_sic = blocked_sic,
-                           merge_separation=merge_separation,
-                           converged_sep=converged_sep)
+            sf = Smoothing(initialised_dijkstra_graph, adjacent_pairs, source_wp, end_wp, blocked_metric=blocked_metric,
+                           max_iterations=max_iterations, blocking_percentage=blocked_sic,
+                           merge_separation=merge_separation, converged_sep=converged_sep)
 
             sf.forward()
 
