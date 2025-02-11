@@ -465,9 +465,6 @@ class Smoothing:
         cell_s_v = start['Vector_y']
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
-        # logging.info(f"Case: {case}")
-        # logging.info(f"Start cell speeds:{dict(zip(self.direction, start['speed']))}")
-        # logging.info(f"End cell speeds:{dict(zip(self.direction, end['speed']))}")
         speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
         speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
@@ -638,9 +635,6 @@ class Smoothing:
         cell_s_v = start['Vector_y']
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
-        # logging.info(f"Case: {case}")
-        # logging.info(f"Start cell speeds:{dict(zip(self.direction, start['speed']))}")
-        # logging.info(f"End cell speeds:{dict(zip(self.direction, end['speed']))}")
         speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
         speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
@@ -957,8 +951,6 @@ class Smoothing:
         """
         new_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
         old_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
-        # logging.info(new_case)
-        # logging.info(old_case)
 
         new_speed_start = cell_a['speed'][self.direction.index(new_case)]
         new_speed_end = new_cell['speed'][self.direction.index(new_case)]
@@ -967,9 +959,6 @@ class Smoothing:
 
         speed_diff_1 = (new_speed_start - old_speed_start)/old_speed_start
         speed_diff_2 = (new_speed_end - old_speed_end)/old_speed_end
-
-        # logging.info(speed_diff_1)
-        # logging.info(speed_diff_2)
 
         if speed_diff_1 < 0:
             if abs(speed_diff_1) > 0.2:
@@ -992,11 +981,8 @@ class Smoothing:
             Return:
                 True if the cell cannot be entered, False if the cell can
         """
-        # logging.info(new_cell)
         new_tts = cell_a['neighbourTravelLegs'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
         old_tts = cell_a['neighbourTravelLegs'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
-        # logging.info(new_tts)
-        # logging.info(old_tts)
 
         new_tt_start = new_tts[0]
         new_tt_end = new_tts[1]
@@ -1004,8 +990,6 @@ class Smoothing:
         old_tt_end = old_tts[1]
 
         tt_diff = ((new_tt_start + new_tt_end) - (old_tt_start + old_tt_end))/(old_tt_start + old_tt_end)
-
-        logging.info(tt_diff)
 
         if tt_diff > 0.1:
             return True
@@ -1362,7 +1346,6 @@ class Smoothing:
         self.previous_us_info = []
         self.previous_diagonal_info = []
         while not converged:
-            logging.info(f"jj: {self.jj}")
             # Early stopping criterion
             if self.jj == self.max_iterations:
                 break
@@ -1372,13 +1355,10 @@ class Smoothing:
             midpoint   = None 
             lastpoint  = None
             converged  = True
-            # logging.info(f"Initial aps: {[int(a.case) for a in self.aps]}")
 
             ii = 0
             self.jj += 1
-            # logging.info(f"Path length: {path_length}")
             while ii < path_length:
-                # logging.info(f"ii: {ii}")
                 ap       = self.aps[ii]
                 midpoint = ap.crossing
 
@@ -1424,8 +1404,6 @@ class Smoothing:
                 if self.diagonal_case(ap.case):
                     add_indices, add_cases = self.diagonal_select_side(ap.start, ap.end, ap.case, firstpoint, midpoint,
                                                                        lastpoint)
-                    # logging.info(f"Add cases: {add_cases}")
-                    # logging.info(f"Add indices length: {len(add_indices)}")
                     if add_indices is None:
                         ii += 1
                         firstpoint = midpoint
@@ -1433,11 +1411,9 @@ class Smoothing:
 
                     if len(add_indices) == 1:
                         target = add_indices[0]
-                        # logging.info(f"Target id: {target['id']}")
                         case_a = add_cases[0]
                         case_b = add_cases[1]
                         if self.blocked(target, ap.start, ap.end):
-                            # logging.info("BLOCKED!!")
                             ii += 1
                             firstpoint = midpoint
                             continue
@@ -1455,9 +1431,7 @@ class Smoothing:
                             continue
                         
                 # Updating crossing point
-                # logging.info(f"Updated case: {ap.case}")
                 midpoint_prime = self.newton_smooth(ap.start, ap.end, ap.case, firstpoint, midpoint, lastpoint)
-                # logging.info(f"New crossing point: {midpoint_prime}")
                 if type(midpoint_prime) == type(None) or np.isnan(midpoint_prime[0]) or np.isnan(midpoint_prime[1]):
                     raise RouteSmoothingError('Newton call failed to converge or recover')
 
