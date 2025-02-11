@@ -688,6 +688,9 @@ class RoutePlanner:
         merge_separation = self.config.get('smoothing_merge_separation', 1e-3)
         converged_sep = self.config.get('smoothing_converged_sep', 1e-3)
 
+        logging.debug(f"Blocking metric: {blocked_metric}")
+        logging.debug(f"Blocking threshold: {blocked_sic}")
+
         logging.info('========= Determining Smoothed Routes ===========')
         geojson = {}
         smoothed_routes = []
