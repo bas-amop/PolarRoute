@@ -69,7 +69,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         v (str): Key for currents y-velocity
 
     Returns:
-        _type_: Traveltime
+        tt (float): Calculated rhumb line travel time
     """
     if isinstance(cellbox['geometry'], str):
         cellbox_geometry = shapely.from_wkt(cellbox['geometry'])
@@ -91,20 +91,16 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         d1 = np.sqrt(x**2 + (r1*y)**2)
         D1 = x*u + r1*v*y
     # If horizontal case
-    # elif cp[0] in (cb_min_lon, cb_max_lon) or sp[0] in (cb_min_lon, cb_max_lon):
     else:
         x = (cp[0] - sp[0]) *111.386*1000.
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
-        θ = y/(2*6371*1000) + λ #cp[1]*(np.pi/180)
+        θ = y/(2*6371*1000) + λ
         C1 = s**2 - u**2 - v**2
         z = x*np.cos(θ)
         r1 = np.cos(λ) / np.cos(θ)
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
-    # else:
-    #     logging.info(f'in fn: {tt}')
-    #     raise Exception('Something went wrong')
     
     X1 = np.sqrt(D1**2 + C1*(d1**2))
     tt = (X1 - D1)/C1
