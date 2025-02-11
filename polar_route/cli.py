@@ -12,7 +12,7 @@ from polar_route import __version__ as version
 from polar_route.utils import setup_logging, timed_call, convert_decimal_days, to_chart_track_csv, extract_geojson_routes
 from polar_route.vessel_performance.vessel_performance_modeller import VesselPerformanceModeller
 from polar_route.route_planner.route_planner import RoutePlanner
-from polar_route.route_calc import route_calc
+from polar_route.route_calc import route_calc, load_route
 
 fiona.drvsupport.supported_drivers['KML'] = 'rw' # enable KML support which is disabled by default
 
@@ -337,7 +337,12 @@ def calculate_route_cli():
 
     logging.info(f"Calculating the cost of route {args.waypoints.name} from mesh {args.mesh.name}")
 
-    calc_route = route_calc(args.waypoints.name, args.mesh.name)
+    df, from_wp, to_wp = load_route(route_file = args.waypoints.name)
+    
+    with open(args.mesh.name, 'r') as f:
+        mesh = json.load(f)
+
+    calc_route = route_calc(df, from_wp, to_wp, mesh)
 
     if calc_route is not None:
         max_time = convert_decimal_days(calc_route["features"][0]["properties"]["traveltime"][-1])

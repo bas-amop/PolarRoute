@@ -4,6 +4,7 @@ import logging
 from polar_route.route_planner.crossing import traveltime_in_cell
 import shapely
 from polar_route.utils import unit_time, unit_speed, case_from_angle
+from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
 
 
 def dist_around_globe(start_point,crossing_point):
@@ -433,7 +434,7 @@ class Smoothing:
                         else:
                             y0 = (try_num - 3) * -Y
                 if iter_number > 1000:
-                    raise Exception('Newton Curve Issue - Longitude Case')
+                    raise RouteSmoothingError('Newton Curve Issue - Longitude Case')
             return y0
 
         def _F(y,x,a,Y,u1,v1,u2,v2,speed_s,speed_e,R,λ_s,φ_r):
@@ -617,7 +618,7 @@ class Smoothing:
                         else:
                             y0 = 0
                 if iter_number > 1000:
-                    raise Exception('Newton Curve Issue - Latitude Case')
+                    raise RouteSmoothingError('Newton Curve Issue - Latitude Case')
             return y0
 
         def _F(y, x, a, Y, u1, v1, u2, v2, speed_s, speed_e, R, λ, θ, ψ):
@@ -862,7 +863,7 @@ class Smoothing:
                 case_b = -case
                 return case_a, case_b
 
-        raise Exception('Path Smoothing - Failure - Adding additional cases unknown in neighbour_case')
+        raise RouteSmoothingError('Path Smoothing - Failure - Adding additional cases unknown in neighbour_case')
 
     def _neighbour_indices(self, cell_a, cell_b, case, add_case_a, add_case_b):
         """
@@ -1138,6 +1139,12 @@ class Smoothing:
                 True if this v-additional case has been seen before, or false if not
 
         """
+
+        # Prevents crashing is edge_b is empty.
+        if edge_b.start == None:
+            logging.debug('Edge_b is empty')
+            return True
+            
         edge_a_start_index = edge_a.start['id']
         edge_b_start_index = edge_b.start['id']
         edge_a_end_index   = edge_a.end['id']
@@ -1392,7 +1399,7 @@ class Smoothing:
                 # Updating crossing point
                 midpoint_prime = self.newton_smooth(ap.start, ap.end, ap.case, firstpoint, midpoint, lastpoint)
                 if type(midpoint_prime) == type(None) or np.isnan(midpoint_prime[0]) or np.isnan(midpoint_prime[1]):
-                    raise Exception('Newton call failed to converge or recover')
+                    raise RouteSmoothingError('Newton call failed to converge or recover')
 
                 # Determining if additional cases need to be added
                 add_indices, add_cases = self.nearest_neighbour(ap.start, ap.end, ap.case, midpoint_prime)
