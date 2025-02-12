@@ -193,7 +193,7 @@ class PathValues:
         self.unit_time='days'
 
 
-    def _waypoint_correction(self, path_requested_variables, source_graph, Wp, Cp):
+    def _segment_costs(self, path_requested_variables, source_graph, Wp, Cp):
         """
             Applies an in-cell correction to a path segments to determine 'path_requested_variables'
             defined by the use (e.g. total distance, total traveltime, total fuel usage)
@@ -286,7 +286,7 @@ class PathValues:
             path_points += [Cp]
 
             # Determining the value for the variable for the segment of the path and the corresponding case
-            segment_variable, segment_case = self._waypoint_correction(self.path_requested_variables, cellbox, Wp, Cp)
+            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, Wp, Cp)
 
             # Adding that value for the segment along the paths
             for var in segment_variable:
