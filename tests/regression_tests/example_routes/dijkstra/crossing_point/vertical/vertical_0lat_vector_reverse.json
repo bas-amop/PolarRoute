@@ -75,7 +75,9 @@
             "smooth_path": {
                 "max_iteration_number": 300,
                 "minimum_difference": 0.002
-            }
+            },
+            "adjust_waypoints": true,
+            "unit_shipspeed": "km/hr"
         }
     },
     "cellboxes": [
@@ -227,7 +229,7 @@
                     "type": "LineString",
                     "coordinates": [
                         [
-                            0.0,
+                            0,
                             1.25
                         ],
                         [
@@ -235,33 +237,33 @@
                             0.0
                         ],
                         [
-                            0.0,
+                            0,
                             -1.25
                         ]
                     ]
                 },
                 "properties": {
-                    "name": "Route Path - Source to Destination",
+                    "name": "Route - Source to Destination",
                     "from": "Source",
                     "to": "Destination",
                     "CellIndices": [
-                        1,
-                        0
+                        "1",
+                        "0"
                     ],
                     "traveltime": [
-                        0.21942783531364407,
-                        0.4429855108600259
+                        0.21942783531364415,
+                        0.44298551086002613
                     ],
                     "cases": [
                         4,
                         4
                     ],
                     "fuel": [
-                        5.994480944476145,
-                        12.101783712781028
+                        5.994480944476146,
+                        12.101783712781035
                     ],
-                    "total_fuel": 12.101783712781028,
-                    "total_traveltime": 0.4429855108600259
+                    "total_fuel": 12.101783712781035,
+                    "total_traveltime": 0.44298551086002613
                 }
             }
         ]

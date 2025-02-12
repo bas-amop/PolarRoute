@@ -132,7 +132,8 @@
                 "max_iteration_number": 300,
                 "minimum_difference": 0.002
             },
-            "unit_shipspeed": "km/hr"
+            "unit_shipspeed": "km/hr",
+            "adjust_waypoints": true
         }
     },
     "cellboxes": [
