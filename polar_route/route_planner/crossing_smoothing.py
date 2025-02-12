@@ -80,7 +80,8 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
 
     cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
     # If vertical case
-    if cp[1] in (cb_min_lat, cb_max_lat) and sp[1] in (cb_min_lat, cb_max_lat):
+    if (cp[1] == cb_min_lat and sp[1] == cb_max_lat) or \
+       (cp[1] == cb_max_lat and sp[1] == cb_min_lat):
         x = (cp[0] - sp[0]) *111.386*1000.
         y = (cp[1] - sp[1]) *111.321*1000.
         λ = sp[1]*(np.pi/180)
