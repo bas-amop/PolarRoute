@@ -875,12 +875,20 @@ class RoutePlanner:
             output_json (dict): the full mesh and route information in json format
 
         """
+        # Get base output of environment mesh object
         output_json = self.env_mesh.to_json()
+        # Add route config
         output_json['config']['route_info'] = self.config
+        # Add dijkstra flag
+        output_json['config']['route_info']['dijkstra'] = True
+        # Add waypoints navigated between
         output_json['waypoints'] = self.waypoints_df.to_dict()
 
+        # Add either smoothed or dijkstra routes
         if self.routes_smoothed:
             output_json['paths'] = self.routes_smoothed
+            # Change dijkstra flag to false if smoothed route calculated
+            output_json['config']['route_info']['dijkstra'] = False
         elif self.routes_dijkstra:
             output_json['paths'] = {"type": "FeatureCollection", "features": []}
             output_json['paths']['features'] = [dr.to_json() for dr in self.routes_dijkstra]
