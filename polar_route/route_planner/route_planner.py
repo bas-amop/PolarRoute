@@ -880,7 +880,7 @@ class RoutePlanner:
         # Add route config
         output_json['config']['route_info'] = self.config
         # Add dijkstra flag
-        output_json['config']['route_info']['dijkstra'] = True
+        output_json['config']['route_info']['dijkstra_route'] = True
         # Add waypoints navigated between
         output_json['waypoints'] = self.waypoints_df.to_dict()
 
