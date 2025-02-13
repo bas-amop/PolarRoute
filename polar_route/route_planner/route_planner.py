@@ -888,7 +888,7 @@ class RoutePlanner:
         if self.routes_smoothed:
             output_json['paths'] = self.routes_smoothed
             # Change dijkstra flag to false if smoothed route calculated
-            output_json['config']['route_info']['dijkstra'] = False
+            output_json['config']['route_info']['dijkstra_route'] = False
         elif self.routes_dijkstra:
             output_json['paths'] = {"type": "FeatureCollection", "features": []}
             output_json['paths']['features'] = [dr.to_json() for dr in self.routes_dijkstra]
