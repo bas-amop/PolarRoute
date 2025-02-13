@@ -180,7 +180,7 @@ def optimise_routes_cli():
         info_dijkstra = mesh_json
         info_dijkstra['paths'] = {"type": "FeatureCollection", "features": []}
         info_dijkstra['paths']['features'] = [dr.to_json() for dr in dijkstra_routes]
-
+        info_dijkstra['config']['route_info']['dijkstra_route'] = True
         # Form a unique name for the dijkstra output
         dijkstra_output_file_strs = output_file_strs
         dijkstra_output_file_strs[-2] += '_dijkstra'
@@ -203,6 +203,8 @@ def optimise_routes_cli():
 
     info = mesh_json
     info['paths'] = smoothed_routes
+    info['config']['route_info']['dijkstra_route'] = False
+
 
     logging.info(f"\tOutputting smoothed route(s) to {output_file}")
     with open(output_file, 'w+') as fp:
