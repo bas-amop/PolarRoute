@@ -48,12 +48,10 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
     try:
         # If dijkstra path, then calc traveltime based on dijkstra path lengths
         if dijkstra:
-            logging.info('Calculating traveltime and distance using dijkstra metric')
             traveltime = traveltime_in_cell(x, y, su, sv, ssp)
             dist = rhumb_line_distance(cp, wp)
             # Otherwise use smoothed length from real-world geometry
         else:
-            logging.info('Calculating traveltime and distance using smoothed metric')
             traveltime = rhumb_traveltime_in_cell(cellbox.to_dict(), cp, wp, ssp, su, sv)
             dist = rhumb_line_distance(cp, wp)
     except:
@@ -154,7 +152,7 @@ def load_route(route_file):
     logging.debug(f"Route has {len(df)} waypoints")
     df['id'] = 1
     df['order'] = np.arange(len(df))
-
+    logging.info(df)
     return df, from_wp, to_wp
 
 
@@ -295,7 +293,7 @@ def route_calc(df, from_wp, to_wp, mesh):
             user_path (dict): User defined route in geojson format with calculated cost information
     """
     # Flag indicating whether should compute route length using dijkstra or smoothed method
-    dijkstra_route = mesh['config']['route_info']['dijkstra_route']
+    dijkstra_route = False
 
     mesh_df = pd.DataFrame(mesh['cellboxes'])
     mesh_df['geometry'] = mesh_df['geometry'].apply(wkt.loads)
