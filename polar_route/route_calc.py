@@ -121,6 +121,7 @@ def load_route(route_file):
         df = pd.read_csv(route_file)
         to_wp = df['Name'].iloc[-1]
         from_wp = df['Name'].iloc[0]
+        dijkstra_route = False
     # Loading route from geojson file
     elif route_file[-4:] == "json":
         with open(route_file, "r") as f:
@@ -133,6 +134,7 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
+        dijkstra_route = False
     elif route_file[-3:] == "gpx":
         route_json = gpx_route_import(route_file)
         route_coords = route_json['features'][0]['geometry']['coordinates']
@@ -143,6 +145,7 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
+        dijkstra_route = False
     else:
         logging.warning("Invalid route input! Please supply either a csv, gpx or geojson file with the route waypoints.")
         return None
@@ -152,6 +155,7 @@ def load_route(route_file):
     logging.debug(f"Route has {len(df)} waypoints")
     df['id'] = 1
     df['order'] = np.arange(len(df))
+    df['dijkstra_route'] = dijkstra_route
     logging.info(df)
     return df, from_wp, to_wp
 
@@ -293,7 +297,7 @@ def route_calc(df, from_wp, to_wp, mesh):
             user_path (dict): User defined route in geojson format with calculated cost information
     """
     # Flag indicating whether should compute route length using dijkstra or smoothed method
-    dijkstra_route = False
+    dijkstra_route = df['dijkstra_route'].iloc[0]
 
     mesh_df = pd.DataFrame(mesh['cellboxes'])
     mesh_df['geometry'] = mesh_df['geometry'].apply(wkt.loads)
@@ -327,6 +331,12 @@ def route_calc(df, from_wp, to_wp, mesh):
     cases = [1]
 
     # Calculate cost of each segment in the path
+    # Putting logging here so it only triggers once per route 
+    if dijkstra_route:
+        logging.info('Calculating traveltime and distance using dijkstra metric')
+    else:
+        logging.info('Calculating traveltime and distance using smoothed metric')
+            
     for idx in range(len(user_track)-1):
         start_point = np.array((user_track['Point'].iloc[idx].xy[0][0], user_track['Point'].iloc[idx].xy[1][0]))
         end_point = np.array((user_track['Point'].iloc[idx+1].xy[0][0], user_track['Point'].iloc[idx+1].xy[1][0]))
@@ -342,7 +352,6 @@ def route_calc(df, from_wp, to_wp, mesh):
             while cell_box['inaccessible']:
                 i += 1
                 cell_box = mesh_gdf.iloc[user_track['CellID'].iloc[idx-i]]
-
         traveltime_s, distance_m = traveltime_distance(cell_box, start_point, end_point, speed='speed', vector_x='uC',
                                                    vector_y='vC', case=case, dijkstra=dijkstra_route)
         traveltime = ((traveltime_s / 60) / 60) / 24
