@@ -941,7 +941,7 @@ class Smoothing:
         else:
             return self.blocked_ice(new_cell, cell_a, cell_b)
 
-    def blocked_objective(self, new_cell, cell_a, cell_b, blocked_variable='speed'):
+    def blocked_objective(self, new_cell, cell_a, cell_b, blocked_variable):
         """
             Function that determines if the relevant objective variable of the new cell being introduced is worse
             than in the original two cells.
@@ -958,20 +958,29 @@ class Smoothing:
         new_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
         old_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
 
-        new_speed_start = cell_a[blocked_variable][self.direction.index(new_case)]
-        new_speed_end = new_cell[blocked_variable][self.direction.index(new_case)]
-        old_speed_start = cell_a[blocked_variable][self.direction.index(old_case)]
-        old_speed_end = cell_b[blocked_variable][self.direction.index(old_case)]
+        new_objective_start = cell_a[blocked_variable][self.direction.index(new_case)]
+        new_objective_end = new_cell[blocked_variable][self.direction.index(new_case)]
+        old_objective_start = cell_a[blocked_variable][self.direction.index(old_case)]
+        old_objective_end = cell_b[blocked_variable][self.direction.index(old_case)]
 
-        speed_diff_1 = (new_speed_start - old_speed_start)/old_speed_start
-        speed_diff_2 = (new_speed_end - old_speed_end)/old_speed_end
+        objective_diff_1 = (new_objective_start - old_objective_start) / old_objective_start
+        objective_diff_2 = (new_objective_end - old_objective_end) / old_objective_end
 
-        if speed_diff_1 < -self.blocking_percentage/100.:
-            return True
-        elif speed_diff_2 < -self.blocking_percentage/100.:
-            return True
+        # Handle speed and fuel/battery separately as we want to avoid lower speeds but higher consumption rates
+        if blocked_variable == 'speed':
+            if objective_diff_1 < -self.blocking_percentage/100.:
+                return True
+            elif objective_diff_2 < -self.blocking_percentage/100.:
+                return True
+            else:
+                return False
         else:
-            return False
+            if objective_diff_1 > self.blocking_percentage/100.:
+                return True
+            elif objective_diff_2 > self.blocking_percentage/100.:
+                return True
+            else:
+                return False
 
     def blocked_tt(self, new_cell, cell_a, cell_b):
         """
