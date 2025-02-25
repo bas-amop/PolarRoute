@@ -12,7 +12,7 @@ from .route_test_functions import extract_route_info
 from .route_test_functions import test_route_coordinates
 from .route_test_functions import test_waypoint_names
 from .route_test_functions import test_time
-from .route_test_functions import test_fuel
+from .route_test_functions import test_fuel_battery
 from .route_test_functions import test_cell_indices
 from .route_test_functions import test_cases
 
