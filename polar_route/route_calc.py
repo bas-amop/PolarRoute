@@ -142,7 +142,7 @@ def load_route(route_file):
             elif route_json['features'][0]['properties']['route_type'] == 'smoothed':
                 route_type = "smoothed"
             else:
-                raise NotImplementedError
+                raise ValueError("'route_type' key must be 'dijkstra' or 'smoothed'. Other route types not implemented yet.")
         else:
             route_type = "smoothed"
 
