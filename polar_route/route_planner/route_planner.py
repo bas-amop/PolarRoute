@@ -467,7 +467,7 @@ class RoutePlanner:
                     route.waypoint_correction(self.cellboxes_lookup[route.segments[-1].get_end_wp().get_cellbox_indx()],
                                               e_wp, route.segments[-1].get_start_wp(), -1)
                 routes.append(route)
-                logging.debug(route.to_json())
+                logging.debug(route.to_json(route_type='dijkstra'))
                 
         return routes
 
@@ -697,7 +697,7 @@ class RoutePlanner:
         cellboxes = mesh_json['cellboxes']
 
         for route in routes:
-            route_json = route.to_json()
+            route_json = route.to_json(route_type='dijkstra')
 
             # Handle straight line route within same cell
             if len(route_json['properties']['CellIndices']) == 1:
@@ -710,6 +710,8 @@ class RoutePlanner:
                 route_case = case_from_angle(start_location, end_location)
                 route_json['properties']['distance'] = [0., rhumb_line_distance(start_location, end_location)]
                 route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][route_case]]
+                route_json['properties']['route_type'] = "smoothed"
+
                 for var in self.config['path_variables']:
                     route_json['properties'][var].insert(0, 0.)
                 del route_json['properties']['cases']
@@ -755,6 +757,7 @@ class RoutePlanner:
             smoothed_route['properties'] = {}
             smoothed_route['properties']['from'] = route_json['properties']['from']
             smoothed_route['properties']['to'] = route_json['properties']['to']
+            smoothed_route['properties']['route_type'] = "smoothed"
             smoothed_route['properties']['traveltime'] = list(travel_time_legs)
             smoothed_route['properties']['total_traveltime'] = smoothed_route['properties']['traveltime'][-1]
             smoothed_route['properties']['distance'] = list(distance_legs)
@@ -875,15 +878,20 @@ class RoutePlanner:
             output_json (dict): the full mesh and route information in json format
 
         """
+        # Get base output of environment mesh object
         output_json = self.env_mesh.to_json()
+        # Add route config
         output_json['config']['route_info'] = self.config
+        # Add waypoints navigated between
         output_json['waypoints'] = self.waypoints_df.to_dict()
 
+        # Add either smoothed or dijkstra routes
         if self.routes_smoothed:
             output_json['paths'] = self.routes_smoothed
+            # Change dijkstra flag to false if smoothed route calculated
         elif self.routes_dijkstra:
             output_json['paths'] = {"type": "FeatureCollection", "features": []}
-            output_json['paths']['features'] = [dr.to_json() for dr in self.routes_dijkstra]
+            output_json['paths']['features'] = [dr.to_json(route_type='dijkstra') for dr in self.routes_dijkstra]
         else:
             output_json['paths'] = []
 

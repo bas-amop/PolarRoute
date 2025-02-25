@@ -2,6 +2,7 @@ import numpy as np
 import pyproj
 import logging
 from polar_route.route_planner.crossing import traveltime_in_cell
+import shapely
 from polar_route.utils import unit_time, unit_speed, case_from_angle
 from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
 
@@ -55,6 +56,56 @@ def rhumb_line_distance(start_waypoint, end_waypoint):
 
     return distance
 
+def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
+    """
+    Calculates traveltime in a cellbox based off of rhumbline distance
+
+    Args:
+        cellbox (dict): Cellbox containing line segment being analysed
+        cp (ndarray): End waypoint coordinates   (long,lat)
+        sp (ndarray): Start waypoint coordinates (long,lat)
+        s (str): Key for ship speed
+        u (str): Key for currents x-velocity
+        v (str): Key for currents y-velocity
+
+    Returns:
+        tt (float): Calculated rhumb line travel time
+    """
+    if isinstance(cellbox['geometry'], str):
+        cellbox_geometry = shapely.from_wkt(cellbox['geometry'])
+    elif isinstance(cellbox['geometry'], shapely.geometry.polygon.Polygon):
+        cellbox_geometry = cellbox['geometry']
+    else:
+        raise TypeError(f"Unknown input type {type(cellbox['geometry'])}")
+
+    cb_min_lon, cb_min_lat, cb_max_lon, cb_max_lat = cellbox_geometry.bounds
+    # If vertical case
+    if (cp[1] == cb_min_lat and sp[1] == cb_max_lat) or \
+       (cp[1] == cb_max_lat and sp[1] == cb_min_lat):
+        x = (cp[0] - sp[0]) *111.386*1000.
+        y = (cp[1] - sp[1]) *111.321*1000.
+        λ = sp[1]*(np.pi/180)
+        θ = cp[1]*(np.pi/180)
+        C1 = s**2 - u**2 - v**2
+        z = x*np.cos(θ)
+        r1 = np.cos(λ) / np.cos(θ)
+        d1 = np.sqrt(x**2 + (r1*y)**2)
+        D1 = x*u + r1*v*y
+    # If horizontal case
+    else:
+        x = (cp[0] - sp[0]) *111.386*1000.
+        y = (cp[1] - sp[1]) *111.321*1000.
+        λ = sp[1]*(np.pi/180)
+        θ = y/(2*6371*1000) + λ
+        C1 = s**2 - u**2 - v**2
+        z = x*np.cos(θ)
+        r1 = np.cos(λ) / np.cos(θ)
+        D1 = z*u + y*v
+        d1 = np.sqrt(z**2 + y**2)
+    
+    X1 = np.sqrt(D1**2 + C1*(d1**2))
+    tt = (X1 - D1)/C1
+    return tt
 
 class FindEdge:
     """
@@ -143,7 +194,7 @@ class PathValues:
         self.unit_time='days'
 
 
-    def _waypoint_correction(self, path_requested_variables, source_graph, Wp, Cp):
+    def _segment_costs(self, path_requested_variables, source_graph, Wp, Cp):
         """
             Applies an in-cell correction to a path segments to determine 'path_requested_variables'
             defined by the use (e.g. total distance, total traveltime, total fuel usage)
@@ -168,9 +219,10 @@ class PathValues:
         Su  = source_graph['Vector_x']
         Sv  = source_graph['Vector_y']
         Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = traveltime_in_cell(x, y, Su, Sv, Ssp)
+        traveltime = rhumb_traveltime_in_cell(source_graph, Cp, Wp, Ssp, Su, Sv)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(Wp, Cp)
+
 
         # Given the traveltime and distance between the two waypoints
         # determine the path related variables (e.g. fuel usage, traveltime)
@@ -235,7 +287,7 @@ class PathValues:
             path_points += [Cp]
 
             # Determining the value for the variable for the segment of the path and the corresponding case
-            segment_variable, segment_case = self._waypoint_correction(self.path_requested_variables, cellbox, Wp, Cp)
+            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, Wp, Cp)
 
             # Adding that value for the segment along the paths
             for var in segment_variable:
