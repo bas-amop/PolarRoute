@@ -98,7 +98,13 @@ TEST_ROUTES = [
     './example_routes/dijkstra/crossing_point/vertical/vertical_0lat_vector_reverse.json',
     './example_routes/dijkstra/crossing_point/diagonal/diagonal_0lat_scalar_reverse.json',
     './example_routes/dijkstra/crossing_point/horizontal/horizontal_0lat_wind_same_dir.json',
-    './example_routes/dijkstra/crossing_point/vertical/vertical_0lat_wind_same_dir.json'
+    './example_routes/dijkstra/crossing_point/vertical/vertical_0lat_wind_same_dir.json',
+    './example_routes/dijkstra/fuel/twin_otter_f_route_dijkstra.json',
+    './example_routes/dijkstra/battery/slocum_b_route_dijkstra.json',
+    './example_routes/dijkstra/battery/alr_b_route_dijkstra.json',
+    './example_routes/dijkstra/time/slocum_tt_route_dijkstra.json',
+    './example_routes/dijkstra/time/alr_tt_route_dijkstra.json',
+    './example_routes/dijkstra/time/twin_otter_tt_route_dijkstra.json'
 ]
 
 def setup_module():
