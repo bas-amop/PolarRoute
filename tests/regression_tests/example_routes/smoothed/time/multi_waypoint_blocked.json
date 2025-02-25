@@ -12253,6 +12253,7 @@
                 "properties": {
                     "from": "Box 1",
                     "to": "Box 2",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.08716494273043451,
@@ -12343,6 +12344,7 @@
                 "properties": {
                     "from": "Box 1",
                     "to": "Box 4",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.10214684808624495,
@@ -12425,6 +12427,7 @@
                 "properties": {
                     "from": "Box 2",
                     "to": "Box 4",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.08751650943396228,

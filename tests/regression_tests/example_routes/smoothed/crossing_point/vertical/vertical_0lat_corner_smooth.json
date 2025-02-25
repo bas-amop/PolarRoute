@@ -241,6 +241,7 @@
                 "properties": {
                     "from": "Source",
                     "to": "Destination",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         1.638968347868241,

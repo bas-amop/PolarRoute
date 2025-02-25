@@ -113163,6 +113163,7 @@
                 "properties": {
                     "from": "A",
                     "to": "B",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.18739712328654298,

@@ -242,6 +242,7 @@
                     "name": "Route - Source to Destination",
                     "from": "Source",
                     "to": "Destination",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "1",
                         "0"

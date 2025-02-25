@@ -12270,6 +12270,7 @@
                     "name": "Route - Box 1 to Box 2",
                     "from": "Box 1",
                     "to": "Box 2",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "152",
                         "153",
@@ -12377,6 +12378,7 @@
                     "name": "Route - Box 1 to Box 4",
                     "from": "Box 1",
                     "to": "Box 4",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "152",
                         "163",
@@ -12468,6 +12470,7 @@
                     "name": "Route - Box 2 to Box 4",
                     "from": "Box 2",
                     "to": "Box 4",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "157",
                         "167",

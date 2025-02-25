@@ -22676,6 +22676,7 @@
                 "properties": {
                     "from": "A",
                     "to": "B",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.3207156253538551,

@@ -22677,6 +22677,7 @@
                     "name": "Route - A to B",
                     "from": "A",
                     "to": "B",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "0",
                         "21",
