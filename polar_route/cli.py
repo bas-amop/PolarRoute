@@ -179,8 +179,7 @@ def optimise_routes_cli():
     if args.dijkstra:
         info_dijkstra = mesh_json
         info_dijkstra['paths'] = {"type": "FeatureCollection", "features": []}
-        info_dijkstra['paths']['features'] = [dr.to_json() for dr in dijkstra_routes]
-
+        info_dijkstra['paths']['features'] = [dr.to_json(route_type='dijkstra') for dr in dijkstra_routes]
         # Form a unique name for the dijkstra output
         dijkstra_output_file_strs = output_file_strs
         dijkstra_output_file_strs[-2] += '_dijkstra'
@@ -203,6 +202,7 @@ def optimise_routes_cli():
 
     info = mesh_json
     info['paths'] = smoothed_routes
+
 
     logging.info(f"\tOutputting smoothed route(s) to {output_file}")
     with open(output_file, 'w+') as fp:
@@ -337,12 +337,12 @@ def calculate_route_cli():
 
     logging.info(f"Calculating the cost of route {args.waypoints.name} from mesh {args.mesh.name}")
 
-    df, from_wp, to_wp = load_route(route_file = args.waypoints.name)
+    df, from_wp, to_wp, route_type = load_route(route_file = args.waypoints.name)
     
     with open(args.mesh.name, 'r') as f:
         mesh = json.load(f)
 
-    calc_route = route_calc(df, from_wp, to_wp, mesh)
+    calc_route = route_calc(df, from_wp, to_wp, mesh, route_type)
 
     if calc_route is not None:
         max_time = convert_decimal_days(calc_route["features"][0]["properties"]["traveltime"][-1])
