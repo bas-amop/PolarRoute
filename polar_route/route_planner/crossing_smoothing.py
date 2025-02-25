@@ -265,7 +265,8 @@ class PathValues:
 #======================================================
 class Smoothing:
     def __init__(self, dijkstra_graph, adjacent_pairs, start_waypoint, end_waypoint, blocked_metric='SIC',
-                 max_iterations=2000, blocking_percentage=10.0, merge_separation=1e-3, converged_sep=1e-3):
+                 max_iterations=2000, blocking_percentage=10.0, merge_separation=1e-3, converged_sep=1e-3,
+                 objective_function='traveltime'):
         """
             Class construct that has all the operations required for path smoothing. Including: Relationship of adjacent pairs,
             edge finding new edges to add and returns a list of the adjacent pairs for the constructed path
@@ -288,6 +289,7 @@ class Smoothing:
         self.aps = adjacent_pairs
         self.start_waypoint = start_waypoint
         self.end_waypoint = end_waypoint
+        self.objective_function = objective_function
         self.blocked_metric = blocked_metric
         self.max_iterations = max_iterations
         self.blocking_percentage = blocking_percentage
@@ -913,7 +915,8 @@ class Smoothing:
 
     def blocked(self, new_cell, cell_a, cell_b):
         """
-            Function that determines if the new cell being introduced is worse off than the original two cells.
+            Function that determines if the new cell being introduced is worse off than the original two cells
+            according to various metrics.
 
             Args:
                 new_cell (dict) - New cell to add environmental parameters as dict
@@ -923,22 +926,31 @@ class Smoothing:
             Return:
                 True if the cell cannot be entered, False if the cell can
         """
-
-        if self.blocked_metric == 'speed':
-            return self.blocked_speed(new_cell, cell_a, cell_b)
+        # If blocking based on objective function
+        if self.blocked_metric == 'objective':
+            if self.objective_function == 'traveltime':
+                blocked_var = 'speed'
+            else:
+                blocked_var = self.objective_function
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable=blocked_var)
+        # Otherwise block based on metric specified
+        elif self.blocked_metric == 'speed':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='speed')
         elif self.blocked_metric == 'traveltime':
             return self.blocked_tt(new_cell, cell_a, cell_b)
         else:
             return self.blocked_ice(new_cell, cell_a, cell_b)
 
-    def blocked_speed(self, new_cell, cell_a, cell_b):
+    def blocked_objective(self, new_cell, cell_a, cell_b, blocked_variable='speed'):
         """
-            Function that determines if the speed of the new cell being introduced is worse than the original two cells.
+            Function that determines if the relevant objective variable of the new cell being introduced is worse
+            than in the original two cells.
 
             Args:
-                new_cell (dict) - New cell to add environmental parameters as dict
-                cell_a (dict)   - Start cell to add environmental parameters as dict
-                cell_b (dict)   - End cell to add environmental parameters as dict
+                new_cell (dict) - New cell to add, environmental parameters as dict
+                cell_a (dict)   - Start cell to add, environmental parameters as dict
+                cell_b (dict)   - End cell to add, environmental parameters as dict
+                blocked_variable (str) - the key for the relevant objective variable
 
             Return:
                 True if the cell cannot be entered, False if the cell can
@@ -946,10 +958,10 @@ class Smoothing:
         new_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
         old_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
 
-        new_speed_start = cell_a['speed'][self.direction.index(new_case)]
-        new_speed_end = new_cell['speed'][self.direction.index(new_case)]
-        old_speed_start = cell_a['speed'][self.direction.index(old_case)]
-        old_speed_end = cell_b['speed'][self.direction.index(old_case)]
+        new_speed_start = cell_a[blocked_variable][self.direction.index(new_case)]
+        new_speed_end = new_cell[blocked_variable][self.direction.index(new_case)]
+        old_speed_start = cell_a[blocked_variable][self.direction.index(old_case)]
+        old_speed_end = cell_b[blocked_variable][self.direction.index(old_case)]
 
         speed_diff_1 = (new_speed_start - old_speed_start)/old_speed_start
         speed_diff_2 = (new_speed_end - old_speed_end)/old_speed_end

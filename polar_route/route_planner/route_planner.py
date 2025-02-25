@@ -668,7 +668,7 @@ class RoutePlanner:
         return routes
 
     @timed_call
-    def compute_smoothed_routes(self, blocked_metric='SIC'):
+    def compute_smoothed_routes(self):
         """
             Uses the previously constructed Dijkstra routes and smooths them to remove mesh features
             `paths` will be updated in the output JSON
@@ -687,6 +687,7 @@ class RoutePlanner:
         blocked_metric = self.config.get('smoothing_blocked_metric', 'SIC')
         merge_separation = self.config.get('smoothing_merge_separation', 1e-3)
         converged_sep = self.config.get('smoothing_converged_sep', 1e-3)
+        objective_function = self.config.get('objective_function', 'traveltime')
 
         logging.debug(f"Blocking metric: {blocked_metric}")
         logging.debug(f"Blocking threshold: {blocked_sic}")
@@ -730,7 +731,8 @@ class RoutePlanner:
 
             sf = Smoothing(initialised_dijkstra_graph, adjacent_pairs, source_wp, end_wp, blocked_metric=blocked_metric,
                            max_iterations=max_iterations, blocking_percentage=blocked_sic,
-                           merge_separation=merge_separation, converged_sep=converged_sep)
+                           merge_separation=merge_separation, converged_sep=converged_sep,
+                           objective_function=objective_function)
 
             sf.forward()
 
