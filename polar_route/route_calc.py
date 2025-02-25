@@ -111,8 +111,9 @@ def load_route(route_file):
 
         Returns:
             df (Dataframe): Dataframe with route info
-            from_wp (str): Name of start waypoint
-            to_wp (str) Name of end waypoint
+            from_wp (str):  Name of start waypoint
+            to_wp (str):    Name of end waypoint
+            route_type(str):Type of route, either 'smoothed' or 'dijkstra' 
 
     """
     logging.info(f"Loading route from: {route_file}")
@@ -121,7 +122,7 @@ def load_route(route_file):
         df = pd.read_csv(route_file)
         to_wp = df['Name'].iloc[-1]
         from_wp = df['Name'].iloc[0]
-        dijkstra_route = False
+        route_type = "smoothed"
     # Loading route from geojson file
     elif route_file[-4:] == "json":
         with open(route_file, "r") as f:
@@ -137,13 +138,13 @@ def load_route(route_file):
         # Read in type of route if available
         if 'route_type' in route_json['features'][0]['properties'].keys():
             if route_json['features'][0]['properties']['route_type'] == 'dijkstra':
-                dijkstra_route = True
+                route_type = "dijkstra"
             elif route_json['features'][0]['properties']['route_type'] == 'smoothed':
-                dijkstra_route = False
+                route_type = "smoothed"
             else:
                 raise NotImplementedError
         else:
-            dijkstra_route = False
+            route_type = "smoothed"
 
     elif route_file[-3:] == "gpx":
         route_json = gpx_route_import(route_file)
@@ -155,7 +156,7 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
-        dijkstra_route = False
+        route_type = "smoothed"
     else:
         logging.warning("Invalid route input! Please supply either a csv, gpx or geojson file with the route waypoints.")
         return None
@@ -165,9 +166,8 @@ def load_route(route_file):
     logging.debug(f"Route has {len(df)} waypoints")
     df['id'] = 1
     df['order'] = np.arange(len(df))
-    df['dijkstra_route'] = dijkstra_route
     logging.info(df)
-    return df, from_wp, to_wp
+    return df, from_wp, to_wp, route_type
 
 
 def load_mesh(mesh_file):
@@ -292,7 +292,7 @@ def order_track(df, track_points):
     user_track = pd.DataFrame({'Point': path_point, 'CellID': cell_ids})
     return user_track
 
-def route_calc(df, from_wp, to_wp, mesh):
+def route_calc(df, from_wp, to_wp, mesh, route_type):
     """
         Function to calculate the fuel/time cost of a user defined route in a given mesh
 
@@ -301,13 +301,13 @@ def route_calc(df, from_wp, to_wp, mesh):
             from_wp (str): Name of start waypoint
             to_wp (str): Name of end waypoint
             mesh (json): A Mesh with encoded vehicle information
-            
+            route_type(str): Type of route being calculated, either 'dijkstra' or 'smoothed'
 
         Returns:
             user_path (dict): User defined route in geojson format with calculated cost information
     """
     # Flag indicating whether should compute route length using dijkstra or smoothed method
-    dijkstra_route = df['dijkstra_route'].iloc[0]
+    dijkstra_route = True if route_type == "dijkstra" else False
 
     mesh_df = pd.DataFrame(mesh['cellboxes'])
     mesh_df['geometry'] = mesh_df['geometry'].apply(wkt.loads)
@@ -391,5 +391,8 @@ def route_calc(df, from_wp, to_wp, mesh):
     path_geojson = gpd.GeoDataFrame(path_geojson, crs='EPSG:4326', geometry='geometry')
 
     user_path = json.loads(path_geojson.to_json())
+
+    # This function assumes one route input, so can use 0th index
+    user_path["features"][0]["properties"]["route_type"] = route_type
 
     return user_path

@@ -337,12 +337,12 @@ def calculate_route_cli():
 
     logging.info(f"Calculating the cost of route {args.waypoints.name} from mesh {args.mesh.name}")
 
-    df, from_wp, to_wp = load_route(route_file = args.waypoints.name)
+    df, from_wp, to_wp, route_type = load_route(route_file = args.waypoints.name)
     
     with open(args.mesh.name, 'r') as f:
         mesh = json.load(f)
 
-    calc_route = route_calc(df, from_wp, to_wp, mesh)
+    calc_route = route_calc(df, from_wp, to_wp, mesh, route_type)
 
     if calc_route is not None:
         max_time = convert_decimal_days(calc_route["features"][0]["properties"]["traveltime"][-1])
