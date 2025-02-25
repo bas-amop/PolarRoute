@@ -467,7 +467,7 @@ class RoutePlanner:
                     route.waypoint_correction(self.cellboxes_lookup[route.segments[-1].get_end_wp().get_cellbox_indx()],
                                               e_wp, route.segments[-1].get_start_wp(), -1)
                 routes.append(route)
-                logging.debug(route.to_json())
+                logging.debug(route.to_json(route_type='dijkstra'))
                 
         return routes
 
@@ -697,7 +697,7 @@ class RoutePlanner:
         cellboxes = mesh_json['cellboxes']
 
         for route in routes:
-            route_json = route.to_json()
+            route_json = route.to_json(route_type='dijkstra')
 
             # Handle straight line route within same cell
             if len(route_json['properties']['CellIndices']) == 1:
@@ -755,6 +755,7 @@ class RoutePlanner:
             smoothed_route['properties'] = {}
             smoothed_route['properties']['from'] = route_json['properties']['from']
             smoothed_route['properties']['to'] = route_json['properties']['to']
+            smoothed_route['properties']['route_type'] = "smoothed"
             smoothed_route['properties']['traveltime'] = list(travel_time_legs)
             smoothed_route['properties']['total_traveltime'] = smoothed_route['properties']['traveltime'][-1]
             smoothed_route['properties']['distance'] = list(distance_legs)
@@ -888,7 +889,7 @@ class RoutePlanner:
             # Change dijkstra flag to false if smoothed route calculated
         elif self.routes_dijkstra:
             output_json['paths'] = {"type": "FeatureCollection", "features": []}
-            output_json['paths']['features'] = [dr.to_json() for dr in self.routes_dijkstra]
+            output_json['paths']['features'] = [dr.to_json(route_type='dijkstra') for dr in self.routes_dijkstra]
         else:
             output_json['paths'] = []
 

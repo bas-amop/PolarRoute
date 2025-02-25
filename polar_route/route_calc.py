@@ -134,7 +134,17 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
-        dijkstra_route = False
+        # Read in type of route if available
+        if 'route_type' in route_json['features'][0]['properties'].keys():
+            if route_json['features'][0]['properties']['route_type'] == 'dijkstra':
+                dijkstra_route = True
+            elif route_json['features'][0]['properties']['route_type'] == 'smoothed':
+                dijkstra_route = False
+            else:
+                raise NotImplementedError
+        else:
+            dijkstra_route = False
+
     elif route_file[-3:] == "gpx":
         route_json = gpx_route_import(route_file)
         route_coords = route_json['features'][0]['geometry']['coordinates']

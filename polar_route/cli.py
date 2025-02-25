@@ -179,7 +179,7 @@ def optimise_routes_cli():
     if args.dijkstra:
         info_dijkstra = mesh_json
         info_dijkstra['paths'] = {"type": "FeatureCollection", "features": []}
-        info_dijkstra['paths']['features'] = [dr.to_json() for dr in dijkstra_routes]
+        info_dijkstra['paths']['features'] = [dr.to_json(route_type='dijkstra') for dr in dijkstra_routes]
         # Form a unique name for the dijkstra output
         dijkstra_output_file_strs = output_file_strs
         dijkstra_output_file_strs[-2] += '_dijkstra'
