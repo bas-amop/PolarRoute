@@ -166,7 +166,6 @@ def load_route(route_file):
     logging.debug(f"Route has {len(df)} waypoints")
     df['id'] = 1
     df['order'] = np.arange(len(df))
-    logging.info(df)
     return df, from_wp, to_wp, route_type
 
 
