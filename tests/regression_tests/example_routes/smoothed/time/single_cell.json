@@ -181,7 +181,7 @@
                 "properties": {
                     "from": "Waypoint 1",
                     "to": "Waypoint 2",
-                    "route_type": "dijkstra",
+                    "route_type": "smoothed",
                     "traveltime": [
                         0.0,
                         0.24760634689467634

@@ -710,6 +710,8 @@ class RoutePlanner:
                 route_case = case_from_angle(start_location, end_location)
                 route_json['properties']['distance'] = [0., rhumb_line_distance(start_location, end_location)]
                 route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][route_case]]
+                route_json['properties']['route_type'] = "smoothed"
+
                 for var in self.config['path_variables']:
                     route_json['properties'][var].insert(0, 0.)
                 del route_json['properties']['cases']
