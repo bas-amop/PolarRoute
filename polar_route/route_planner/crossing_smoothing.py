@@ -1,10 +1,9 @@
 import numpy as np
 import pyproj
 import logging
-from polar_route.route_planner.crossing import traveltime_in_cell
 import shapely
 from polar_route.utils import unit_time, unit_speed, case_from_angle
-from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
+from polar_route.exceptions import RouteSmoothingError
 
 
 def dist_around_globe(start_point,crossing_point):
@@ -210,9 +209,6 @@ class PathValues:
         """
         # Determine the travel-time and distance between start and end waypoint given
         # environmental forcing variables
-        m_long  = 111.321*1000
-        m_lat   = 111.386*1000
-
         case = case_from_angle(cp, wp)
         su  = source_graph['Vector_x']
         sv  = source_graph['Vector_y']
@@ -1575,4 +1571,3 @@ class Smoothing:
                             self.aps[ii].crossing = midpoint_prime
                             ii += 1
                             firstpoint = midpoint_prime
-
