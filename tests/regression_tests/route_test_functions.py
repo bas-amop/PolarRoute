@@ -15,8 +15,12 @@ def test_waypoint_names(route_pair):
 def test_time(route_pair):
     compare_time(route_pair[0], route_pair[1])
 
-def test_fuel(route_pair):
-    compare_fuel(route_pair[0], route_pair[1])
+def test_fuel_battery(route_pair):
+    path_variables = extract_route_info(route_pair[0])['path_variables']
+    if 'fuel' in path_variables:
+        compare_fuel(route_pair[0], route_pair[1])
+    if 'battery' in path_variables:
+        compare_battery(route_pair[0], route_pair[1])
 
 def test_cell_indices(route_pair):
     compare_cell_indices(route_pair[0], route_pair[1])
@@ -133,6 +137,28 @@ def compare_fuel(route_a, route_b):
 
     np.testing.assert_array_equal(rounded_a, rounded_b, 
                                   err_msg='Difference in "fuel"')
+
+def compare_battery(route_a, route_b):
+    """
+    Tests if battery consumption is the same between both routes.
+
+    Args:
+        route_a (json)
+        route_b (json)
+
+    Raises:
+        AssertionError:
+            Fails if battery consumption to each node is different at any point
+            (beyond sig fig limit)
+    """
+    battery_a = extract_path(route_a)['properties']['battery']
+    battery_b = extract_path(route_b)['properties']['battery']
+
+    rounded_a = round_to_sigfig(battery_a, sigfig=SIG_FIG_TOLERANCE)
+    rounded_b = round_to_sigfig(battery_b, sigfig=SIG_FIG_TOLERANCE)
+
+    np.testing.assert_array_equal(rounded_a, rounded_b,
+                                  err_msg='Difference in "battery"')
 
 def compare_cell_indices(route_a, route_b):
     """

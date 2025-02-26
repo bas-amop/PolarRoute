@@ -12,7 +12,7 @@ from .route_test_functions import extract_route_info
 from .route_test_functions import test_route_coordinates
 from .route_test_functions import test_waypoint_names
 from .route_test_functions import test_time
-from .route_test_functions import test_fuel
+from .route_test_functions import test_fuel_battery
 from .route_test_functions import test_distance
 from .route_test_functions import test_speed
 
@@ -40,7 +40,13 @@ TEST_ROUTES = [
     './example_routes/smoothed/crossing_point/vertical/vertical_80latn_smooth.json',
     './example_routes/smoothed/crossing_point/vertical/vertical_80lats_smooth.json',
     './example_routes/smoothed/crossing_point/vertical/vertical_0lat_boundary_smooth.json',
-    './example_routes/smoothed/crossing_point/vertical/vertical_0lat_corner_smooth.json'
+    './example_routes/smoothed/crossing_point/vertical/vertical_0lat_corner_smooth.json',
+    './example_routes/smoothed/fuel/twin_otter_f_route.json',
+    './example_routes/smoothed/battery/slocum_b_route.json',
+    './example_routes/smoothed/battery/alr_b_route.json',
+    './example_routes/smoothed/time/slocum_tt_route.json',
+    './example_routes/smoothed/time/alr_tt_route.json',
+    './example_routes/smoothed/time/twin_otter_tt_route.json'
 ]
 
 # Pairing old and new outputs
