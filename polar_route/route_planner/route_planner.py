@@ -677,7 +677,7 @@ class RoutePlanner:
         # ====== Routes info =======
         # Check whether any Dijkstra routes exist before running smoothing
         if not self.routes_dijkstra:
-            raise NoRouteFoundError("No Dijkstra route before attempting to smooth routes")
+            raise NoRouteFoundError("No Dijkstra routes found when attempting to smooth routes")
         routes = copy.deepcopy(self.routes_dijkstra)
 
         # ====== Determining route info ======

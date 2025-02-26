@@ -325,7 +325,3 @@ def calc_wind(cellbox):
     cellbox.agg_data['relative wind angle'] = rel_wind_angle
 
     return cellbox
-
-
-
-

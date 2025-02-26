@@ -983,6 +983,11 @@ class Smoothing:
             return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='speed')
         elif self.blocked_metric == 'traveltime':
             return self.blocked_tt(new_cell, cell_a, cell_b)
+        elif self.blocked_metric == 'fuel':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='fuel')
+        elif self.blocked_metric == 'battery':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='battery')
+        # Default to SIC blocking
         else:
             return self.blocked_ice(new_cell, cell_a, cell_b)
 
