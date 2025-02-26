@@ -132,7 +132,8 @@
                 "max_iteration_number": 300,
                 "minimum_difference": 0.002
             },
-            "unit_shipspeed": "km/hr"
+            "unit_shipspeed": "km/hr",
+            "adjust_waypoints": true
         }
     },
     "cellboxes": [
@@ -12269,6 +12270,7 @@
                     "name": "Route - Box 1 to Box 2",
                     "from": "Box 1",
                     "to": "Box 2",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "152",
                         "153",
@@ -12376,6 +12378,7 @@
                     "name": "Route - Box 1 to Box 4",
                     "from": "Box 1",
                     "to": "Box 4",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "152",
                         "163",
@@ -12467,6 +12470,7 @@
                     "name": "Route - Box 2 to Box 4",
                     "from": "Box 2",
                     "to": "Box 4",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "157",
                         "167",

@@ -23,19 +23,25 @@ import logging
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
 
-#File locations of all vessel performance meshes to be recalculated for regression testing.
+# File locations of all vessel performance meshes to be recalculated for regression testing.
 INPUT_MESHES = [
     './example_meshes/env_meshes/grf_normal.json',
     './example_meshes/env_meshes/grf_downsample.json',
     './example_meshes/env_meshes/grf_reprojection.json',
-    './example_meshes/env_meshes/grf_sparse.json'
+    './example_meshes/env_meshes/grf_sparse.json',
+    './example_meshes/env_meshes/slocum_test_mesh.json',
+    './example_meshes/env_meshes/alr_test_mesh.json',
+    './example_meshes/env_meshes/twin_otter_test_mesh.json'
 ]
 
 OUTPUT_MESHES = [
     './example_meshes/vessel_meshes/grf_normal.json',
     './example_meshes/vessel_meshes/grf_downsample.json',
     './example_meshes/vessel_meshes/grf_reprojection.json',
-    './example_meshes/vessel_meshes/grf_sparse.json'
+    './example_meshes/vessel_meshes/grf_sparse.json',
+    './example_meshes/vessel_meshes/slocum_test_vessel.json',
+    './example_meshes/vessel_meshes/alr_test_vessel.json',
+    './example_meshes/vessel_meshes/twin_otter_test_vessel.json'
 ]
 
 @pytest.fixture(scope='session', autouse=False, params=zip(INPUT_MESHES, OUTPUT_MESHES))

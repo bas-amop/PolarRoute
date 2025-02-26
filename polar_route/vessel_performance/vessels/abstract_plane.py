@@ -18,7 +18,6 @@ class AbstractPlane(AbstractVessel):
         self.max_speed      = self.vessel_params['max_speed']
         self.speed_unit     = self.vessel_params['unit']
         self.max_elevation  = self.vessel_params['max_elevation']
-        self.max_ice        = self.vessel_params['max_ice_conc']
         self.excluded_zones = self.vessel_params.get('excluded_zones')
 
 
@@ -49,7 +48,7 @@ class AbstractPlane(AbstractVessel):
         logging.debug(f"Modelling accessibility in cell {cellbox.id} for a vessel of type: {self.__class__.__name__}")
         access_values = dict()
 
-        # Exclude cells due to land or ice
+        # Exclude cells due to terrain or other features
         
         access_values['elevation_max'] = self.elevation_max(cellbox)
 

@@ -73,7 +73,7 @@ class Route:
         """
         self.cases = cases
       
-    def to_json(self):
+    def to_json(self, route_type='dijkstra'):
         """
             Converts the constructed route into json format
         """
@@ -87,7 +87,8 @@ class Route:
         route['properties'] = {}
         route['properties']['name'] = self.name
         route['properties']['from'] = self.from_wp
-        route['properties']['to'] = self.to_wp
+        route['properties']['to']   = self.to_wp
+        route['properties']['route_type'] = route_type
 
         cell_indices = []
         for seg in self.segments:
