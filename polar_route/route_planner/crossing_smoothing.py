@@ -195,7 +195,7 @@ class PathValues:
         self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
 
-    def _segment_costs(self, path_requested_variables, source_graph, Wp, Cp):
+    def _segment_costs(self, path_requested_variables, source_graph, wp, cp):
         """
             Applies an in-cell correction to a path segments to determine 'path_requested_variables'
             defined by the use (e.g. total distance, total traveltime, total fuel usage)
@@ -215,13 +215,13 @@ class PathValues:
         m_long  = 111.321*1000
         m_lat   = 111.386*1000
 
-        x = dist_around_globe(Cp[0], Wp[0]) * m_long * np.cos(Wp[1] * (np.pi / 180))
-        y = (Cp[1]-Wp[1]) * m_lat
-        case = case_from_angle(Cp, Wp)
-        Su  = source_graph['Vector_x']
-        Sv  = source_graph['Vector_y']
-        Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = rhumb_traveltime_in_cell(source_graph, Cp, Wp, Ssp, Su, Sv)
+        x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos(wp[1] * (np.pi / 180))
+        y = (cp[1]-wp[1]) * m_lat
+        case = case_from_angle(cp, wp)
+        su  = source_graph['Vector_x']
+        sv  = source_graph['Vector_y']
+        ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
+        traveltime = rhumb_traveltime_in_cell(source_graph, cp, wp, ssp, su, sv)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(wp, cp)
 
@@ -272,23 +272,23 @@ class PathValues:
         # Looping over the path and determining the variable information
         for ii in range(len(adjacent_pairs)+1):
             if ii == 0:
-                Wp = start_waypoint
-                Cp = adjacent_pairs[ii].crossing
+                wp = start_waypoint
+                cp = adjacent_pairs[ii].crossing
                 cellbox = adjacent_pairs[ii].start
             elif ii == (len(adjacent_pairs)):
-                Wp = adjacent_pairs[ii-1].crossing
-                Cp = end_waypoint
+                wp = adjacent_pairs[ii - 1].crossing
+                cp = end_waypoint
                 cellbox = adjacent_pairs[ii-1].end
             else:
-                Wp = adjacent_pairs[ii-1].crossing
-                Cp = adjacent_pairs[ii].crossing
+                wp = adjacent_pairs[ii - 1].crossing
+                cp = adjacent_pairs[ii].crossing
                 cellbox = adjacent_pairs[ii].start
 
             # Adding End point
-            path_points += [Cp]
+            path_points += [cp]
 
             # Determining the value for the variable for the segment of the path and the corresponding case
-            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, Wp, Cp)
+            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, wp, cp)
 
             # Adding that value for the segment along the paths
             for var in segment_variable:
