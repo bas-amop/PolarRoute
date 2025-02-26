@@ -151,11 +151,11 @@ def compare_battery(route_a, route_b):
             Fails if battery consumption to each node is different at any point
             (beyond sig fig limit)
     """
-    fuel_a = extract_path(route_a)['properties']['battery']
-    fuel_b = extract_path(route_b)['properties']['battery']
+    battery_a = extract_path(route_a)['properties']['battery']
+    battery_b = extract_path(route_b)['properties']['battery']
 
-    rounded_a = round_to_sigfig(fuel_a, sigfig=SIG_FIG_TOLERANCE)
-    rounded_b = round_to_sigfig(fuel_b, sigfig=SIG_FIG_TOLERANCE)
+    rounded_a = round_to_sigfig(battery_a, sigfig=SIG_FIG_TOLERANCE)
+    rounded_b = round_to_sigfig(battery_b, sigfig=SIG_FIG_TOLERANCE)
 
     np.testing.assert_array_equal(rounded_a, rounded_b,
                                   err_msg='Difference in "battery"')
