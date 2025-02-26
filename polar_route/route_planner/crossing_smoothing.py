@@ -58,15 +58,15 @@ def rhumb_line_distance(start_waypoint, end_waypoint):
 
 def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     """
-    Calculates traveltime in a cellbox based off of rhumbline distance
+    Calculates traveltime in a cellbox based off of rhumb line distance
 
     Args:
         cellbox (dict): Cellbox containing line segment being analysed
         cp (ndarray): End waypoint coordinates   (long,lat)
         sp (ndarray): Start waypoint coordinates (long,lat)
-        s (str): Key for ship speed
-        u (str): Key for currents x-velocity
-        v (str): Key for currents y-velocity
+        s (float): Ship speed value
+        u (float): Current velocity x-component
+        v (float): Current velocity y-component
 
     Returns:
         tt (float): Calculated rhumb line travel time
@@ -87,7 +87,6 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         λ = sp[1]*(np.pi/180)
         θ = cp[1]*(np.pi/180)
         C1 = s**2 - u**2 - v**2
-        z = x*np.cos(θ)
         r1 = np.cos(λ) / np.cos(θ)
         d1 = np.sqrt(x**2 + (r1*y)**2)
         D1 = x*u + r1*v*y
@@ -99,7 +98,6 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         θ = y/(2*6371*1000) + λ
         C1 = s**2 - u**2 - v**2
         z = x*np.cos(θ)
-        r1 = np.cos(λ) / np.cos(θ)
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
     
@@ -215,12 +213,10 @@ class PathValues:
         m_long  = 111.321*1000
         m_lat   = 111.386*1000
 
-        x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos(wp[1] * (np.pi / 180))
-        y = (cp[1]-wp[1]) * m_lat
         case = case_from_angle(cp, wp)
         su  = source_graph['Vector_x']
         sv  = source_graph['Vector_y']
-        ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
+        ssp = unit_speed(source_graph['speed'][self.direction.index(case)], self.unit_shipspeed)
         traveltime = rhumb_traveltime_in_cell(source_graph, cp, wp, ssp, su, sv)
         traveltime = unit_time(traveltime, self.unit_time)
         distance = rhumb_line_distance(wp, cp)
@@ -1237,7 +1233,7 @@ class Smoothing:
         """
 
         # Prevents crashing is edge_b is empty.
-        if edge_b.start == None:
+        if edge_b.start is None:
             logging.debug('Edge_b is empty')
             return True
             
