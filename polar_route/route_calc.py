@@ -36,11 +36,9 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
     # Conversion factors from lat/long degrees to metres
     m_long = 111.321 * 1000
     m_lat = 111.386 * 1000
-    # Radius of the Earth in metres
-    r = 6371.1 * 1000.
 
     y = (cp[1] - wp[1]) * m_lat
-    x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos((wp[1] * (np.pi / 180)) + (y / (2*r)))
+    x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos(wp[1] * (np.pi / 180))
 
     if (vector_x in cellbox) and (vector_y in cellbox):
         su = cellbox[vector_x]
