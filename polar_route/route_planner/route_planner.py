@@ -683,14 +683,14 @@ class RoutePlanner:
         # ====== Determining route info ======
         # Get smoothing parameters from config or set default values
         max_iterations = self.config.get('smoothing_max_iterations', 2000)
-        blocked_sic = self.config.get('smoothing_blocked_sic', 10.0)
+        blocked_percentage = self.config.get('smoothing_blocked_percentage', 10.0)
         blocked_metric = self.config.get('smoothing_blocked_metric', 'SIC')
         merge_separation = self.config.get('smoothing_merge_separation', 1e-3)
         converged_sep = self.config.get('smoothing_converged_sep', 1e-3)
         objective_function = self.config.get('objective_function', 'traveltime')
 
         logging.debug(f"Blocking metric: {blocked_metric}")
-        logging.debug(f"Blocking threshold: {blocked_sic}")
+        logging.debug(f"Blocking threshold: {blocked_percentage}")
 
         logging.info('========= Determining Smoothed Routes ===========')
         geojson = {}
@@ -732,7 +732,7 @@ class RoutePlanner:
             adjacent_pairs, source_wp, end_wp = initialise_dijkstra_route(initialised_dijkstra_graph, route_json)
 
             sf = Smoothing(initialised_dijkstra_graph, adjacent_pairs, source_wp, end_wp, blocked_metric=blocked_metric,
-                           max_iterations=max_iterations, blocking_percentage=blocked_sic,
+                           max_iterations=max_iterations, blocking_percentage=blocked_percentage,
                            merge_separation=merge_separation, converged_sep=converged_sep,
                            objective_function=objective_function)
 
