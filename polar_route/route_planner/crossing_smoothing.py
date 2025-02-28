@@ -1,10 +1,9 @@
 import numpy as np
 import pyproj
 import logging
-from polar_route.route_planner.crossing import traveltime_in_cell
 import shapely
 from polar_route.utils import unit_time, unit_speed, case_from_angle
-from polar_route.exceptions import WaypointOutOfBoundsError, NoRouteFoundError, InaccessibleWaypointError, RouteSmoothingError, InvalidMeshError
+from polar_route.exceptions import RouteSmoothingError
 
 
 def dist_around_globe(start_point,crossing_point):
@@ -58,15 +57,15 @@ def rhumb_line_distance(start_waypoint, end_waypoint):
 
 def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
     """
-    Calculates traveltime in a cellbox based off of rhumbline distance
+    Calculates traveltime in a cellbox based off of rhumb line distance
 
     Args:
         cellbox (dict): Cellbox containing line segment being analysed
         cp (ndarray): End waypoint coordinates   (long,lat)
         sp (ndarray): Start waypoint coordinates (long,lat)
-        s (str): Key for ship speed
-        u (str): Key for currents x-velocity
-        v (str): Key for currents y-velocity
+        s (float): Ship speed value
+        u (float): Current velocity x-component
+        v (float): Current velocity y-component
 
     Returns:
         tt (float): Calculated rhumb line travel time
@@ -87,7 +86,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         λ = sp[1]*(np.pi/180)
         θ = cp[1]*(np.pi/180)
         C1 = s**2 - u**2 - v**2
-        z = x*np.cos(θ)
+        # z = x * np.cos(θ)
         r1 = np.cos(λ) / np.cos(θ)
         d1 = np.sqrt(x**2 + (r1*y)**2)
         D1 = x*u + r1*v*y
@@ -99,7 +98,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         θ = y/(2*6371*1000) + λ
         C1 = s**2 - u**2 - v**2
         z = x*np.cos(θ)
-        r1 = np.cos(λ) / np.cos(θ)
+        # r1 = np.cos(λ) / np.cos(θ)
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
     
@@ -192,9 +191,10 @@ class PathValues:
 
         self.unit_shipspeed='km/hr'
         self.unit_time='days'
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
 
-    def _segment_costs(self, path_requested_variables, source_graph, Wp, Cp):
+    def _segment_costs(self, path_requested_variables, source_graph, wp, cp):
         """
             Applies an in-cell correction to a path segments to determine 'path_requested_variables'
             defined by the use (e.g. total distance, total traveltime, total fuel usage)
@@ -202,27 +202,22 @@ class PathValues:
             Input:
                 path_requested_variable (dict) - A dictionary of the path requested variables
                 source_graph (dict) - Dictionary of the cell in which the vessel is transiting
-                Wp (tuple) - Start Waypoint location (long,lat)
-                Cp (tuple) - End Waypoint location (long,lat)
+                wp (tuple) - Start Waypoint location (long,lat)
+                cp (tuple) - End Waypoint location (long,lat)
 
             Returns:
                 segment_values (dict) - Dictionary of the segment value information
                 case (int) - Adjacency case type connecting the two points
         """
         # Determine the travel-time and distance between start and end waypoint given
-        #environmental forcing variables
-        m_long  = 111.321*1000
-        m_lat   = 111.386*1000
-        x = dist_around_globe(Cp[0], Wp[0]) * m_long * np.cos(Wp[1] * (np.pi / 180))
-        y = (Cp[1]-Wp[1]) * m_lat
-        case = case_from_angle(Cp, Wp)
-        Su  = source_graph['Vector_x']
-        Sv  = source_graph['Vector_y']
-        Ssp = unit_speed(source_graph['speed'][case], self.unit_shipspeed)
-        traveltime = rhumb_traveltime_in_cell(source_graph, Cp, Wp, Ssp, Su, Sv)
+        # environmental forcing variables
+        case = case_from_angle(cp, wp)
+        su  = source_graph['Vector_x']
+        sv  = source_graph['Vector_y']
+        ssp = unit_speed(source_graph['speed'][self.direction.index(case)], self.unit_shipspeed)
+        traveltime = rhumb_traveltime_in_cell(source_graph, cp, wp, ssp, su, sv)
         traveltime = unit_time(traveltime, self.unit_time)
-        distance = rhumb_line_distance(Wp, Cp)
-
+        distance = rhumb_line_distance(wp, cp)
 
         # Given the traveltime and distance between the two waypoints
         # determine the path related variables (e.g. fuel usage, traveltime)
@@ -239,7 +234,7 @@ class PathValues:
                     # Determining the objective value information. Apply an inplace
                     # metric along the path e.g. cumulative sum of values
                     if type(source_graph[var]) == list:
-                        objective_rate_value = source_graph[var][case]
+                        objective_rate_value = source_graph[var][self.direction.index(case)]
                     else:
                         objective_rate_value = source_graph[var]
                     if path_requested_variables[var]['processing'] is None:
@@ -271,28 +266,28 @@ class PathValues:
         # Looping over the path and determining the variable information
         for ii in range(len(adjacent_pairs)+1):
             if ii == 0:
-                Wp = start_waypoint
-                Cp = adjacent_pairs[ii].crossing
+                wp = start_waypoint
+                cp = adjacent_pairs[ii].crossing
                 cellbox = adjacent_pairs[ii].start
             elif ii == (len(adjacent_pairs)):
-                Wp = adjacent_pairs[ii-1].crossing
-                Cp = end_waypoint
+                wp = adjacent_pairs[ii - 1].crossing
+                cp = end_waypoint
                 cellbox = adjacent_pairs[ii-1].end
             else:
-                Wp = adjacent_pairs[ii-1].crossing
-                Cp = adjacent_pairs[ii].crossing
+                wp = adjacent_pairs[ii - 1].crossing
+                cp = adjacent_pairs[ii].crossing
                 cellbox = adjacent_pairs[ii].start
 
             # Adding End point
-            path_points += [Cp]
+            path_points += [cp]
 
             # Determining the value for the variable for the segment of the path and the corresponding case
-            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, Wp, Cp)
+            segment_variable, segment_case = self._segment_costs(self.path_requested_variables, cellbox, wp, cp)
 
             # Adding that value for the segment along the paths
             for var in segment_variable:
                 if type(segment_variable[var]) == np.ndarray:
-                    variables[var]['path_values'][ii+1] = segment_variable[var][segment_case]
+                    variables[var]['path_values'][ii+1] = segment_variable[var][self.direction.index(segment_case)]
                 else:
                     variables[var]['path_values'][ii+1] = segment_variable[var]
 
@@ -313,7 +308,8 @@ class PathValues:
 #======================================================
 class Smoothing:
     def __init__(self, dijkstra_graph, adjacent_pairs, start_waypoint, end_waypoint, blocked_metric='SIC',
-                 max_iterations=2000, blocked_sic=10.0, merge_separation=1e-3, converged_sep=1e-3):
+                 max_iterations=2000, blocking_percentage=10.0, merge_separation=1e-3, converged_sep=1e-3,
+                 objective_function='traveltime'):
         """
             Class construct that has all the operations required for path smoothing. Including: Relationship of adjacent pairs,
             edge finding new edges to add and returns a list of the adjacent pairs for the constructed path
@@ -336,12 +332,14 @@ class Smoothing:
         self.aps = adjacent_pairs
         self.start_waypoint = start_waypoint
         self.end_waypoint = end_waypoint
+        self.objective_function = objective_function
         self.blocked_metric = blocked_metric
         self.max_iterations = max_iterations
-        self.blocked_sic    = blocked_sic
+        self.blocking_percentage = blocking_percentage
         self.merge_separation = merge_separation
         self.converged_sep    = converged_sep
         self._g = pyproj.Geod(ellps='WGS84')
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
         for key in self.dijkstra_graph.keys():
             cell = self.dijkstra_graph[key]
@@ -512,8 +510,8 @@ class Smoothing:
         cell_s_v = start['Vector_y']
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
-        speed_s = start['speed'][0]*(1000/(60*60))
-        speed_e = end['speed'][0]*(1000/(60*60))
+        speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
+        speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
 
         if case == 2:   
@@ -682,9 +680,8 @@ class Smoothing:
         cell_s_v = start['Vector_y']
         cell_e_u = end['Vector_x']
         cell_e_v = end['Vector_y']
-
-        speed_s = start['speed'][0]*(1000/(60*60))
-        speed_e = end['speed'][0]*(1000/(60*60))
+        speed_s = start['speed'][self.direction.index(case)]*(1000/(60*60))
+        speed_e = end['speed'][self.direction.index(case)]*(1000/(60*60))
         Rd = 6371.*1000
 
         if case == 4:   
@@ -961,7 +958,108 @@ class Smoothing:
 
     def blocked(self, new_cell, cell_a, cell_b):
         """
-            Function that determines if the new cell being introduced is worse off than the original two cells.
+            Function that determines if the new cell being introduced is worse off than the original two cells
+            according to various metrics.
+
+            Args:
+                new_cell (dict) - New cell to add environmental parameters as dict
+                cell_a (dict)   - Start cell to add environmental parameters as dict
+                cell_b (dict)   - End cell to add environmental parameters as dict
+
+            Return:
+                True if the cell cannot be entered, False if the cell can
+        """
+        # If blocking based on objective function
+        if self.blocked_metric == 'objective':
+            if self.objective_function == 'traveltime':
+                blocked_var = 'speed'
+            else:
+                blocked_var = self.objective_function
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable=blocked_var)
+        # Otherwise block based on metric specified
+        elif self.blocked_metric == 'speed':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='speed')
+        elif self.blocked_metric == 'traveltime':
+            return self.blocked_tt(new_cell, cell_a, cell_b)
+        elif self.blocked_metric == 'fuel':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='fuel')
+        elif self.blocked_metric == 'battery':
+            return self.blocked_objective(new_cell, cell_a, cell_b, blocked_variable='battery')
+        # Default to SIC blocking
+        else:
+            return self.blocked_ice(new_cell, cell_a, cell_b)
+
+    def blocked_objective(self, new_cell, cell_a, cell_b, blocked_variable):
+        """
+            Function that determines if the relevant objective variable of the new cell being introduced is worse
+            than in the original two cells.
+
+            Args:
+                new_cell (dict) - New cell to add, environmental parameters as dict
+                cell_a (dict)   - Start cell to add, environmental parameters as dict
+                cell_b (dict)   - End cell to add, environmental parameters as dict
+                blocked_variable (str) - the key for the relevant objective variable
+
+            Return:
+                True if the cell cannot be entered, False if the cell can
+        """
+        new_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
+        old_case = cell_a['case'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
+
+        new_objective_start = cell_a[blocked_variable][self.direction.index(new_case)]
+        new_objective_end = new_cell[blocked_variable][self.direction.index(new_case)]
+        old_objective_start = cell_a[blocked_variable][self.direction.index(old_case)]
+        old_objective_end = cell_b[blocked_variable][self.direction.index(old_case)]
+
+        objective_diff_1 = (new_objective_start - old_objective_start) / old_objective_start
+        objective_diff_2 = (new_objective_end - old_objective_end) / old_objective_end
+
+        # Handle speed and fuel/battery separately as we want to avoid lower speeds but higher consumption rates
+        if blocked_variable == 'speed':
+            if objective_diff_1 < -self.blocking_percentage/100.:
+                return True
+            elif objective_diff_2 < -self.blocking_percentage/100.:
+                return True
+            else:
+                return False
+        else:
+            if objective_diff_1 > self.blocking_percentage/100.:
+                return True
+            elif objective_diff_2 > self.blocking_percentage/100.:
+                return True
+            else:
+                return False
+
+    def blocked_tt(self, new_cell, cell_a, cell_b):
+        """
+            Function that determines if the tt for the new cell being introduced is worse than the original two cells.
+
+            Args:
+                new_cell (dict) - New cell to add environmental parameters as dict
+                cell_a (dict)   - Start cell to add environmental parameters as dict
+                cell_b (dict)   - End cell to add environmental parameters as dict
+
+            Return:
+                True if the cell cannot be entered, False if the cell can
+        """
+        new_tts = cell_a['neighbourTravelLegs'][cell_a['neighbourIndex'].tolist().index(new_cell['id'])]
+        old_tts = cell_a['neighbourTravelLegs'][cell_a['neighbourIndex'].tolist().index(cell_b['id'])]
+
+        new_tt_start = new_tts[0]
+        new_tt_end = new_tts[1]
+        old_tt_start = old_tts[0]
+        old_tt_end = old_tts[1]
+
+        tt_diff = ((new_tt_start + new_tt_end) - (old_tt_start + old_tt_end))/(old_tt_start + old_tt_end)
+
+        if tt_diff > self.blocking_percentage/100.:
+            return True
+        else:
+            return False
+
+    def blocked_ice(self, new_cell, cell_a, cell_b):
+        """
+            Function that determines if the SIC of the new cell being introduced is worse than the original two cells.
             Currently, this is hard encoded to not enter a cell 5% worse off in Sea-Ice-Concentration
 
             Args:
@@ -978,8 +1076,8 @@ class Smoothing:
 
         percentage_diff1  = (max_new-start)*100
         percentage_diff2  = (max_new-end)*100
-        if ((percentage_diff1 <= self.blocked_sic*start) or (percentage_diff2 <= self.blocked_sic*end)
-                or max_new <= self.blocked_sic):
+        if ((percentage_diff1 <= self.blocking_percentage * start) or (percentage_diff2 <= self.blocking_percentage * end)
+                or max_new <= self.blocking_percentage):
             return False
         else:
             return True
@@ -1138,7 +1236,7 @@ class Smoothing:
         """
 
         # Prevents crashing is edge_b is empty.
-        if edge_b.start == None:
+        if edge_b.start is None:
             logging.debug('Edge_b is empty')
             return True
             
@@ -1475,4 +1573,3 @@ class Smoothing:
                             self.aps[ii].crossing = midpoint_prime
                             ii += 1
                             firstpoint = midpoint_prime
-

@@ -11,7 +11,8 @@
     "fixed_speed": false,
     "waypoint_splitting": false,
     "smoothing_max_iterations": 2000,
-    "smoothing_blocked_sic": 10.0,
+    "smoothing_blocked_percentage": 10.0,
+    "smoothing_blocked_metric": "SIC",
     "smoothing_merge_separation": 1e-3,
     "smoothing_converged_separation": 1e-3
 }

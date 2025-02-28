@@ -3,7 +3,7 @@ from polar_route.vessel_performance.vessels.abstract_ship import AbstractShip
 import numpy as np
 import logging
 
-class SDA(AbstractShip):
+class SDAWind(AbstractShip):
     """
         Vessel class with methods specifically designed to model the performance of the British Antarctic Survey
         research and supply ship, the RRS Sir David Attenborough (SDA)
@@ -51,13 +51,27 @@ class SDA(AbstractShip):
                 else:
                     speed = self.max_speed
         else:
-            logging.debug("No resistance data available, no speed adjustment necessary")
+            logging.debug("Not all ice data available, no ice resistance calculated")
 
         logging.debug("Creating speed array")
         cellbox.agg_data['speed'] = [speed for x in range(8)]
 
         if ice_resistance is not None:
             cellbox.agg_data['ice resistance'] = ice_resistance
+
+        cellbox = self.model_resistance(cellbox)
+
+        if 'wind resistance' in cellbox.agg_data:
+            logging.info("Adjusting speed for wind data")
+            for i in range(8):
+                if cellbox.agg_data['wind resistance'][i] > 0:
+                    if cellbox.agg_data['wind resistance'][i] < self.force_limit*0.75:
+                        cellbox.agg_data['speed'][i] = cellbox.agg_data['speed'][i] * (1 - cellbox.agg_data['wind resistance'][i]/self.force_limit)
+                    else:
+                        cellbox.agg_data['speed'][i] = cellbox.agg_data['speed'][i]*0.25
+                else:
+                    cellbox.agg_data['speed'][i] = cellbox.agg_data['speed'][i] * (
+                                1 - cellbox.agg_data['wind resistance'][i] / (10 * self.force_limit))
 
         return cellbox
 
@@ -72,8 +86,6 @@ class SDA(AbstractShip):
                 cellbox (AggregatedCellBox): updated cell with fuel consumption values
         """
         logging.debug(f"Calculating fuel requirements in cell {cellbox.id}")
-
-        cellbox = self.model_resistance(cellbox)
 
         cellbox.agg_data['fuel'] = [fuel_eq(cellbox.agg_data['speed'][i], r)
                                     for i, r in enumerate(cellbox.agg_data['resistance'])]

@@ -170,7 +170,7 @@ class Route:
             case = case_from_angle(wp.to_point(), cp.to_point())
         su = cellbox.agg_data['uC']
         sv = cellbox.agg_data['vC']
-        ssp = unit_speed(cellbox.agg_data['speed'][case], self.conf['unit_shipspeed'])
+        ssp = unit_speed(cellbox.agg_data['speed'][direction.index(case)], self.conf['unit_shipspeed'])
         traveltime, distance = traveltime_in_cell(x, y, su, sv, ssp, tt_dist=True)
         logging.debug(f"WP_correction >> tt >> {traveltime}")
         logging.debug(f"WP_correction >> distance >> {distance}")

@@ -301,6 +301,7 @@ class RoutePlanner:
         self.routes_dijkstra = []
         self.routes_smoothed = []
         self.neighbour_legs = {}
+        self.direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
     def _splitting_around_waypoints(self, waypoints_df):
         """
@@ -554,8 +555,6 @@ class RoutePlanner:
             neighbour_segments (list<Segment>): a list of segments that form the legs of the route from node_id to neighbour_id
 
         """
-        direction = [1, 2, 3, 4, -1, -2, -3, -4]
-
         # Applying Newton distance to determine crossing point between node and its neighbour
         cost_func = self.cost_func(node_id, neighbour_id, self.cellboxes_lookup, case=case,
                                     unit_shipspeed='km/hr', time_unit=self.config['time_unit'])
@@ -579,19 +578,19 @@ class RoutePlanner:
         # Fill segment metrics
         s1.set_travel_time(traveltime[0])
         if 'fuel' in self.config['path_variables']:
-            s1.set_fuel(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['fuel'][direction.index(case)])
+            s1.set_fuel(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['fuel'][self.direction.index(case)])
         if 'battery' in self.config['path_variables']:
-            s1.set_battery(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        s1.set_distance(s1.get_travel_time() * unit_speed(self.cellboxes_lookup[node_id].agg_data['speed'][direction.index(case)],
+            s1.set_battery(s1.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][self.direction.index(case)])
+        s1.set_distance(s1.get_travel_time() * unit_speed(self.cellboxes_lookup[node_id].agg_data['speed'][self.direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
         s2.set_travel_time(traveltime[1])
         if 'fuel' in self.config['path_variables']:
-            s2.set_fuel(s2.get_travel_time() * self.cellboxes_lookup[neighbour_id].agg_data['fuel'][direction.index(case)])
+            s2.set_fuel(s2.get_travel_time() * self.cellboxes_lookup[neighbour_id].agg_data['fuel'][self.direction.index(case)])
         if 'battery' in self.config['path_variables']:
             s2.set_battery(
-                s2.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][direction.index(case)])
-        s2.set_distance(s2.get_travel_time() * unit_speed(self.cellboxes_lookup[neighbour_id].agg_data['speed'][direction.index(case)],
+                s2.get_travel_time() * self.cellboxes_lookup[node_id].agg_data['battery'][self.direction.index(case)])
+        s2.set_distance(s2.get_travel_time() * unit_speed(self.cellboxes_lookup[neighbour_id].agg_data['speed'][self.direction.index(case)],
                                                           self.config['unit_shipspeed']))
 
         neighbour_segments = [s1, s2]
@@ -669,7 +668,7 @@ class RoutePlanner:
         return routes
 
     @timed_call
-    def compute_smoothed_routes(self, blocked_metric='SIC'):
+    def compute_smoothed_routes(self):
         """
             Uses the previously constructed Dijkstra routes and smooths them to remove mesh features
             `paths` will be updated in the output JSON
@@ -678,15 +677,20 @@ class RoutePlanner:
         # ====== Routes info =======
         # Check whether any Dijkstra routes exist before running smoothing
         if not self.routes_dijkstra:
-            raise NoRouteFoundError("No Dijkstra route before attempting to smooth routes")
+            raise NoRouteFoundError("No Dijkstra routes found when attempting to smooth routes")
         routes = copy.deepcopy(self.routes_dijkstra)
 
         # ====== Determining route info ======
         # Get smoothing parameters from config or set default values
         max_iterations = self.config.get('smoothing_max_iterations', 2000)
-        blocked_sic = self.config.get('smoothing_blocked_sic', 10.0)
+        blocked_percentage = self.config.get('smoothing_blocked_percentage', 10.0)
+        blocked_metric = self.config.get('smoothing_blocked_metric', 'SIC')
         merge_separation = self.config.get('smoothing_merge_separation', 1e-3)
         converged_sep = self.config.get('smoothing_converged_sep', 1e-3)
+        objective_function = self.config.get('objective_function', 'traveltime')
+
+        logging.debug(f"Blocking metric: {blocked_metric}")
+        logging.debug(f"Blocking threshold: {blocked_percentage}")
 
         logging.info('========= Determining Smoothed Routes ===========')
         geojson = {}
@@ -708,8 +712,9 @@ class RoutePlanner:
                 end_location = route_json['geometry']['coordinates'][1]
                 route_cell = route_json['properties']['CellIndices'][0]
                 route_case = case_from_angle(start_location, end_location)
+                case_idx = self.direction.index(route_case)
                 route_json['properties']['distance'] = [0., rhumb_line_distance(start_location, end_location)]
-                route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][route_case]]
+                route_json['properties']['speed'] = [0., self.cellboxes_lookup[route_cell].agg_data['speed'][case_idx]]
                 route_json['properties']['route_type'] = "smoothed"
 
                 for var in self.config['path_variables']:
@@ -726,14 +731,10 @@ class RoutePlanner:
             initialised_dijkstra_graph = self.initialise_dijkstra_graph(cellboxes, neighbour_graph, route)
             adjacent_pairs, source_wp, end_wp = initialise_dijkstra_route(initialised_dijkstra_graph, route_json)
 
-            sf = Smoothing(initialised_dijkstra_graph,
-                           adjacent_pairs,
-                           source_wp, end_wp,
-                           blocked_metric=blocked_metric,
-                           max_iterations=max_iterations,
-                           blocked_sic = blocked_sic,
-                           merge_separation=merge_separation,
-                           converged_sep=converged_sep)
+            sf = Smoothing(initialised_dijkstra_graph, adjacent_pairs, source_wp, end_wp, blocked_metric=blocked_metric,
+                           max_iterations=max_iterations, blocking_percentage=blocked_percentage,
+                           merge_separation=merge_separation, converged_sep=converged_sep,
+                           objective_function=objective_function)
 
             sf.forward()
 
