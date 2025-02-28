@@ -86,6 +86,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         λ = sp[1]*(np.pi/180)
         θ = cp[1]*(np.pi/180)
         C1 = s**2 - u**2 - v**2
+        # z = x * np.cos(θ)
         r1 = np.cos(λ) / np.cos(θ)
         d1 = np.sqrt(x**2 + (r1*y)**2)
         D1 = x*u + r1*v*y
@@ -97,6 +98,7 @@ def rhumb_traveltime_in_cell(cellbox, cp, sp, s, u, v):
         θ = y/(2*6371*1000) + λ
         C1 = s**2 - u**2 - v**2
         z = x*np.cos(θ)
+        # r1 = np.cos(λ) / np.cos(θ)
         D1 = z*u + y*v
         d1 = np.sqrt(z**2 + y**2)
     
