@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>9. Methods - Route Calculation &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>9. Methods - Route Calculation &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -95,18 +93,18 @@
            <div itemprop="articleBody">
              
   <section id="methods-route-calculation">
-<h1><span class="section-number">9. </span>Methods - Route Calculation<a class="headerlink" href="#methods-route-calculation" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">9. </span>Methods - Route Calculation<a class="headerlink" href="#methods-route-calculation" title="Link to this heading"></a></h1>
 <section id="route-calculation-overview">
-<h2><span class="section-number">9.1. </span>Route Calculation Overview<a class="headerlink" href="#route-calculation-overview" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">9.1. </span>Route Calculation Overview<a class="headerlink" href="#route-calculation-overview" title="Link to this heading"></a></h2>
 <p>This section describes the code used for the evaluation of user-defined routes through a mesh constructed by the methods
 described in previous sections. This mesh should include all the relevant vessel performance parameters needed to
 calculate the fuel and time cost of the route.</p>
 </section>
 <section id="module-polar_route.route_calc">
-<span id="route-calculation"></span><h2><span class="section-number">9.2. </span>Route Calculation<a class="headerlink" href="#module-polar_route.route_calc" title="Permalink to this heading"></a></h2>
+<span id="route-calculation"></span><h2><span class="section-number">9.2. </span>Route Calculation<a class="headerlink" href="#module-polar_route.route_calc" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.case_from_angle">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">case_from_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.case_from_angle" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">case_from_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.case_from_angle" title="Link to this definition"></a></dt>
 <dd><p>Determine the direction of travel between two points and return the associated case</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -126,7 +124,7 @@ calculate the fuel and time cost of the route.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.find_intersections">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">find_intersections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.find_intersections" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">find_intersections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.find_intersections" title="Link to this definition"></a></dt>
 <dd><p>Find crossing points of the route and the cells in the mesh
 :param df: Route info in dataframe format
 :type df: DataFrame
@@ -144,7 +142,7 @@ calculate the fuel and time cost of the route.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.load_mesh">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">load_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.load_mesh" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">load_mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.load_mesh" title="Link to this definition"></a></dt>
 <dd><p>Load mesh from file into GeoDataFrame
 :param mesh_file: Path to mesh with vehicle information
 :type mesh_file: str</p>
@@ -160,7 +158,7 @@ calculate the fuel and time cost of the route.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.load_route">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">load_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">route_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.load_route" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">load_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">route_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.load_route" title="Link to this definition"></a></dt>
 <dd><p>Load route information from file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -168,8 +166,9 @@ calculate the fuel and time cost of the route.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dataframe with route info
-from_wp (str): Name of start waypoint
-to_wp (str) Name of end waypoint</p>
+from_wp (str):  Name of start waypoint
+to_wp (str):    Name of end waypoint
+route_type(str):Type of route, either ‘smoothed’ or ‘dijkstra’</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>df (Dataframe)</p>
@@ -179,7 +178,7 @@ to_wp (str) Name of end waypoint</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.order_track">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">order_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.order_track" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">order_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.order_track" title="Link to this definition"></a></dt>
 <dd><p>Order crossing points into a track along the route
 :param df: Route info in dataframe format
 :type df: DataFrame
@@ -197,13 +196,16 @@ to_wp (str) Name of end waypoint</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.route_calc">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">route_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">route_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.route_calc" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">route_calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.route_calc" title="Link to this definition"></a></dt>
 <dd><p>Function to calculate the fuel/time cost of a user defined route in a given mesh</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>route_file</strong> (<em>str</em>) – Path to user defined route</p></li>
-<li><p><strong>mesh_file</strong> (<em>str</em>) – Path to mesh with vehicle information</p></li>
+<li><p><strong>df</strong> (<em>DataFrame</em>) – Route info in dataframe format</p></li>
+<li><p><strong>from_wp</strong> (<em>str</em>) – Name of start waypoint</p></li>
+<li><p><strong>to_wp</strong> (<em>str</em>) – Name of end waypoint</p></li>
+<li><p><strong>mesh</strong> (<em>json</em>) – A Mesh with encoded vehicle information</p></li>
+<li><p><strong>route_type</strong> (<em>str</em>) – Type of route being calculated, either ‘dijkstra’ or ‘smoothed’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -217,7 +219,7 @@ to_wp (str) Name of end waypoint</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_calc.traveltime_distance">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">traveltime_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'speed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.traveltime_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_calc.</span></span><span class="sig-name descname"><span class="pre">traveltime_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'speed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dijkstra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_calc.traveltime_distance" title="Link to this definition"></a></dt>
 <dd><p>Calculate travel time and distance for two points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8. Methods - Vessel Performance &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>8. Methods - Vessel Performance &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -154,42 +152,45 @@
            <div itemprop="articleBody">
              
   <section id="methods-vessel-performance">
-<span id="vessel-performance"></span><h1><span class="section-number">8. </span>Methods - Vessel Performance<a class="headerlink" href="#methods-vessel-performance" title="Permalink to this heading"></a></h1>
+<span id="vessel-performance"></span><h1><span class="section-number">8. </span>Methods - Vessel Performance<a class="headerlink" href="#methods-vessel-performance" title="Link to this heading"></a></h1>
 <section id="vessel-overview">
-<h2><span class="section-number">8.1. </span>Vessel Overview<a class="headerlink" href="#vessel-overview" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">8.1. </span>Vessel Overview<a class="headerlink" href="#vessel-overview" title="Link to this heading"></a></h2>
 <p>All of the functionality that relates to the specific vehicle traversing our meshed environment model is contained within the vessel_performance directory.
 This directory contains a <cite>VesselPerformanceModeller</cite> class that initialises one of the vessel classes in <cite>vessels</cite> and uses this to determine which cells
 in a given mesh are inaccessible for that particular vessel and what its performance will be in each of the accessible cells.</p>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/Mesh_Fuel_Speed.jpg"><img alt="../_images/Mesh_Fuel_Speed.jpg" src="../_images/Mesh_Fuel_Speed.jpg" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/Mesh_Fuel_Speed.jpg"><img alt="../_images/Mesh_Fuel_Speed.jpg" src="../_images/Mesh_Fuel_Speed.jpg" style="width: 700px;" />
+</a>
 <figcaption>
 <p><span class="caption-text">Maps of the sea ice concentration (a), speed (b) and fuel consumption (c) for the SDA across the Weddell Sea.
-The latter two quantities are derived from the former.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+The latter two quantities are derived from the former.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/VesselUML.png"><img alt="../_images/VesselUML.png" src="../_images/VesselUML.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/VesselUML.png"><img alt="../_images/VesselUML.png" src="../_images/VesselUML.png" style="width: 700px;" />
+</a>
 <figcaption>
-<p><span class="caption-text"><em>UML Diagram detailing the vessel performance subsystem</em></span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><em>UML Diagram detailing the vessel performance subsystem</em></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="module-polar_route.vessel_performance.vessel_performance_modeller">
-<span id="vessel-performance-modeller"></span><h2><span class="section-number">8.2. </span>Vessel Performance Modeller<a class="headerlink" href="#module-polar_route.vessel_performance.vessel_performance_modeller" title="Permalink to this heading"></a></h2>
+<span id="vessel-performance-modeller"></span><h2><span class="section-number">8.2. </span>Vessel Performance Modeller<a class="headerlink" href="#module-polar_route.vessel_performance.vessel_performance_modeller" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessel_performance_modeller.</span></span><span class="sig-name descname"><span class="pre">VesselPerformanceModeller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_mesh_json</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessel_performance_modeller.</span></span><span class="sig-name descname"><span class="pre">VesselPerformanceModeller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_mesh_json</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_vessel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller" title="Link to this definition"></a></dt>
 <dd><p>Class for modelling the vessel performance.
 Takes both an environmental mesh and vessel config as input in json format and modifies the input mesh to
 include vessel specifics.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_mesh_json</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_mesh_json</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vessel_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_vessel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>env_mesh_json</strong> (<em>dict</em>) – a dictionary loaded from an environmental mesh json file</p></li>
 <li><p><strong>vessel_config</strong> (<em>dict</em>) – a dictionary loaded from a vessel config json file</p></li>
+<li><p><strong>custom_vessel</strong> (<em>class</em>) – a custom vessel object that specifies a set of performance and accessibility models</p></li>
 </ul>
 </dd>
 </dl>
@@ -197,21 +198,21 @@ include vessel specifics.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_accessibility">
-<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_accessibility" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_accessibility" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the accessibility of cells in the environmental mesh and remove inaccessible cells from the
 neighbour graph.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_performance">
-<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_performance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.model_performance" title="Link to this definition"></a></dt>
 <dd><p>Method to calculate the relevant vessel performance values for each cell in the environmental mesh and update
 the mesh accordingly.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.to_json">
-<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.to_json" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_performance_modeller.VesselPerformanceModeller.to_json" title="Link to this definition"></a></dt>
 <dd><p>Method to return the modified mesh in json format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -227,14 +228,14 @@ the mesh accordingly.</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.vessel_factory">
-<span id="vessel-factory"></span><h2><span class="section-number">8.3. </span>Vessel Factory<a class="headerlink" href="#module-polar_route.vessel_performance.vessel_factory" title="Permalink to this heading"></a></h2>
+<span id="vessel-factory"></span><h2><span class="section-number">8.3. </span>Vessel Factory<a class="headerlink" href="#module-polar_route.vessel_performance.vessel_factory" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_factory.VesselFactory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessel_factory.</span></span><span class="sig-name descname"><span class="pre">VesselFactory</span></span><a class="headerlink" href="#polar_route.vessel_performance.vessel_factory.VesselFactory" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessel_factory.</span></span><span class="sig-name descname"><span class="pre">VesselFactory</span></span><a class="headerlink" href="#polar_route.vessel_performance.vessel_factory.VesselFactory" title="Link to this definition"></a></dt>
 <dd><p>Factory class to produce initialised vessel objects.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessel_factory.VesselFactory.get_vessel">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_vessel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_factory.VesselFactory.get_vessel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_vessel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessel_factory.VesselFactory.get_vessel" title="Link to this definition"></a></dt>
 <dd><p>Method to return an initialised instance of a vessel class designed for performance modelling</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -253,14 +254,14 @@ the mesh accordingly.</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.abstract_vessel">
-<span id="abstract-vessel"></span><h2><span class="section-number">8.4. </span>Abstract Vessel<a class="headerlink" href="#module-polar_route.vessel_performance.abstract_vessel" title="Permalink to this heading"></a></h2>
+<span id="abstract-vessel"></span><h2><span class="section-number">8.4. </span>Abstract Vessel<a class="headerlink" href="#module-polar_route.vessel_performance.abstract_vessel" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.abstract_vessel.AbstractVessel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.abstract_vessel.</span></span><span class="sig-name descname"><span class="pre">AbstractVessel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.abstract_vessel.</span></span><span class="sig-name descname"><span class="pre">AbstractVessel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel" title="Link to this definition"></a></dt>
 <dd><p>Interface to define the abstract methods required for any vessel class to work within the VesselPerformanceModeller.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.abstract_vessel.AbstractVessel.__init__">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.__init__" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initialise the vessel object with parameters from the config.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -271,7 +272,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_accessibility">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregatedCellBox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_accessibility" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregatedCellBox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_accessibility" title="Link to this definition"></a></dt>
 <dd><p>Determine accessibility of the input cell for the given vessel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -288,7 +289,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_performance">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregatedCellBox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_performance" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AggregatedCellBox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.abstract_vessel.AbstractVessel.model_performance" title="Link to this definition"></a></dt>
 <dd><p>Calculate performance parameters for the given vessel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -307,14 +308,14 @@ the mesh accordingly.</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.vessels.abstract_ship">
-<span id="abstract-ship"></span><h2><span class="section-number">8.5. </span>Abstract Ship<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.abstract_ship" title="Permalink to this heading"></a></h2>
+<span id="abstract-ship"></span><h2><span class="section-number">8.5. </span>Abstract Ship<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.abstract_ship" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.abstract_ship.</span></span><span class="sig-name descname"><span class="pre">AbstractShip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.abstract_ship.</span></span><span class="sig-name descname"><span class="pre">AbstractShip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip" title="Link to this definition"></a></dt>
 <dd><p>Abstract class to define the methods and attributes common to any vessel that is a ship</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – vessel parameters from the vessel config file</p>
@@ -324,7 +325,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.extreme_ice">
-<span class="sig-name descname"><span class="pre">extreme_ice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.extreme_ice" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">extreme_ice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.extreme_ice" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a cell is inaccessible based on configured max ice concentration</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -341,7 +342,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.land">
-<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.land" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.land" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a cell is land based on configured minimum depth</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -358,7 +359,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_accessibility">
-<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_accessibility" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_accessibility" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a given cell is accessible to the ship</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -375,7 +376,7 @@ the mesh accordingly.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_performance">
-<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_performance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_ship.AbstractShip.model_performance" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the performance characteristics for the ship</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,15 +395,15 @@ the mesh accordingly.</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.vessels.SDA">
-<span id="sda"></span><h2><span class="section-number">8.6. </span>SDA<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.SDA" title="Permalink to this heading"></a></h2>
+<span id="sda"></span><h2><span class="section-number">8.6. </span>SDA<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.SDA" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.SDA.</span></span><span class="sig-name descname"><span class="pre">SDA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.SDA.</span></span><span class="sig-name descname"><span class="pre">SDA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA" title="Link to this definition"></a></dt>
 <dd><p>Vessel class with methods specifically designed to model the performance of the British Antarctic Survey
 research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – vessel parameters from the vessel config file</p>
@@ -412,7 +413,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA.invert_resistance">
-<span class="sig-name descname"><span class="pre">invert_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.invert_resistance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">invert_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.invert_resistance" title="Link to this definition"></a></dt>
 <dd><p>Method to find the vessel speed that keeps the ice resistance force below a given threshold in a given cell</p>
 <p>The input cellbox should contain the following values</p>
 <blockquote>
@@ -435,7 +436,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA.model_fuel">
-<span class="sig-name descname"><span class="pre">model_fuel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_fuel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_fuel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_fuel" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the fuel consumption rate of the SDA in a given cell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -452,7 +453,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA.model_resistance">
-<span class="sig-name descname"><span class="pre">model_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_resistance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_resistance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_resistance" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the resistance force acting on the SDA in a given cell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -469,7 +470,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.SDA.SDA.model_speed">
-<span class="sig-name descname"><span class="pre">model_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_speed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.SDA.SDA.model_speed" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the maximum speed that the SDA can traverse the given cell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -488,14 +489,14 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.vessels.abstract_glider">
-<span id="abstract-glider"></span><h2><span class="section-number">8.7. </span>Abstract Glider<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.abstract_glider" title="Permalink to this heading"></a></h2>
+<span id="abstract-glider"></span><h2><span class="section-number">8.7. </span>Abstract Glider<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.abstract_glider" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.abstract_glider.</span></span><span class="sig-name descname"><span class="pre">AbstractGlider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.abstract_glider.</span></span><span class="sig-name descname"><span class="pre">AbstractGlider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider" title="Link to this definition"></a></dt>
 <dd><p>Abstract class to model the performance of an underwater glider</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – vessel parameters from the vessel config file</p>
@@ -505,7 +506,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.extreme_ice">
-<span class="sig-name descname"><span class="pre">extreme_ice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.extreme_ice" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">extreme_ice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.extreme_ice" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a cell is inaccessible based on configured max ice concentration</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -522,7 +523,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.land">
-<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.land" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.land" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a cell is land based on sea level</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -539,7 +540,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_accessibility">
-<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_accessibility" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_accessibility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_accessibility" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if a given cell is accessible to the underwater glider</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -556,7 +557,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_performance">
-<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_performance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_performance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.model_performance" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the performance characteristics for the underwater glider</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -567,7 +568,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.shallow">
-<span class="sig-name descname"><span class="pre">shallow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.shallow" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">shallow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.abstract_glider.AbstractGlider.shallow" title="Link to this definition"></a></dt>
 <dd><p>Method to determine if the water in a cell is too shallow for a glider based on configured minimum depth</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -586,14 +587,14 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 </section>
 <section id="module-polar_route.vessel_performance.vessels.slocum">
-<span id="slocum-glider"></span><h2><span class="section-number">8.8. </span>Slocum Glider<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.slocum" title="Permalink to this heading"></a></h2>
+<span id="slocum-glider"></span><h2><span class="section-number">8.8. </span>Slocum Glider<a class="headerlink" href="#module-polar_route.vessel_performance.vessels.slocum" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.slocum.SlocumGlider">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.slocum.</span></span><span class="sig-name descname"><span class="pre">SlocumGlider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.vessel_performance.vessels.slocum.</span></span><span class="sig-name descname"><span class="pre">SlocumGlider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider" title="Link to this definition"></a></dt>
 <dd><p>Vessel class with methods specifically designed to model the performance of the Slocum G2 Glider</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.slocum.SlocumGlider.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.__init__" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – vessel parameters from the vessel config file</p>
@@ -603,7 +604,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_battery">
-<span class="sig-name descname"><span class="pre">model_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_battery" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_battery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_battery" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the rate of battery usage in a given cell in Ah/day</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -620,7 +621,7 @@ research and supply ship, the RRS Sir David Attenborough (SDA)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_speed">
-<span class="sig-name descname"><span class="pre">model_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_speed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">model_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.vessel_performance.vessels.slocum.SlocumGlider.model_speed" title="Link to this definition"></a></dt>
 <dd><p>Method to determine the maximum speed that the glider can traverse the given cell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10. Methods - Route Planner &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>10. Methods - Route Planner &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -74,6 +72,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#polar_route.route_planner.crossing_smoothing.PathValues"><code class="docutils literal notranslate"><span class="pre">PathValues</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#polar_route.route_planner.crossing_smoothing.dist_around_globe"><code class="docutils literal notranslate"><span class="pre">dist_around_globe()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#polar_route.route_planner.crossing_smoothing.rhumb_line_distance"><code class="docutils literal notranslate"><span class="pre">rhumb_line_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#polar_route.route_planner.crossing_smoothing.rhumb_traveltime_in_cell"><code class="docutils literal notranslate"><span class="pre">rhumb_traveltime_in_cell()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -107,22 +106,22 @@
            <div itemprop="articleBody">
              
   <section id="methods-route-planner">
-<h1><span class="section-number">10. </span>Methods - Route Planner<a class="headerlink" href="#methods-route-planner" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">10. </span>Methods - Route Planner<a class="headerlink" href="#methods-route-planner" title="Link to this heading"></a></h1>
 <section id="route-optimisation-overview">
-<h2><span class="section-number">10.1. </span>Route Optimisation Overview<a class="headerlink" href="#route-optimisation-overview" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.1. </span>Route Optimisation Overview<a class="headerlink" href="#route-optimisation-overview" title="Link to this heading"></a></h2>
 <p>In this section we outline the code used to generate optimal routes through a mesh constructed by the methods described
 in previous sections. This mesh should include the vessel performance parameters with respect to which objective
 functions can be defined for optimisation.</p>
 </section>
 <section id="route-optimisation-modules">
-<h2><span class="section-number">10.2. </span>Route Optimisation Modules<a class="headerlink" href="#route-optimisation-modules" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">10.2. </span>Route Optimisation Modules<a class="headerlink" href="#route-optimisation-modules" title="Link to this heading"></a></h2>
 <section id="module-polar_route.route_planner.route_planner">
-<span id="route-planner"></span><h3><span class="section-number">10.2.1. </span>Route Planner<a class="headerlink" href="#module-polar_route.route_planner.route_planner" title="Permalink to this heading"></a></h3>
+<span id="route-planner"></span><h3><span class="section-number">10.2.1. </span>Route Planner<a class="headerlink" href="#module-polar_route.route_planner.route_planner" title="Link to this heading"></a></h3>
 <p>This module is used for construction of routes within an
 environmental mesh between a series of user defined waypoints</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">RoutePlanner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_func=&lt;class</span> <span class="pre">'polar_route.route_planner.crossing.NewtonianDistance'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">RoutePlanner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_func=&lt;class</span> <span class="pre">'polar_route.route_planner.crossing.NewtonianDistance'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner" title="Link to this definition"></a></dt>
 <dd><p>RoutePlanner finds the optimal route between a series of waypoints.
 The routes are constructed in a two stage process:</p>
 <p><strong>compute_routes</strong>: Uses a mesh based Dijkstra method to determine the optimal routes between a series of waypoints.</p>
@@ -130,7 +129,7 @@ The routes are constructed in a two stage process:</p>
 <p>—</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.env_mesh">
-<span class="sig-name descname"><span class="pre">env_mesh</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.env_mesh" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">env_mesh</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.env_mesh" title="Link to this definition"></a></dt>
 <dd><p>mesh object that contains the mesh’s cellboxes information and neighbour graph</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -141,7 +140,7 @@ The routes are constructed in a two stage process:</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.cost_func">
-<span class="sig-name descname"><span class="pre">cost_func</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.cost_func" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cost_func</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.cost_func" title="Link to this definition"></a></dt>
 <dd><p>Crossing point cost function for Dijkstra Route creation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -152,7 +151,7 @@ The routes are constructed in a two stage process:</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.config">
-<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.config" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.config" title="Link to this definition"></a></dt>
 <dd><p>JSON object that contains the attributes required for the route construction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -163,7 +162,7 @@ The routes are constructed in a two stage process:</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.src_wps">
-<span class="sig-name descname"><span class="pre">src_wps</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.src_wps" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">src_wps</span></span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.src_wps" title="Link to this definition"></a></dt>
 <dd><p>a list of the source waypoints that contains all of the dijkstra routing
 information to reuse this information for routes with the same source
 waypoint</p>
@@ -177,7 +176,7 @@ waypoint</p>
 <p>—</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._dijkstra">
-<span class="sig-name descname"><span class="pre">_dijkstra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_wps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._dijkstra" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_dijkstra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_wps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._dijkstra" title="Link to this definition"></a></dt>
 <dd><p>Runs Dijkstra’s algorithm across the whole of the domain</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -191,7 +190,7 @@ waypoint</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._dijkstra_routes">
-<span class="sig-name descname"><span class="pre">_dijkstra_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_waypoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._dijkstra_routes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_dijkstra_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_waypoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._dijkstra_routes" title="Link to this definition"></a></dt>
 <dd><p>Hidden function. Given internal variables and start and end waypoints this function
 returns a list of routes</p>
 <dl class="field-list simple">
@@ -212,7 +211,7 @@ returns a list of routes</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._fixed_speed">
-<span class="sig-name descname"><span class="pre">_fixed_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._fixed_speed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_fixed_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._fixed_speed" title="Link to this definition"></a></dt>
 <dd><p>Applying max speed for all cellboxes that are accessible</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -229,7 +228,7 @@ returns a list of routes</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._neighbour_cost">
-<span class="sig-name descname"><span class="pre">_neighbour_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._neighbour_cost" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_neighbour_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._neighbour_cost" title="Link to this definition"></a></dt>
 <dd><p>Determines the neighbour cost when travelling from the cell at node_id to the cell at neighbour_id given the
 specified case.</p>
 <dl class="field-list simple">
@@ -251,7 +250,7 @@ specified case.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._splitting_around_waypoints">
-<span class="sig-name descname"><span class="pre">_splitting_around_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._splitting_around_waypoints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_splitting_around_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._splitting_around_waypoints" title="Link to this definition"></a></dt>
 <dd><p>Applying splitting around waypoints if this is defined in config. This is applied
 inplace.</p>
 <dl class="field-list simple">
@@ -268,7 +267,7 @@ inplace.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._validate_wps">
-<span class="sig-name descname"><span class="pre">_validate_wps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._validate_wps" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_validate_wps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._validate_wps" title="Link to this definition"></a></dt>
 <dd><p>Determines if the provided waypoint list contains valid waypoints (i.e. both lie within the bounds of
 the env mesh).</p>
 <dl class="field-list simple">
@@ -287,7 +286,7 @@ removing any invalid waypoints</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner._zero_currents">
-<span class="sig-name descname"><span class="pre">_zero_currents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._zero_currents" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_zero_currents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner._zero_currents" title="Link to this definition"></a></dt>
 <dd><p>Applying zero currents to mesh</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -304,7 +303,7 @@ removing any invalid waypoints</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.compute_routes">
-<span class="sig-name descname"><span class="pre">compute_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.compute_routes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.compute_routes" title="Link to this definition"></a></dt>
 <dd><p>Computes the Dijkstra routes between waypoints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -322,14 +321,14 @@ pointing to the path of a csv file that contains this info</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.compute_smoothed_routes">
-<span class="sig-name descname"><span class="pre">compute_smoothed_routes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocked_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SIC'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.compute_smoothed_routes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">compute_smoothed_routes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.compute_smoothed_routes" title="Link to this definition"></a></dt>
 <dd><p>Uses the previously constructed Dijkstra routes and smooths them to remove mesh features
 <cite>paths</cite> will be updated in the output JSON</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.initialise_dijkstra_graph">
-<span class="sig-name descname"><span class="pre">initialise_dijkstra_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellboxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.initialise_dijkstra_graph" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initialise_dijkstra_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellboxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.initialise_dijkstra_graph" title="Link to this definition"></a></dt>
 <dd><p>Initialising dijkstra graph information in a standard form used for the smoothing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -355,7 +354,7 @@ pointing to the path of a csv file that contains this info</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.RoutePlanner.to_json">
-<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.to_json" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.RoutePlanner.to_json" title="Link to this definition"></a></dt>
 <dd><p>Output all information from the RoutePlanner object in json format</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -371,14 +370,14 @@ pointing to the path of a csv file that contains this info</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner._adjust_waypoints">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_adjust_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellboxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._adjust_waypoints" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_adjust_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellboxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._adjust_waypoints" title="Link to this definition"></a></dt>
 <dd><p>Moves waypoint to the closest accessible cellbox if it isn’t already in one. Allows up to 5 degrees flexibility
 by default.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner._load_waypoints">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_load_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._load_waypoints" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_load_waypoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waypoints</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._load_waypoints" title="Link to this definition"></a></dt>
 <dd><p>Load source and destination waypoints from dict or file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -396,13 +395,13 @@ dest_wps (list): list of destination waypoints</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner._mesh_boundary_polygon">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_mesh_boundary_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._mesh_boundary_polygon" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">_mesh_boundary_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner._mesh_boundary_polygon" title="Link to this definition"></a></dt>
 <dd><p>Creates a polygon from the mesh boundary</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.flatten_cases">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">flatten_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.flatten_cases" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">flatten_cases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbour_graph</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.flatten_cases" title="Link to this definition"></a></dt>
 <dd><p>Identifies the cases with neighbours around a given cell and gets the ids of those neighbouring cells.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -423,7 +422,7 @@ neighbour_indx (list): A list of neighbouring cell indices</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.route_planner.initialise_dijkstra_route">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">initialise_dijkstra_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dijkstra_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dijkstra_route</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.initialise_dijkstra_route" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.route_planner.</span></span><span class="sig-name descname"><span class="pre">initialise_dijkstra_route</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dijkstra_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dijkstra_route</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.route_planner.initialise_dijkstra_route" title="Link to this definition"></a></dt>
 <dd><p>Initialising dijkstra route into a standard form used for smoothing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -448,14 +447,14 @@ Each entry is a dictionary of the cellbox environmental and dijkstra information
 
 </section>
 <section id="module-polar_route.route_planner.crossing">
-<span id="crossing-points"></span><h3><span class="section-number">10.2.2. </span>Crossing Points<a class="headerlink" href="#module-polar_route.route_planner.crossing" title="Permalink to this heading"></a></h3>
+<span id="crossing-points"></span><h3><span class="section-number">10.2.2. </span>Crossing Points<a class="headerlink" href="#module-polar_route.route_planner.crossing" title="Link to this heading"></a></h3>
 <p>The python package <cite>crossing</cite> implements the optimisation of the crossing point for the Dijkstra path
 construction using the <cite>NewtonianDistance</cite> class.
 In the section below we will go through, stage by stage, how the crossing point is determined and the methods
 used within the class.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing.traveltime_in_cell">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing.</span></span><span class="sig-name descname"><span class="pre">traveltime_in_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tt_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing.traveltime_in_cell" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing.</span></span><span class="sig-name descname"><span class="pre">traveltime_in_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tt_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing.traveltime_in_cell" title="Link to this definition"></a></dt>
 <dd><p>Determine the traveltime within a cell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -480,10 +479,10 @@ dist (float): the distance within the cell</p>
 
 </section>
 <section id="module-polar_route.route_planner.crossing_smoothing">
-<span id="crossing-point-smoothing"></span><h3><span class="section-number">10.2.3. </span>Crossing Point Smoothing<a class="headerlink" href="#module-polar_route.route_planner.crossing_smoothing" title="Permalink to this heading"></a></h3>
+<span id="crossing-point-smoothing"></span><h3><span class="section-number">10.2.3. </span>Crossing Point Smoothing<a class="headerlink" href="#module-polar_route.route_planner.crossing_smoothing" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.FindEdge">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">FindEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.FindEdge" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">FindEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.FindEdge" title="Link to this definition"></a></dt>
 <dd><p>Class to return characteristics information about the edge connecting two
 cells. This information includes:</p>
 <p>crossing (tuple) - Crossing point (long,lat)
@@ -492,7 +491,7 @@ start (dict)     - Dictionary containing the environmental parameters of the sta
 end   (dict)     - Dictionary containing the environmental parameters of the end cell</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.FindEdge._find_edge">
-<span class="sig-name descname"><span class="pre">_find_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.FindEdge._find_edge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_find_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.FindEdge._find_edge" title="Link to this definition"></a></dt>
 <dd><p>Function that returns the edge connecting to cells, cell_a and cell_b. If there is no edge
 connecting the two then it returns None</p>
 <dl class="field-list simple">
@@ -516,11 +515,11 @@ end   (dict)     - Dictionary containing the environmental parameters of the end
 
 <dl class="py class">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">PathValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_vars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">PathValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_vars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues" title="Link to this definition"></a></dt>
 <dd><p>A class that returns attributes along a given path intersecting the environmental/vessel mesh.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues.path_requested_variables">
-<span class="sig-name descname"><span class="pre">path_requested_variables</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.path_requested_variables" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">path_requested_variables</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.path_requested_variables" title="Link to this definition"></a></dt>
 <dd><dl class="simple">
 <dt>e.g.{‘distance’:{‘processing’:’cumsum’},</dt><dd><p>‘traveltime’:{‘processing’:’cumsum’},
 ‘datetime’:{‘processing’:’cumsum’},
@@ -537,7 +536,7 @@ end   (dict)     - Dictionary containing the environmental parameters of the end
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues.unit_shipspeed">
-<span class="sig-name descname"><span class="pre">unit_shipspeed</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.unit_shipspeed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">unit_shipspeed</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.unit_shipspeed" title="Link to this definition"></a></dt>
 <dd><p>‘km/hr’,’knots’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -548,7 +547,7 @@ end   (dict)     - Dictionary containing the environmental parameters of the end
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues.unit_time">
-<span class="sig-name descname"><span class="pre">unit_time</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.unit_time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">unit_time</span></span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.unit_time" title="Link to this definition"></a></dt>
 <dd><p>‘days’,’hr’,’min’,’s</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -562,15 +561,15 @@ end   (dict)     - Dictionary containing the environmental parameters of the end
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues._waypoint_correction">
-<span class="sig-name descname"><span class="pre">_waypoint_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_requested_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues._waypoint_correction" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues._segment_costs">
+<span class="sig-name descname"><span class="pre">_segment_costs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_requested_variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues._segment_costs" title="Link to this definition"></a></dt>
 <dd><p>Applies an in-cell correction to a path segments to determine ‘path_requested_variables’
 defined by the use (e.g. total distance, total traveltime, total fuel usage)</p>
 <dl class="simple">
 <dt>Input:</dt><dd><p>path_requested_variable (dict) - A dictionary of the path requested variables
 source_graph (dict) - Dictionary of the cell in which the vessel is transiting
-Wp (tuple) - Start Waypoint location (long,lat)
-Cp (tuple) - End Waypoint location (long,lat)</p>
+wp (tuple) - Start Waypoint location (long,lat)
+cp (tuple) - End Waypoint location (long,lat)</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -583,7 +582,7 @@ case (int) - Adjacency case type connecting the two points</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.PathValues.objective_function">
-<span class="sig-name descname"><span class="pre">objective_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent_pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_waypoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.objective_function" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">objective_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjacent_pairs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_waypoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.PathValues.objective_function" title="Link to this definition"></a></dt>
 <dd><p>Given a  list of adjacent pairs determine the path related information
 apply waypoint_correction to get path related information along the path</p>
 <dl class="simple">
@@ -598,7 +597,7 @@ end_waypoint (tuple) - End waypoint (long,lat)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.dist_around_globe">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">dist_around_globe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossing_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.dist_around_globe" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">dist_around_globe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crossing_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.dist_around_globe" title="Link to this definition"></a></dt>
 <dd><p>Determining the longitude distance around the globe between two points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -618,7 +617,7 @@ end_waypoint (tuple) - End waypoint (long,lat)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.rhumb_line_distance">
-<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">rhumb_line_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_waypoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.rhumb_line_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">rhumb_line_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_waypoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_waypoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.rhumb_line_distance" title="Link to this definition"></a></dt>
 <dd><p>Defining the rhumb line distance from a given waypoint start and end point</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -632,6 +631,30 @@ end_waypoint (tuple) - End waypoint (long,lat)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>distance (float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="polar_route.route_planner.crossing_smoothing.rhumb_traveltime_in_cell">
+<span class="sig-prename descclassname"><span class="pre">polar_route.route_planner.crossing_smoothing.</span></span><span class="sig-name descname"><span class="pre">rhumb_traveltime_in_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cellbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#polar_route.route_planner.crossing_smoothing.rhumb_traveltime_in_cell" title="Link to this definition"></a></dt>
+<dd><p>Calculates traveltime in a cellbox based off of rhumb line distance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cellbox</strong> (<em>dict</em>) – Cellbox containing line segment being analysed</p></li>
+<li><p><strong>cp</strong> (<em>ndarray</em>) – End waypoint coordinates   (long,lat)</p></li>
+<li><p><strong>sp</strong> (<em>ndarray</em>) – Start waypoint coordinates (long,lat)</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – Ship speed value</p></li>
+<li><p><strong>u</strong> (<em>float</em>) – Current velocity x-component</p></li>
+<li><p><strong>v</strong> (<em>float</em>) – Current velocity y-component</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Calculated rhumb line travel time</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tt (float)</p>
 </dd>
 </dl>
 </dd></dl>

@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4. Command Line Interface &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>4. Command Line Interface &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -91,10 +89,10 @@
            <div itemprop="articleBody">
              
   <section id="command-line-interface">
-<span id="cli"></span><h1><span class="section-number">4. </span>Command Line Interface<a class="headerlink" href="#command-line-interface" title="Permalink to this heading"></a></h1>
+<span id="cli"></span><h1><span class="section-number">4. </span>Command Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h1>
 <p>The PolarRoute package provides multiple CLI entry points, intended to be used in succession to plan a route through a digital environment.</p>
 <section id="create-mesh">
-<h2><span class="section-number">4.1. </span>create_mesh<a class="headerlink" href="#create-mesh" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.1. </span>create_mesh<a class="headerlink" href="#create-mesh" title="Link to this heading"></a></h2>
 <p>The <em>create_mesh</em> entry point builds a digital environment file from a collection of source data, which can then be used
 by the vessel performance modeller and route planner.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">create_mesh</span> <span class="o">&lt;</span><span class="n">config</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span>
@@ -113,7 +111,7 @@ There are also example configuration files available in the directory <code clas
 </div>
 </section>
 <section id="add-vehicle">
-<h2><span class="section-number">4.2. </span>add_vehicle<a class="headerlink" href="#add-vehicle" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.2. </span>add_vehicle<a class="headerlink" href="#add-vehicle" title="Link to this heading"></a></h2>
 <p>The <em>add_vehicle</em> command allows vehicle specific simulations to be performed on the digital environment. This vehicle specific
 information is then encoded into the digital environment file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">add_vehicle</span> <span class="o">&lt;</span><span class="n">vessel_config</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">mesh</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span>
@@ -134,7 +132,7 @@ The required <em>mesh.json</em> file can be created using the <em>create_mesh</e
 <p>The format of the return Vessel_Mesh.json file is explained in <a class="reference internal" href="Outputs.html#the-vessel-mesh-json-file"><span class="std std-ref">The Vessel_mesh.json file</span></a> section of the documentation.</p>
 </section>
 <section id="resimulate-vehicle">
-<h2><span class="section-number">4.3. </span>resimulate_vehicle<a class="headerlink" href="#resimulate-vehicle" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.3. </span>resimulate_vehicle<a class="headerlink" href="#resimulate-vehicle" title="Link to this heading"></a></h2>
 <p>The <em>resimulate_vehicle</em> command allows vehicle specific simulations to be performed again on an existing vessel mesh.
 This allows new models to be easily run using the pre-existing config parameters.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">resimulate_vehicle</span> <span class="o">&lt;</span><span class="n">vessel_mesh</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span>
@@ -151,7 +149,7 @@ This allows new models to be easily run using the pre-existing config parameters
 </div>
 </section>
 <section id="optimise-routes">
-<h2><span class="section-number">4.4. </span>optimise_routes<a class="headerlink" href="#optimise-routes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.4. </span>optimise_routes<a class="headerlink" href="#optimise-routes" title="Link to this heading"></a></h2>
 <p>Optimal routes through a mesh can be calculated using the command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">optimise_routes</span> <span class="o">&lt;</span><span class="n">route_config</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">vessel_mesh</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">waypoints</span><span class="o">.</span><span class="n">csv</span><span class="o">&gt;</span>
 </pre></div>
@@ -230,7 +228,7 @@ waypoints marked with an <strong>X</strong> in the <em>Source</em> column to all
 <p>The format of the returned <em>route.json</em> file is explained in <a class="reference internal" href="Outputs.html#the-route-json-file"><span class="std std-ref">The Route.json file</span></a> section of this documentation.</p>
 </section>
 <section id="calculate-route">
-<h2><span class="section-number">4.5. </span>calculate_route<a class="headerlink" href="#calculate-route" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.5. </span>calculate_route<a class="headerlink" href="#calculate-route" title="Link to this heading"></a></h2>
 <p>The cost of a user-defined route through a pre-generated mesh containing vehicle information can be calculated using the command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculate_route</span> <span class="o">&lt;</span><span class="n">vessel_mesh</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">route</span><span class="o">&gt;</span>
 </pre></div>
@@ -253,7 +251,7 @@ also be logged out once the route file has been generated. If the user-defined r
 considered inaccessible to the vessel then a warning will be displayed and no route will be saved.</p>
 </section>
 <section id="extract-routes">
-<h2><span class="section-number">4.6. </span>extract_routes<a class="headerlink" href="#extract-routes" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.6. </span>extract_routes<a class="headerlink" href="#extract-routes" title="Link to this heading"></a></h2>
 <p>This command allows individual routes to be extracted from a larger file containing multiple routes. It automatically
 determines the output format from the output filename given. Supported output types are json, geojson, csv, kml and gpx.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">extract_routes</span> <span class="o">&lt;</span><span class="n">route_file</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span>
@@ -270,7 +268,7 @@ determines the output format from the output filename given. Supported output ty
 </div>
 </section>
 <section id="plotting">
-<h2><span class="section-number">4.7. </span>Plotting<a class="headerlink" href="#plotting" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">4.7. </span>Plotting<a class="headerlink" href="#plotting" title="Link to this heading"></a></h2>
 <p>Meshes produced at any stage in the route planning process can be visualised using the <code class="code docutils literal notranslate"><span class="pre">plot_mesh</span></code> cli command from the <a class="reference external" href="https://github.com/antarctica/GeoPlot">GeoPlot</a>
 library. Meshes and routes can also be plotted in other GIS software such as QGIS by exporting the mesh to a commonly used format such
 as .geojson or .tif using the export_mesh command described in the <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a> docs.</p>
@@ -285,9 +283,10 @@ as .geojson or .tif using the export_mesh command described in the <a class="ref
 </pre></div>
 </div>
 <figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/PolarRoute_CLI.png"><img alt="../_images/PolarRoute_CLI.png" src="../_images/PolarRoute_CLI.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/PolarRoute_CLI.png"><img alt="../_images/PolarRoute_CLI.png" src="../_images/PolarRoute_CLI.png" style="width: 700px;" />
+</a>
 <figcaption>
-<p><span class="caption-text"><em>Overview figure of the Command Line Interface entry points of PolarRoute</em></span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><em>Overview figure of the Command Line Interface entry points of PolarRoute</em></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>

@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7. Background &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>7. Background &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -86,19 +84,20 @@
            <div itemprop="articleBody">
              
   <section id="background">
-<h1><span class="section-number">7. </span>Background<a class="headerlink" href="#background" title="Permalink to this heading"></a></h1>
+<h1><span class="section-number">7. </span>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h1>
 <section id="code-overview">
-<h2><span class="section-number">7.1. </span>Code Overview<a class="headerlink" href="#code-overview" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">7.1. </span>Code Overview<a class="headerlink" href="#code-overview" title="Link to this heading"></a></h2>
 <p>The PolarRoute package provides an automated route-planning method for use by an ice-strengthened vessel operating in the polar regions. The long-distance route planning approach builds on the method developed for underwater vehicles reported in Fox et al (2021). We start with the same grid-based route construction approach to obtain routes that satisfy constraints on the performance of the ship in ice. We then apply a novel route-smoothing method to the resulting routes, shortening the grid-based routes and ensure that routes follow great circle arcs where possible. This two-stage process efficiently generates routes that follow standard navigation solutions in open water and optimise vessel performance in and around areas dominated by sea ice.  While we have focussed on navigation in and around polar ice, our methods are also applicable to shipping in a broader context (e.g.: commercial shipping) where route-planning must be responsive to changing local and weather conditions.</p>
 </section>
 <section id="code-structure">
-<h2><span class="section-number">7.2. </span>Code Structure<a class="headerlink" href="#code-structure" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">7.2. </span>Code Structure<a class="headerlink" href="#code-structure" title="Link to this heading"></a></h2>
 <p>The aim of this manual is to provide the user with all the tools that they need to run the software for a set of examples. We also hope that the background information supplied for each section allows the user to understand the methods used throughout this software package.</p>
 <p>The PolarRoute package can be separated into the four main sections shown in the Figure below:</p>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/FlowDiagram_Overview.png"><img alt="../_images/FlowDiagram_Overview.png" src="../_images/FlowDiagram_Overview.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/FlowDiagram_Overview.png"><img alt="../_images/FlowDiagram_Overview.png" src="../_images/FlowDiagram_Overview.png" style="width: 700px;" />
+</a>
 <figcaption>
-<p><span class="caption-text"><em>Overview figure outlining the stages in planning a route with PolarRoute. Generation of the initial environmental mesh is performed by the MeshiPhi package.</em></span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><em>Overview figure outlining the stages in planning a route with PolarRoute. Generation of the initial environmental mesh is performed by the MeshiPhi package.</em></span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>The separate stages can be broken down into:</p>
@@ -107,9 +106,10 @@
 <li><p><a class="reference internal" href="Route_optimisation.html#module-polar_route.route_planner.route_planner"><span class="std std-ref">Route Planner</span></a> - Generating grid-based dijkstra paths and data constrained path smoothing from the gridded solutions - In this section we will give the user the background to constructing paths between user defined waypoints that minimise a specific objective function (e.g. travel time, fuel). Once the gridded Dijkstra paths are formulated we outline a smoothing based procedure that uses the data information to generate non-gridded improved route paths.</p></li>
 </ol>
 <figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/PolarRoute_CodeFlowDiagram.png"><img alt="../_images/PolarRoute_CodeFlowDiagram.png" src="../_images/PolarRoute_CodeFlowDiagram.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/PolarRoute_CodeFlowDiagram.png"><img alt="../_images/PolarRoute_CodeFlowDiagram.png" src="../_images/PolarRoute_CodeFlowDiagram.png" style="width: 700px;" />
+</a>
 <figcaption>
-<p><span class="caption-text"><em>Overview figure outlining the Input/Output of all sections of the Route Planning pipeline</em></span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text"><em>Overview figure outlining the Input/Output of all sections of the Route Planning pipeline</em></span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>Each stage of this pipeline makes use of a configuration file, found in the <a class="reference internal" href="Configuration/Configuration_overview.html#configuration-overview"><span class="std std-ref">Configuration Overview</span></a> section of the documentation

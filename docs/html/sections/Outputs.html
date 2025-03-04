@@ -1,23 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6. Outputs - Data Types &mdash; polar_route 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+  <title>6. Outputs - Data Types &mdash; polar_route 1.1.8 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=df104e6e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -90,9 +88,9 @@
            <div itemprop="articleBody">
              
   <section id="outputs-data-types">
-<span id="outputs"></span><h1><span class="section-number">6. </span>Outputs - Data Types<a class="headerlink" href="#outputs-data-types" title="Permalink to this heading"></a></h1>
+<span id="outputs"></span><h1><span class="section-number">6. </span>Outputs - Data Types<a class="headerlink" href="#outputs-data-types" title="Link to this heading"></a></h1>
 <section id="the-vessel-mesh-json-file">
-<h2><span class="section-number">6.1. </span>The Vessel_mesh.json file<a class="headerlink" href="#the-vessel-mesh-json-file" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.1. </span>The Vessel_mesh.json file<a class="headerlink" href="#the-vessel-mesh-json-file" title="Link to this heading"></a></h2>
 <p>The vessel performance mesh is an extension to an environmental mesh created by the
 <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a> library.
 Once a discrete mesh environment is created, it is then passed to the vessel performance modeller
@@ -143,11 +141,11 @@ have a set of new attributes as follows:</p>
 </ul>
 </section>
 <section id="the-route-json-file">
-<h2><span class="section-number">6.2. </span>The Route.json file<a class="headerlink" href="#the-route-json-file" title="Permalink to this heading"></a></h2>
+<h2><span class="section-number">6.2. </span>The Route.json file<a class="headerlink" href="#the-route-json-file" title="Link to this heading"></a></h2>
 <p>During the route planning stage of the pipline information on the routes and the waypoints used are saved
 as outputs to the processing stage. Descriptions of the structure of the two outputs are given below:</p>
 <section id="waypoints">
-<h3><span class="section-number">6.2.1. </span>waypoints<a class="headerlink" href="#waypoints" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">6.2.1. </span>waypoints<a class="headerlink" href="#waypoints" title="Link to this heading"></a></h3>
 <p>An entry in the json including all the information about the waypoints defined by the user in the <cite>waypoints.csv</cite>
 file. It may be the case that not all waypoints would have been used in the route construction, but all waypoints
 that are defined can be found in this entry. The structure of the entry is as follows:</p>
@@ -211,7 +209,7 @@ that are defined can be found in this entry. The structure of the entry is as fo
 waypoints_dataframe = pd.DataFrame(waypoints)</p>
 </section>
 <section id="paths">
-<h3><span class="section-number">6.2.2. </span>paths<a class="headerlink" href="#paths" title="Permalink to this heading"></a></h3>
+<h3><span class="section-number">6.2.2. </span>paths<a class="headerlink" href="#paths" title="Link to this heading"></a></h3>
 <p>An entry in the json, in geojson format, including all the routes constructed between the user defined waypoints. The structure of this entry is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>\<span class="n">n</span>
     <span class="s1">&#39;types&#39;</span><span class="p">:</span><span class="s1">&#39;FeatureCollection&#39;</span><span class="p">,</span>\<span class="n">n</span>
