@@ -95,7 +95,7 @@
 <p>The CLI provides multiple entry-points through which the PolarRoute package can be used. Each command is described in the
 <a class="reference internal" href="Command_line_interface.html#cli"><span class="std std-ref">Command Line Interface</span></a> section of these docs.</p>
 <p>To summarise, the basic process is to create an environment mesh, add vehicle performance characteristics to each
-cell in that mesh and then find an optimal route between waypoints located within that mesh. At any stage, <a class="reference external" href="https://github.com/antarctica/GeoPlot">GeoPlot</a>
+cell in that mesh and then find an optimal route between waypoints located within that mesh. At any stage, <a class="reference external" href="https://github.com/bas-amop/GeoPlot">GeoPlot</a>
 can be used to visualise the outputs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># From MeshiPhi</span>
 <span class="n">create_mesh</span> <span class="o">&lt;</span><span class="n">mesh_config_file</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">mesh_output_file</span><span class="o">&gt;</span>
@@ -109,7 +109,7 @@ can be used to visualise the outputs.</p>
 </pre></div>
 </div>
 <p>Above are the commands to run in order to fulfill this process. If you have successfully installed PolarRoute and would
-like to try it out, <a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>
+like to try it out, <a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>
 is some example data which you can use. Simply extract the configs out of the zip archive, and run the commands on the
 appropriate files. To map the commands to the files in the zip archive:</p>
 <ul class="simple">
@@ -134,8 +134,8 @@ someone would typically interact with PolarRoute through the terminal.</p>
 we expect the optimal calculated route to be a straight line between two waypoints. Over long distances this is seen as
 a great circle arc on the mercator projection that GeoPlot uses to display the mesh.</p>
 <ul class="simple">
-<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_1.zip"><code class="xref download docutils literal notranslate"><span class="pre">Uniform</span> <span class="pre">Mesh</span></code></a></p></li>
-<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_2.zip"><code class="xref download docutils literal notranslate"><span class="pre">Non-Uniform</span> <span class="pre">Mesh</span></code></a></p></li>
+<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_1.zip"><code class="xref download docutils literal notranslate"><span class="pre">Uniform</span> <span class="pre">Mesh</span></code></a></p></li>
+<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_2.zip"><code class="xref download docutils literal notranslate"><span class="pre">Non-Uniform</span> <span class="pre">Mesh</span></code></a></p></li>
 <li><p><a class="reference external" href="https://colab.research.google.com/drive/1N1mxOy2oX7bEGtPy7Ztshrs4Fs_7lBpV?usp=sharing">See on Google Colab</a></p></li>
 </ul>
 </section>
@@ -145,7 +145,7 @@ a great circle arc on the mercator projection that GeoPlot uses to display the m
 realistic representation of real-world features such as bathymetry. Here we walk through every step involved in PolarRoute,
 from creating the mesh through to optimising a route within it.</p>
 <ul class="simple">
-<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">Gaussian</span> <span class="pre">Random</span> <span class="pre">Field</span> <span class="pre">data</span></code></a></p></li>
+<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">Gaussian</span> <span class="pre">Random</span> <span class="pre">Field</span> <span class="pre">data</span></code></a></p></li>
 <li><p><a class="reference external" href="https://colab.research.google.com/drive/1BOzTyBjpCbAJ6PMJi0GS55shuaMu72h5?usp=sharing">Synthetic Data Example</a></p></li>
 </ul>
 </section>
@@ -154,11 +154,11 @@ from creating the mesh through to optimising a route within it.</p>
 <p>Real world data has been used to generate these meshes around the coast of Antarctica. This data is publicly available,
 however is not included here to avoid violating data sharing policies. Instead, we provide a mesh file after the ‘create_mesh’ stage
 since that is a derived product. The data files used to construct the mesh can be seen in the <code class="code docutils literal notranslate"><span class="pre">data_sources</span></code> field of
-the config contained within the provided mesh. See <a class="reference external" href="https://antarctica.github.io/MeshiPhi/html/sections/Dataloaders/overview.html">Dataloaders</a>
+the config contained within the provided mesh. See <a class="reference external" href="https://bas-amop.github.io/MeshiPhi/html/sections/Dataloaders/overview.html">Dataloaders</a>
 in the MeshiPhi docs for more info on each source of data that PolarRoute currently supports.</p>
 <ul class="simple">
-<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_4.zip"><code class="xref download docutils literal notranslate"><span class="pre">Real-world</span> <span class="pre">data</span> <span class="pre">1</span></code></a></p></li>
-<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_6.zip"><code class="xref download docutils literal notranslate"><span class="pre">Real-world</span> <span class="pre">data</span> <span class="pre">2</span></code></a></p></li>
+<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_4.zip"><code class="xref download docutils literal notranslate"><span class="pre">Real-world</span> <span class="pre">data</span> <span class="pre">1</span></code></a></p></li>
+<li><p><a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_6.zip"><code class="xref download docutils literal notranslate"><span class="pre">Real-world</span> <span class="pre">data</span> <span class="pre">2</span></code></a></p></li>
 <li><p><a class="reference external" href="https://colab.research.google.com/drive/1atTQFk4eK_SKImHofmEXIfoN9oAP1cJb?usp=sharing">Real Data Example</a></p></li>
 </ul>
 </section>
@@ -167,9 +167,9 @@ in the MeshiPhi docs for more info on each source of data that PolarRoute curren
 <h1><span class="section-number">3. </span>Python Examples<a class="headerlink" href="#python-examples" title="Link to this heading"></a></h1>
 <p>Route planning may also be done in a python interpreter. In this case, the CLI is not required but the steps required for route planning
 follow the same format - create a digital environment; simulated a vessel against it; optimise a route plan through the digital environment.
-To perform the steps detailed in this section, a mesh must first be generated using <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a>.</p>
+To perform the steps detailed in this section, a mesh must first be generated using <a class="reference external" href="https://github.com/bas-amop/MeshiPhi">MeshiPhi</a>.</p>
 <p>The files used in the following example are those used in the synthetic example from the notebook section above. Download them
-<a class="reference download external" download="" href="https://raw.githubusercontent.com/antarctica/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+<a class="reference download external" download="" href="https://raw.githubusercontent.com/bas-amop/PolarRoute/main/docs/source/sections/Examples/example_3.zip"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 <section id="creating-the-digital-environment">
 <h2><span class="section-number">3.1. </span>Creating the digital environment.<a class="headerlink" href="#creating-the-digital-environment" title="Link to this heading"></a></h2>
 <p>A configuration file is needed to initialise the <strong>EnvironmentMesh</strong> object which forms the digital environment. This configuration file
@@ -184,7 +184,7 @@ within a python interpreter.</p>
 </div>
 <p>The <strong>EnvironmentMesh</strong> object can then be initialised. This mesh object will be constructed using the parameters in its
 configuration file. This mesh object can then be manipulated further, such as increasing its resolution through further
-splitting, adding additional data sources or altering its configuration parameters. See the relevant section of the <a class="reference external" href="https://antarctica.github.io/MeshiPhi/html/sections/Configuration/Mesh_construction_config.html">MeshiPhi docs</a>
+splitting, adding additional data sources or altering its configuration parameters. See the relevant section of the <a class="reference external" href="https://bas-amop.github.io/MeshiPhi/html/sections/Configuration/Mesh_construction_config.html">MeshiPhi docs</a>
 for a more in-depth explanation. The <strong>EnvironmentMesh</strong> object can then be cast to a json object and saved to a file.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">meshiphi.mesh_generation.mesh_builder</span> <span class="kn">import</span> <span class="n">MeshBuilder</span>
 
@@ -206,7 +206,7 @@ Just pass the dictionary created from the <code class="code docutils literal not
 </section>
 <section id="simulating-a-vessel-in-a-digital-environment">
 <h2><span class="section-number">3.2. </span>Simulating a Vessel in a Digital Environment<a class="headerlink" href="#simulating-a-vessel-in-a-digital-environment" title="Link to this heading"></a></h2>
-<p>Once a digital environment <strong>EnvironmentMesh</strong> object has been created with <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a>,
+<p>Once a digital environment <strong>EnvironmentMesh</strong> object has been created with <a class="reference external" href="https://github.com/bas-amop/MeshiPhi">MeshiPhi</a>,
 a vessel’s performance when travelling within it may be simulated. The <strong>VesselPerformanceModeller</strong> object requires a
 digital environment in <em>json</em> format and vessel specific configuration parameters, also in <em>json</em> format. These may either
 be loaded from a file, or created within any python interpreter.</p>

@@ -102,7 +102,7 @@ by the vessel performance modeller and route planner.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="p">:</span> <span class="n">A</span> <span class="n">configuration</span> <span class="n">file</span> <span class="n">detailing</span> <span class="n">how</span> <span class="n">to</span> <span class="n">build</span> <span class="n">the</span> <span class="n">digital</span> <span class="n">environment</span><span class="o">.</span> <span class="n">JSON</span> <span class="n">parsable</span>
 </pre></div>
 </div>
-<p>The format of the required <em>config.json</em> file can be found in the <a class="reference external" href="https://antarctica.github.io/MeshiPhi/html/sections/Configuration/Mesh_construction_config.html">“Configuration - Mesh Construction”</a> section of the <a class="reference external" href="https://antarctica.github.io/MeshiPhi/">MeshiPhi documentation</a> .
+<p>The format of the required <em>config.json</em> file can be found in the <a class="reference external" href="https://bas-amop.github.io/MeshiPhi/html/sections/Configuration/Mesh_construction_config.html">“Configuration - Mesh Construction”</a> section of the <a class="reference external" href="https://bas-amop.github.io/MeshiPhi/">MeshiPhi documentation</a> .
 There are also example configuration files available in the directory <code class="code docutils literal notranslate"><span class="pre">examples/environment_config/grf_example.config.json</span></code></p>
 <p>optional arguments:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">v</span> <span class="p">(</span><span class="n">verbose</span> <span class="n">logging</span><span class="p">)</span>
@@ -123,7 +123,7 @@ information is then encoded into the digital environment file.</p>
 </pre></div>
 </div>
 <p>The format for the required <em>vessel.json</em> file can be found in the <a class="reference internal" href="Configuration/Vessel_performance_config.html#configuration-vessel-performance-modeller"><span class="std std-ref">Configuration - Vessel Performance Modeller</span></a> section of the documentation.
-The required <em>mesh.json</em> file can be created using the <em>create_mesh</em> command from the <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a> package.</p>
+The required <em>mesh.json</em> file can be created using the <em>create_mesh</em> command from the <a class="reference external" href="https://github.com/bas-amop/MeshiPhi">MeshiPhi</a> package.</p>
 <p>optional arguments are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">v</span> <span class="p">(</span><span class="n">verbose</span> <span class="n">logging</span><span class="p">)</span>
 <span class="o">-</span><span class="n">o</span> <span class="o">&lt;</span><span class="n">output</span> <span class="n">location</span><span class="o">&gt;</span> <span class="p">(</span><span class="nb">set</span> <span class="n">output</span> <span class="n">location</span> <span class="k">for</span> <span class="n">mesh</span><span class="p">)</span>
@@ -269,9 +269,9 @@ determines the output format from the output filename given. Supported output ty
 </section>
 <section id="plotting">
 <h2><span class="section-number">4.7. </span>Plotting<a class="headerlink" href="#plotting" title="Link to this heading"></a></h2>
-<p>Meshes produced at any stage in the route planning process can be visualised using the <code class="code docutils literal notranslate"><span class="pre">plot_mesh</span></code> cli command from the <a class="reference external" href="https://github.com/antarctica/GeoPlot">GeoPlot</a>
+<p>Meshes produced at any stage in the route planning process can be visualised using the <code class="code docutils literal notranslate"><span class="pre">plot_mesh</span></code> cli command from the <a class="reference external" href="https://github.com/bas-amop/GeoPlot">GeoPlot</a>
 library. Meshes and routes can also be plotted in other GIS software such as QGIS by exporting the mesh to a commonly used format such
-as .geojson or .tif using the export_mesh command described in the <a class="reference external" href="https://github.com/antarctica/MeshiPhi">MeshiPhi</a> docs.</p>
+as .geojson or .tif using the export_mesh command described in the <a class="reference external" href="https://github.com/bas-amop/MeshiPhi">MeshiPhi</a> docs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_mesh</span> <span class="o">&lt;</span><span class="n">mesh</span><span class="o">.</span><span class="n">json</span><span class="o">&gt;</span>
 </pre></div>
 </div>
