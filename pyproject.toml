@@ -42,9 +42,9 @@ optional-dependencies.test = { file = ["tests/requirements.txt"] }
 
 [project.urls]
 Homepage = "https://www.bas.ac.uk/project/autonomous-marine-operations-planning"
-Documentation = "https://antarctica.github.io/PolarRoute"
-Repository = "https://github.com/antarctica/PolarRoute"
-Issues = "https://github.com/antarctica/PolarRoute/issues"
+Documentation = "https://bas-amop.github.io/PolarRoute"
+Repository = "https://github.com/bas-amop/PolarRoute"
+Issues = "https://github.com/bas-amop/PolarRoute/issues"
 
 [project.scripts]
 add_vehicle = "polar_route.cli:add_vehicle_cli"
