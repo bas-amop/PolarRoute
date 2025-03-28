@@ -182,6 +182,7 @@
                     "name": "Route - Waypoint 1 to Waypoint 2",
                     "from": "Waypoint 1",
                     "to": "Waypoint 2",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "0"
                     ],

@@ -1,8 +1,7 @@
 vessel_schema = {
     "type": "object",
     "required": ["vessel_type", "max_speed",
-                 "unit", "max_ice_conc",
-                 "min_depth"],
+                 "unit"],
     "additionalProperties": True,
     "properties": {
         "vessel_type": {"type": "string"},

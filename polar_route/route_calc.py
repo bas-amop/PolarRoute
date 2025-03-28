@@ -7,14 +7,14 @@ from shapely import wkt, distance
 from shapely.geometry import Point, LineString, MultiLineString, Polygon
 from polar_route.utils import gpx_route_import
 from polar_route.route_planner.crossing import traveltime_in_cell
-from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, dist_around_globe
+from polar_route.route_planner.crossing_smoothing import rhumb_line_distance, dist_around_globe, rhumb_traveltime_in_cell
 
 
 # Define ordering of cases in array data
-case_indices = np.array([1, 2, 3, 4, -1, -2, -3, -4])
+direction = [1, 2, 3, 4, -1, -2, -3, -4]
 
 
-def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y='vC', case=0):
+def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y='vC', case=0, dijkstra=False):
     """
         Calculate travel time and distance for two points.
 
@@ -32,12 +32,13 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
             distance (float): the distance along the line segment
     """
 
-    idx = np.where(case_indices==case)[0][0]
+    idx = direction.index(case)
     # Conversion factors from lat/long degrees to metres
     m_long = 111.321 * 1000
     m_lat = 111.386 * 1000
     x = dist_around_globe(cp[0], wp[0]) * m_long * np.cos(wp[1] * (np.pi / 180))
     y = (cp[1] - wp[1]) * m_lat
+
     if (vector_x in cellbox) and (vector_y in cellbox):
         su = cellbox[vector_x]
         sv = cellbox[vector_y]
@@ -46,8 +47,14 @@ def traveltime_distance(cellbox, wp, cp, speed='speed', vector_x='uC', vector_y=
         sv = 0
     ssp = cellbox[speed][idx] * (1000 / (60 * 60))
     try:
-        traveltime = traveltime_in_cell(x, y, su, sv, ssp)
-        dist = rhumb_line_distance(cp, wp)
+        # If dijkstra path, then calc traveltime based on dijkstra path lengths
+        if dijkstra:
+            traveltime = traveltime_in_cell(x, y, su, sv, ssp)
+            dist = rhumb_line_distance(cp, wp)
+            # Otherwise use smoothed length from real-world geometry
+        else:
+            traveltime = rhumb_traveltime_in_cell(cellbox.to_dict(), cp, wp, ssp, su, sv)
+            dist = rhumb_line_distance(cp, wp)
     except:
         traveltime = 0
         dist = 0
@@ -105,8 +112,9 @@ def load_route(route_file):
 
         Returns:
             df (Dataframe): Dataframe with route info
-            from_wp (str): Name of start waypoint
-            to_wp (str) Name of end waypoint
+            from_wp (str):  Name of start waypoint
+            to_wp (str):    Name of end waypoint
+            route_type(str):Type of route, either 'smoothed' or 'dijkstra' 
 
     """
     logging.info(f"Loading route from: {route_file}")
@@ -115,11 +123,17 @@ def load_route(route_file):
         df = pd.read_csv(route_file)
         to_wp = df['Name'].iloc[-1]
         from_wp = df['Name'].iloc[0]
-    # Loading route from geojson file
+        route_type = "smoothed"
+
+    # Loading route from either geojson route file or full json output with route and mesh
     elif route_file[-4:] == "json":
         with open(route_file, "r") as f:
             route_json = json.load(f)
-        route_coords = route_json['features'][0]['geometry']['coordinates']
+        if "features" in route_json.keys():
+            route_coords = route_json['features'][0]['geometry']['coordinates']
+        else:
+            route_json = route_json['paths']
+            route_coords = route_json['features'][0]['geometry']['coordinates']
         to_wp = route_json['features'][0]['properties']['to']
         from_wp = route_json['features'][0]['properties']['from']
         longs = [c[0] for c in route_coords]
@@ -127,6 +141,17 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
+        # Read in type of route if available
+        if 'route_type' in route_json['features'][0]['properties'].keys():
+            if route_json['features'][0]['properties']['route_type'] == 'dijkstra':
+                route_type = "dijkstra"
+            elif route_json['features'][0]['properties']['route_type'] == 'smoothed':
+                route_type = "smoothed"
+            else:
+                raise ValueError("'route_type' key must be 'dijkstra' or 'smoothed'. Other route types not implemented yet.")
+        else:
+            route_type = "smoothed"
+
     elif route_file[-3:] == "gpx":
         route_json = gpx_route_import(route_file)
         route_coords = route_json['features'][0]['geometry']['coordinates']
@@ -137,6 +162,7 @@ def load_route(route_file):
         df = pd.DataFrame()
         df['Long'] = longs
         df['Lat'] = lats
+        route_type = "smoothed"
     else:
         logging.warning("Invalid route input! Please supply either a csv, gpx or geojson file with the route waypoints.")
         return None
@@ -146,8 +172,7 @@ def load_route(route_file):
     logging.debug(f"Route has {len(df)} waypoints")
     df['id'] = 1
     df['order'] = np.arange(len(df))
-
-    return df, from_wp, to_wp
+    return df, from_wp, to_wp, route_type
 
 
 def load_mesh(mesh_file):
@@ -272,23 +297,31 @@ def order_track(df, track_points):
     user_track = pd.DataFrame({'Point': path_point, 'CellID': cell_ids})
     return user_track
 
-def route_calc(route_file, mesh_file):
+def route_calc(df, from_wp, to_wp, mesh, route_type):
     """
         Function to calculate the fuel/time cost of a user defined route in a given mesh
 
         Args:
-            route_file (str): Path to user defined route
-            mesh_file (str): Path to mesh with vehicle information
+            df (DataFrame): Route info in dataframe format
+            from_wp (str): Name of start waypoint
+            to_wp (str): Name of end waypoint
+            mesh (json): A Mesh with encoded vehicle information
+            route_type(str): Type of route being calculated, either 'dijkstra' or 'smoothed'
 
         Returns:
             user_path (dict): User defined route in geojson format with calculated cost information
     """
+    # Flag indicating whether should compute route length using dijkstra or smoothed method
+    dijkstra_route = True if route_type == "dijkstra" else False
 
-    # Load route info and waypoint names from file
-    df, from_wp, to_wp = load_route(route_file)
+    mesh_df = pd.DataFrame(mesh['cellboxes'])
+    mesh_df['geometry'] = mesh_df['geometry'].apply(wkt.loads)
+    mesh_gdf = gpd.GeoDataFrame(mesh_df, crs='EPSG:4326', geometry='geometry')
 
-    # Load mesh info from file
-    mesh, region_poly = load_mesh(mesh_file)
+    region = mesh['config']['mesh_info']['region']
+    region_poly = Polygon(((region['long_min'], region['lat_min']), (region['long_min'], region['lat_max']),
+                           (region['long_max'], region['lat_max']), (region['long_max'], region['lat_min'])))
+
 
     # Check route waypoints contained in mesh bounds
     for idx in range(len(df)):
@@ -300,7 +333,7 @@ def route_calc(route_file, mesh_file):
             return None
 
     # Find points where route crosses mesh
-    track_points = find_intersections(df, mesh)
+    track_points = find_intersections(df, mesh_gdf)
 
     # Loop through crossing points to order them into a track along the route
     user_track = order_track(df, track_points)
@@ -309,14 +342,20 @@ def route_calc(route_file, mesh_file):
     # Initialise segment costs with zero values at start point of path
     traveltimes = [0.0]
     distances = [0.0]
-    cellboxes = [mesh.iloc[user_track['CellID'].iloc[0]]]
+    cellboxes = [mesh_gdf.iloc[user_track['CellID'].iloc[0]]]
     cases = [1]
 
     # Calculate cost of each segment in the path
+    # Putting logging here so it only triggers once per route 
+    if dijkstra_route:
+        logging.info('Calculating traveltime and distance using dijkstra metric')
+    else:
+        logging.info('Calculating traveltime and distance using smoothed metric')
+            
     for idx in range(len(user_track)-1):
         start_point = np.array((user_track['Point'].iloc[idx].xy[0][0], user_track['Point'].iloc[idx].xy[1][0]))
         end_point = np.array((user_track['Point'].iloc[idx+1].xy[0][0], user_track['Point'].iloc[idx+1].xy[1][0]))
-        cell_box = mesh.iloc[user_track['CellID'].iloc[idx]]
+        cell_box = mesh_gdf.iloc[user_track['CellID'].iloc[idx]]
         case = case_from_angle(start_point, end_point)
         # Check for inaccessible cells on user defined route
         if cell_box['inaccessible']:
@@ -327,10 +366,9 @@ def route_calc(route_file, mesh_file):
             # Go back along path to find previous accessible cell
             while cell_box['inaccessible']:
                 i += 1
-                cell_box = mesh.iloc[user_track['CellID'].iloc[idx-i]]
-
+                cell_box = mesh_gdf.iloc[user_track['CellID'].iloc[idx-i]]
         traveltime_s, distance_m = traveltime_distance(cell_box, start_point, end_point, speed='speed', vector_x='uC',
-                                                   vector_y='vC', case=case)
+                                                   vector_y='vC', case=case, dijkstra=dijkstra_route)
         traveltime = ((traveltime_s / 60) / 60) / 24
         segment_distance = distance_m / 1000
         traveltimes.append(traveltime)
@@ -344,7 +382,7 @@ def route_calc(route_file, mesh_file):
     path_points = user_track['Point']
     path_traveltimes = np.cumsum(traveltimes)
     path_distances = np.cumsum(distances)
-    path_fuels = [traveltimes[idx] * cellboxes[idx]['fuel'][np.where(case_indices==cases[idx])[0][0]] for idx in range(len(traveltimes))]
+    path_fuels = [traveltimes[idx] * cellboxes[idx]['fuel'][direction.index(case)] for idx in range(len(traveltimes))]
     path_fuel = np.cumsum(path_fuels)
 
     # Put path values into geojson format
@@ -358,5 +396,8 @@ def route_calc(route_file, mesh_file):
     path_geojson = gpd.GeoDataFrame(path_geojson, crs='EPSG:4326', geometry='geometry')
 
     user_path = json.loads(path_geojson.to_json())
+
+    # This function assumes one route input, so can use 0th index
+    user_path["features"][0]["properties"]["route_type"] = route_type
 
     return user_path

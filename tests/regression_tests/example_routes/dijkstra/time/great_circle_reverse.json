@@ -152,7 +152,8 @@
                 "max_iteration_number": 1000,
                 "minimum_difference": 0.0005
             },
-            "unit_shipspeed": "km/hr"
+            "unit_shipspeed": "km/hr",
+            "adjust_waypoints": true
         }
     },
     "cellboxes": [
@@ -113340,9 +113341,10 @@
                     ]
                 },
                 "properties": {
-                    "name": "Route Path - A to B",
+                    "name": "Route - A to B",
                     "from": "A",
                     "to": "B",
+                    "route_type": "dijkstra",
                     "CellIndices": [
                         "1599",
                         "1558",

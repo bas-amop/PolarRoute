@@ -55,6 +55,23 @@ class SourceWaypoint(Waypoint):
         """
         return str(indx) in self.visited_nodes
     
+
+    def is_all_cells_visited(self,cells):
+        """
+        Check if all cells have been visited
+        Args:
+            cells (list): List of cellbox id's to check against
+        Returns:
+            True if all have been visited and False if not
+        """
+        if len(cells) == 0:
+            return True
+        for cell in cells:
+            if cell not in self.visited_nodes:
+                return False
+        return True
+
+
     def is_all_visited(self):
         """
         Check if all associated destination waypoints have been visited

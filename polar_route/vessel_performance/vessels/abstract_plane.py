@@ -14,11 +14,10 @@ class AbstractPlane(AbstractVessel):
                 params (dict): vessel parameters from the vessel config file
         """
         self.vessel_params = params
-        logging.info(f"Initialising a vessel object of type: {self.vessel_params['vessel_type']}")
+        logging.info(f"Initialising a vessel object of type: {self.__class__.__name__}")
         self.max_speed      = self.vessel_params['max_speed']
         self.speed_unit     = self.vessel_params['unit']
         self.max_elevation  = self.vessel_params['max_elevation']
-        self.max_ice        = self.vessel_params['max_ice_conc']
         self.excluded_zones = self.vessel_params.get('excluded_zones')
 
 
@@ -29,8 +28,7 @@ class AbstractPlane(AbstractVessel):
             Args:
                     cellbox (AggregatedCellBox): input cell from environmental mesh
         """
-        logging.debug(
-            f"Modelling performance in cell {cellbox.id} for a vessel of type: {self.vessel_params['vessel_type']}")
+        logging.debug("Modelling performance in cell {cellbox.id} for a vessel of type: {self.__class__.__name__}")
         perf_cellbox = self.model_speed(cellbox)
         perf_cellbox = self.model_fuel(perf_cellbox)
 
@@ -47,11 +45,10 @@ class AbstractPlane(AbstractVessel):
             Returns:
                 access_values (dict): boolean values for the modelled accessibility criteria
         """
-        logging.debug(f"Modelling accessibility in cell {cellbox.id} for a vessel of type: "
-                      f"{self.vessel_params['vessel_type']}")
+        logging.debug(f"Modelling accessibility in cell {cellbox.id} for a vessel of type: {self.__class__.__name__}")
         access_values = dict()
 
-        # Exclude cells due to land or ice
+        # Exclude cells due to terrain or other features
         
         access_values['elevation_max'] = self.elevation_max(cellbox)
 
@@ -89,9 +86,14 @@ class AbstractPlane(AbstractVessel):
             Args:
                 cellbox (AggregatedCellBox): input cell from environmental mesh
             Returns:
-                elevation_max (bool): boolean that is True if the cell is too elevation_max for a glider
+                elevation_max (bool): boolean that is True if the elevation in a cell is too high for a plane
         """
-        elevation_max = False
+        if 'elevation' not in cellbox.agg_data:
+            logging.warning(f"No elevation data in cell {cellbox.id}, cannot determine if it is too high")
+            elevation_max = False
+        else:
+            elevation_max = cellbox.agg_data['elevation'] > self.max_elevation
+
         return elevation_max
 
     @abstractmethod

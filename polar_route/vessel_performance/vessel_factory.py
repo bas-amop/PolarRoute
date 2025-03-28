@@ -1,4 +1,5 @@
 from polar_route.vessel_performance.vessels.SDA import SDA
+from polar_route.vessel_performance.vessels.SDA_wind import SDAWind
 from polar_route.vessel_performance.vessels.slocum import SlocumGlider
 from polar_route.vessel_performance.vessels.boatymcboatface import BoatyMcBoatFace
 from polar_route.vessel_performance.vessels.twin_otter import TwinOtter
@@ -21,6 +22,8 @@ class VesselFactory:
                 vessel: an instance of a vessel class designed for performance modelling
         """
         vessel_requirements = {"SDA": (SDA, ["max_speed", "unit", "beam", "hull_type", "force_limit", "max_ice_conc",
+                                             "min_depth"]),
+                               "SDAWind": (SDAWind, ["max_speed", "unit", "beam", "hull_type", "force_limit", "max_ice_conc",
                                              "min_depth"]),
                                "Slocum": (SlocumGlider, ["max_speed", "unit", "max_ice_conc", "min_depth"]),
                                "BoatyMcBoatFace": (BoatyMcBoatFace, ["max_speed", "unit", "max_ice_conc", "min_depth"]),

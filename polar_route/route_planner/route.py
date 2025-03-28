@@ -73,7 +73,7 @@ class Route:
         """
         self.cases = cases
       
-    def to_json(self):
+    def to_json(self, route_type='dijkstra'):
         """
             Converts the constructed route into json format
         """
@@ -87,7 +87,8 @@ class Route:
         route['properties'] = {}
         route['properties']['name'] = self.name
         route['properties']['from'] = self.from_wp
-        route['properties']['to'] = self.to_wp
+        route['properties']['to']   = self.to_wp
+        route['properties']['route_type'] = route_type
 
         cell_indices = []
         for seg in self.segments:
@@ -169,7 +170,7 @@ class Route:
             case = case_from_angle(wp.to_point(), cp.to_point())
         su = cellbox.agg_data['uC']
         sv = cellbox.agg_data['vC']
-        ssp = unit_speed(cellbox.agg_data['speed'][case], self.conf['unit_shipspeed'])
+        ssp = unit_speed(cellbox.agg_data['speed'][direction.index(case)], self.conf['unit_shipspeed'])
         traveltime, distance = traveltime_in_cell(x, y, su, sv, ssp, tt_dist=True)
         logging.debug(f"WP_correction >> tt >> {traveltime}")
         logging.debug(f"WP_correction >> distance >> {distance}")
@@ -184,7 +185,7 @@ class Route:
             self.segments[indx].set_fuel(cellbox.agg_data['fuel'][direction.index(case)] * traveltime)
             logging.debug(f"WP_correction >> fuel >> {cellbox.agg_data['fuel'][direction.index(case)] * traveltime}")
         if 'battery' in self.conf['path_variables']:
-            self.segments[indx].set_fuel(cellbox.agg_data['battery'][direction.index(case)] * traveltime)
+            self.segments[indx].set_battery(cellbox.agg_data['battery'][direction.index(case)] * traveltime)
             logging.debug(f"WP_correction >> battery >> {cellbox.agg_data['battery'][direction.index(case)] * traveltime}")
 
     def get_points(self):

@@ -104,7 +104,9 @@
             "smooth_path": {
                 "max_iteration_number": 300,
                 "minimum_difference": 0.002
-            }
+            },
+            "adjust_waypoints": true,
+            "unit_shipspeed": "km/hr"
         }
     },
     "cellboxes": [
@@ -1652,25 +1654,26 @@
                         ],
                         [
                             5.0,
-                            0.9722419046881973
+                            0.9722419046881896
                         ],
                         [
                             5.312999999999988,
-                            1.094
+                            1.093999999999994
                         ]
                     ]
                 },
                 "properties": {
-                    "name": "Route Path - Source to Destination",
+                    "name": "Route - Source to Destination",
                     "from": "Source",
                     "to": "Destination",
+                    "route_type": "dijkstra",
                     "CellIndices": [
-                        0,
-                        14
+                        "0",
+                        "14"
                     ],
                     "traveltime": [
                         0.46954409010411785,
-                        0.5283238260292433
+                        0.5283238260292453
                     ],
                     "cases": [
                         2,
@@ -1678,10 +1681,10 @@
                     ],
                     "fuel": [
                         12.827329298023237,
-                        14.433114664409683
+                        14.433114664409736
                     ],
-                    "total_fuel": 14.433114664409683,
-                    "total_traveltime": 0.5283238260292433
+                    "total_fuel": 14.433114664409736,
+                    "total_traveltime": 0.5283238260292453
                 }
             }
         ]

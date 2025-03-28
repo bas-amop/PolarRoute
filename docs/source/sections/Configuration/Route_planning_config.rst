@@ -48,7 +48,8 @@ above is the full set of configuration parameters that can be used for route pla
 * **fixed_speed** *(bool)*  : For development use only. Removes the effect of variable speed acting on the ship, ship speed set to max speed defined in the vessel config.
 * **waypoint_splitting** *(bool)* : Used to enable or disable splitting around the input waypoints. If enabled, all cells containing waypoints will be split to the maximum split depth given in the mesh config.
 * **smoothing_max_iterations** *(int)* : For development use only. Maximum number of iterations in the path smoothing. For most paths convergence is met 100x earlier than this value.
-* **smoothing_blocked_sic** *(float)* : For development use only. The maximum difference in sea ice concentration allowed before a cell is blocked for the smoothing.
+* **smoothing_blocked_metric** *(string)*: For development use only. The environmental or performance variable to be used for blocking in the smoothing algorithm.
+* **smoothing_blocked_percentage** *(float)* : For development use only. The maximum difference in the blocking variable allowed before a cell is blocked for the smoothing.
 * **smoothing_merge_sep** *(float)* : For development use only. Minimum difference between two path smoothing iterations before a merge is triggered.
 * **smoothing_converged_sep** *(float)* : For development use only. Minimum difference between two path smoothing iterations before convergence is triggered.
 
