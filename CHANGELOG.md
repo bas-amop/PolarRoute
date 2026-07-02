@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * compare keys separately to avoid pytest.approx issue by @thomaszwagerman in https://github.com/bas-logist/PolarRoute/pull/346
+* removed Python 3.9, 3.10 support
 
 ## [1.1.10] - 2026-04-07
 
