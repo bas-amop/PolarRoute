@@ -94,7 +94,8 @@ Samuel Hall, Harrison Abbot, Ayat Fekry, George Coombs, David Wyld, Thomas Zwage
 ## License
 This software is licensed under a MIT license, but request users cite our publication:
 
-Jonathan D. Smith, Samuel Hall, George Coombs, James Byrne, Michael A. S. Thorne,  J. Alexander Brearley, Derek Long, Michael Meredith, Maria Fox (2022) Autonomous Passage Planning for a Polar Vessel. _arXiv_, <https://arxiv.org/abs/2209.02389>
+
+Jonathan D. Smith, Samuel Hall, George Coombs, Ayat Fekry, Michael A. S. Thorne, Derek Long, Maria Fox (2025) Path-Planning on a Spherical Surface with Disturbances and Exclusion Zones. Journal of Artificial Intelligence Research 82 (2025), <https://doi.org/10.1613/jair.1.16746>
 
 For more information please see the attached ``LICENSE`` file.
 
