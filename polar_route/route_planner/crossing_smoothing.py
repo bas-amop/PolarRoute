@@ -425,7 +425,7 @@ class Smoothing:
             Apply newton optimisation to determine an update to the crossing point.
 
             All information must be considered in tandem to scientific publication
-            https://arxiv.org/pdf/2209.02389
+            https://doi.org/10.1613/jair.1.16746
 
             Args:
                 y0  (float)      - Current Crossing point as a parallel distance along crossing boundary from start cell centre to crossing point
@@ -446,6 +446,7 @@ class Smoothing:
                 y0  (float)      - Updated Crossing point as a parallel distance along crossing boundary from start cell centre to crossing point
 
             """
+
             try_num = 1
             iter_number = 0
             improving = True
@@ -1568,9 +1569,10 @@ class Smoothing:
                             point hasn't changed within converge_sep then the crossing point has converged.
 
         This code should be read relative to the pseudocode outlined in the paper.
-        https://arxiv.org/pdf/2209.02389
+        https://doi.org/10.1613/jair.1.16746
 
         """
+
         self.jj = 0
         self.previous_aps = []
         converged = False

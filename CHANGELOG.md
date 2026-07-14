@@ -5,9 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-## [2.0.0] - YYYY-MM-DD
+## [Unreleased] - YYYY-MM-DD
 
 ### Added
 - Model Registry System: Plugin-based architecture for resistance and consumption models using `@register_model` decorator.
@@ -47,6 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `hull_type` (slender/blunt distinction now encoded in k/b/n coefficients)
   - Top-level `beam`, `force_limit` (now in resistance model params)
 
+## [1.1.11] - 2026-07-02
+
+### Added
+
+### Changed
+* compare keys separately to avoid pytest.approx issue by @thomaszwagerman in https://github.com/bas-logist/PolarRoute/pull/346
+* removed Python 3.9, 3.10 support
+
 ## [1.1.10] - 2026-04-07
 
 ### Added
@@ -85,18 +91,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Consolidate add tests to dependency group, remove requirements.txt.
 - Reduce the amount of duplicate filepaths by adding dynamic discovery of relevant files needed for the tests (#260).
 
-<<<<<<< HEAD
-[Unreleased]: https://github.com/bas-amop/PolarRoute/compare/v2.0.0...HEAD
-[2.0.0]: https://github.com/bas-amop/PolarRoute/releases/tag/v2.0.0
-=======
 ### Fixed
 - Fix test failures on Python 3.14 caused by NumPy float64 type comparisons in vessel performance tests.
 
-<<<<<<< HEAD
-[Unreleased]: https://github.com/bas-amop/PolarRoute/compare/v1.1.9...HEAD
->>>>>>> main
-=======
-[Unreleased]: https://github.com/bas-amop/PolarRoute/compare/v1.1.10...HEAD
+[Unreleased]: https://github.com/bas-amop/PolarRoute/compare/v1.1.11...HEAD
+[1.1.11]: https://github.com/bas-amop/PolarRoute/compare/v1.1.10...v1.1.11
 [1.1.10]: https://github.com/bas-amop/PolarRoute/compare/v1.1.9...v1.1.10
->>>>>>> main
 [1.1.9]: https://github.com/bas-amop/PolarRoute/releases/tag/v1.1.9

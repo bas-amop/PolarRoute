@@ -12,6 +12,7 @@
 [![Test Status](https://github.com/bas-amop/PolarRoute/actions/workflows/test.yml/badge.svg)](https://github.com/bas-amop/PolarRoute/actions/workflows/test.yml)
 [![Coverage](https://img.shields.io/badge/coverage-report-blue)](https://github.com/bas-amop/PolarRoute/actions/workflows/test.yml)
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-0C3A5C?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
+[![DOI](https://zenodo.org/badge/450086048.svg)](https://doi.org/10.5281/zenodo.21134233)
 
 
 PolarRoute is a long-distance maritime polar route planning package, able to take into account complex and changing environmental conditions. It allows the construction of optimised routes through three main stages: discrete modelling of the environmental conditions using a non-uniform mesh, the construction of mesh-optimal paths, and physics informed path smoothing. In order to account for different vehicle properties we construct a series of data-driven functions that can be applied to the environmental mesh to determine the speed limitations and fuel requirements for a given vessel and mesh cell. The environmental modelling component of this functionality is provided by the [MeshiPhi](https://github.com/bas-amop/MeshiPhi) library.
@@ -94,7 +95,8 @@ Samuel Hall, Harrison Abbot, Ayat Fekry, George Coombs, David Wyld, Thomas Zwage
 ## License
 This software is licensed under a MIT license, but request users cite our publication:
 
-Jonathan D. Smith, Samuel Hall, George Coombs, James Byrne, Michael A. S. Thorne,  J. Alexander Brearley, Derek Long, Michael Meredith, Maria Fox (2022) Autonomous Passage Planning for a Polar Vessel. _arXiv_, <https://arxiv.org/abs/2209.02389>
+
+Jonathan D. Smith, Samuel Hall, George Coombs, Ayat Fekry, Michael A. S. Thorne, Derek Long, Maria Fox (2025) Path-Planning on a Spherical Surface with Disturbances and Exclusion Zones. Journal of Artificial Intelligence Research 82 (2025), <https://doi.org/10.1613/jair.1.16746>
 
 For more information please see the attached ``LICENSE`` file.
 
