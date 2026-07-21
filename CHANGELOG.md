@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-* `route_calc()` can now accept a route as a geojson dict (a FeatureCollection, or a full pipeline output with a `paths` key), in addition to a DataFrame, so routes can be scored programmatically without writing to a temporary file.
+* `route_calc()` can now accept a route as a GeoJSON in addition to a DataFrame.
 
 ### Changed
-* Extracted geojson-to-DataFrame parsing in `load_route()` into a shared `route_geojson_to_df()` helper, reused by both the json and gpx branches.
+* Extracted geojson-to-DataFrame parsing in `load_route()` into a shared `route_geojson_to_df()` helper, reused by both the json and gpx.
 
 ## [1.1.11] - 2026-07-02
 
