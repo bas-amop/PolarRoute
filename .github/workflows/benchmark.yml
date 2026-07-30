@@ -45,13 +45,11 @@ jobs:
           pip install .
 
       - name: Run benchmarks
-        run: make benchmark-ci-run THRESHOLD="$BENCHMARK_THRESHOLD"
+        run: make benchmark-check THRESHOLD="$BENCHMARK_THRESHOLD"
 
       - name: Update benchmark baseline file
         if: github.event_name == 'push'
-        run: |
-          mkdir -p .github
-          cp benchmark-result.json .github/benchmark-baseline.json
+        run: make benchmark-update-baseline
 
       - name: Open PR with updated baseline
         if: github.event_name == 'push'

@@ -34,4 +34,3 @@ dev_venv/*
 *.log
 /testing/
 site/
-.benchmarks/
