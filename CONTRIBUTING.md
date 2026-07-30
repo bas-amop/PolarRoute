@@ -25,8 +25,6 @@ The following commands are available via the Makefile:
 - **`make test`** - Run fast tests only (excludes slow tests)
 - **`make test-all`** - Run all tests including slow ones
 - **`make benchmark`** - Run performance benchmark tests
-- **`make benchmark-save`** - Run benchmarks and save results to `.benchmarks/` for ad-hoc local before/after comparisons (optionally `NAME=label`)
-- **`make benchmark-compare`** - Compare saved benchmark runs from `.benchmarks/`
 - **`make benchmark-check`** - Run benchmarks and compare against the committed baseline (`.github/benchmark-baseline.json`), failing on regression (`THRESHOLD=10` for 10%, the default). This is the same check CI runs on pull requests.
 - **`make benchmark-update-baseline`** - Regenerate `.github/benchmark-baseline.json` from a fresh run. CI does this automatically (via a PR) after every merge to `main`; run it yourself only if you need to refresh the baseline locally.
 - **`make lint`** - Run linting checks with Ruff

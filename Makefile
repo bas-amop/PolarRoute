@@ -1,4 +1,4 @@
-.PHONY: install test test-all benchmark benchmark-save benchmark-compare benchmark-check benchmark-update-baseline lint format type-check coverage clean docs docs-clean help
+.PHONY: install test test-all benchmark benchmark-check benchmark-update-baseline lint format type-check coverage clean docs docs-clean help
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -16,12 +16,6 @@ test-all:  ## Run all tests including slow ones
 
 benchmark:  ## Run performance benchmark tests
 	pytest -m benchmark --benchmark-only
-
-benchmark-save:  ## Run benchmarks and save results to .benchmarks/ (use NAME=label to tag the run)
-	pytest -m benchmark --benchmark-only --benchmark-save=$(or $(NAME),$(shell date +%Y%m%d_%H%M%S))
-
-benchmark-compare:  ## Compare saved benchmark runs from .benchmarks/
-	pytest-benchmark compare --group-by=name --sort=name
 
 benchmark-check:  ## Run benchmarks and compare against the committed baseline (.github/benchmark-baseline.json), failing on regression (use THRESHOLD=10 for 10%). Same check CI runs.
 	@if [ -f .github/benchmark-baseline.json ]; then \
