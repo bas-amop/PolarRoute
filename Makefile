@@ -1,4 +1,4 @@
-.PHONY: install test test-all lint format type-check coverage clean docs docs-clean help
+.PHONY: install test test-all benchmark lint format type-check coverage clean docs docs-clean help
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -9,10 +9,13 @@ install:  ## Install package with all dependencies
 	@echo "PolarRoute installed in development mode."
 
 test:  ## Run fast tests only
-	pytest -m "not slow"
+	pytest -m "not slow and not benchmark"
 
 test-all:  ## Run all tests including slow ones
-	pytest
+	pytest -m "not benchmark"
+
+benchmark:  ## Run performance benchmark tests
+	pytest -m benchmark --benchmark-only
 
 lint:  ## Run linting checks
 	ruff check polar_route/ tests/
@@ -22,7 +25,7 @@ format:  ## Format code with ruff
 	ruff check --fix polar_route/ tests/
 
 coverage:  ## Generate coverage report (terminal and HTML)
-	pytest --cov=polar_route --cov-report=term-missing --cov-report=html --cov-report=xml -m "not slow"
+	pytest --cov=polar_route --cov-report=term-missing --cov-report=html --cov-report=xml -m "not slow and not benchmark"
 	@echo "\nCoverage report generated. Open htmlcov/index.html to view the HTML report."
 
 clean:  ## Clean build artifacts and cache
