@@ -25,6 +25,8 @@ The following commands are available via the Makefile:
 - **`make test`** - Run fast tests only (excludes slow tests)
 - **`make test-all`** - Run all tests including slow ones
 - **`make benchmark`** - Run performance benchmark tests
+- **`make benchmark-save`** - Run benchmarks and save results to `.benchmarks/` (optionally `NAME=label`)
+- **`make benchmark-compare`** - Compare saved benchmark runs from `.benchmarks/`
 - **`make lint`** - Run linting checks with Ruff
 - **`make format`** - Format code with Ruff
 - **`make coverage`** - Generate coverage report (terminal and HTML)

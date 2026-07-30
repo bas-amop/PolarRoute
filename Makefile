@@ -1,4 +1,4 @@
-.PHONY: install test test-all benchmark lint format type-check coverage clean docs docs-clean help
+.PHONY: install test test-all benchmark benchmark-save benchmark-compare benchmark-ci-baseline benchmark-ci-check lint format type-check coverage clean docs docs-clean help
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -16,6 +16,21 @@ test-all:  ## Run all tests including slow ones
 
 benchmark:  ## Run performance benchmark tests
 	pytest -m benchmark --benchmark-only
+
+benchmark-save:  ## Run benchmarks and save results to .benchmarks/ (use NAME=label to tag the run)
+	pytest -m benchmark --benchmark-only --benchmark-save=$(or $(NAME),$(shell date +%Y%m%d_%H%M%S))
+
+benchmark-compare:  ## Compare saved benchmark runs from .benchmarks/
+	pytest-benchmark compare --group-by=name --sort=name
+
+benchmark-ci-baseline:  ## CI: reset .benchmarks/ and save a fresh baseline (run on main)
+	rm -rf .benchmarks
+	pytest -m benchmark --benchmark-only --benchmark-save=baseline
+
+benchmark-ci-check:  ## CI: compare current benchmarks against restored baseline (use THRESHOLD=10 for 10%)
+	pytest -m benchmark --benchmark-only \
+		--benchmark-compare=0001 \
+		--benchmark-compare-fail=mean:$(or $(THRESHOLD),10)%
 
 lint:  ## Run linting checks
 	ruff check polar_route/ tests/
