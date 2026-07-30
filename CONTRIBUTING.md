@@ -24,6 +24,7 @@ The following commands are available via the Makefile:
 - **`make install`** - Install package with all dependencies
 - **`make test`** - Run fast tests only (excludes slow tests)
 - **`make test-all`** - Run all tests including slow ones
+- **`make benchmark`** - Run performance benchmark tests
 - **`make lint`** - Run linting checks with Ruff
 - **`make format`** - Format code with Ruff
 - **`make coverage`** - Generate coverage report (terminal and HTML)
