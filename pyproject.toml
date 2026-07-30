@@ -87,4 +87,5 @@ docs = [
 test = [
     "pytest",
     "pytest-xdist",
+    "pytest-cov",
 ]
