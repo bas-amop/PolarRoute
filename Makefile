@@ -1,4 +1,4 @@
-.PHONY: install test test-all benchmark benchmark-save benchmark-compare benchmark-ci-baseline benchmark-ci-check lint format type-check coverage clean docs docs-clean help
+.PHONY: install test test-all benchmark benchmark-save benchmark-compare benchmark-ci-run lint format type-check coverage clean docs docs-clean help
 
 help:  ## Show this help message
 	@echo "Available commands:"
@@ -23,14 +23,14 @@ benchmark-save:  ## Run benchmarks and save results to .benchmarks/ (use NAME=la
 benchmark-compare:  ## Compare saved benchmark runs from .benchmarks/
 	pytest-benchmark compare --group-by=name --sort=name
 
-benchmark-ci-baseline:  ## CI: reset .benchmarks/ and save a fresh baseline (run on main)
-	rm -rf .benchmarks
-	pytest -m benchmark --benchmark-only --benchmark-save=baseline
-
-benchmark-ci-check:  ## CI: compare current benchmarks against restored baseline (use THRESHOLD=10 for 10%)
-	pytest -m benchmark --benchmark-only \
-		--benchmark-compare=0001 \
-		--benchmark-compare-fail=mean:$(or $(THRESHOLD),10)%
+benchmark-ci-run:  ## CI: run benchmarks, comparing/failing against .github/benchmark-baseline.json if present (use THRESHOLD=10 for 10%)
+	@if [ -f .github/benchmark-baseline.json ]; then \
+		pytest -m benchmark --benchmark-only --benchmark-json=benchmark-result.json \
+			--benchmark-compare=.github/benchmark-baseline.json \
+			--benchmark-compare-fail=mean:$(or $(THRESHOLD),10)% ; \
+	else \
+		pytest -m benchmark --benchmark-only --benchmark-json=benchmark-result.json ; \
+	fi
 
 lint:  ## Run linting checks
 	ruff check polar_route/ tests/

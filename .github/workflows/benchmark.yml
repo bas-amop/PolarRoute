@@ -7,10 +7,17 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
 
+env:
+  # Percentage by which the mean benchmark time is allowed to regress.
+  BENCHMARK_THRESHOLD: 10
+
 jobs:
   benchmark:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python
@@ -37,32 +44,24 @@ jobs:
           pip install --group test
           pip install .
 
-      - name: Restore benchmark baseline
-        id: restore-baseline
-        uses: actions/cache/restore@v4
-        with:
-          path: .benchmarks
-          key: never-restore-on-exact-match
-          restore-keys: |
-            benchmark-baseline-${{ runner.os }}-
+      - name: Run benchmarks
+        run: make benchmark-ci-run THRESHOLD="$BENCHMARK_THRESHOLD"
 
-      - name: Compare against baseline
-        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-matched-key != ''
-        run: make benchmark-ci-check THRESHOLD=10
-
-      - name: Run benchmarks (no baseline available)
-        if: github.event_name == 'pull_request' && steps.restore-baseline.outputs.cache-matched-key == ''
+      - name: Update benchmark baseline file
+        if: github.event_name == 'push'
         run: |
-          echo "::warning::No benchmark baseline found for main, running without comparison."
-          make benchmark
+          mkdir -p .github
+          cp benchmark-result.json .github/benchmark-baseline.json
 
-      - name: Save new baseline
+      - name: Open PR with updated baseline
         if: github.event_name == 'push'
-        run: make benchmark-ci-baseline
-
-      - name: Upload baseline cache
-        if: github.event_name == 'push'
-        uses: actions/cache/save@v4
+        uses: peter-evans/create-pull-request@v7
         with:
-          path: .benchmarks
-          key: benchmark-baseline-${{ runner.os }}-${{ github.run_id }}
+          commit-message: "chore: update benchmark baseline"
+          title: "chore: update benchmark baseline"
+          body: |
+            Automated update of `.github/benchmark-baseline.json` from the
+            latest benchmark run on `main` (${{ github.sha }}).
+          branch: chore/update-benchmark-baseline
+          delete-branch: true
+          add-paths: .github/benchmark-baseline.json
