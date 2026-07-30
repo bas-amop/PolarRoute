@@ -37,10 +37,6 @@ jobs:
           pip install --group test
           pip install .
 
-      # Baseline benchmarks are cached under a key scoped to the default
-      # branch. PRs can read caches from their base branch, so this makes
-      # the latest `main` baseline available for comparison without
-      # needing to store benchmark artifacts anywhere else.
       - name: Restore benchmark baseline
         id: restore-baseline
         uses: actions/cache/restore@v4
