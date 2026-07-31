@@ -19,10 +19,6 @@ DIJKSTRA_BENCHMARK_FILES = {
     "small": "example_routes/dijkstra/time/twin_otter_tt_route_dijkstra.json",
     "medium": "example_routes/dijkstra/fuel/checkerboard.json",
     "large": "example_routes/dijkstra/fuel/gaussian_random_field.json",
-    # Similar cell count to "large", but with variable ship speed, non-zero currents and
-    # waypoint splitting enabled, better reflecting real-world complex sea ice navigation
-    # (where the current "large" case's uniform zero-current mesh causes near-exhaustive
-    # node visitation and understates bidirectional search's benefit).
     "complex": "example_routes/dijkstra/fuel/gaussian_random_field_waypointsplitting.json",
 }
 
