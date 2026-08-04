@@ -11,6 +11,7 @@ import logging
 import itertools
 import copy
 import math
+import heapq
 from polar_route.route_planner.route import Route
 from polar_route.route_planner.source_waypoint import SourceWaypoint
 from polar_route.route_planner.waypoint import Waypoint
@@ -585,84 +586,55 @@ class RoutePlanner:
             wp (SourceWaypoint): object contains the lat, long information of the source waypoint
             end_wps(List(Waypoint)): a list of the end waypoints
         """
+        obj = self.config["objective_function"]
 
-        def find_min_objective(source_wp):
+        def consider_neighbours(_id):
             """
-            Finds the index of the unvisited cell in the source waypoint's routing table with the minimum cost for
-            the given objective function
+            Get neighbours of the cell at the input index and update the routing table (and cached
+            cost) of the source waypoint, pushing any improved neighbours onto the heap
             Args:
-                source_wp (SourceWaypoint): the SourceWaypoint object corresponding to the initial location
-
-            Returns:
-                cellbox_indx (str): the index of the minimum cost unvisited cell from the routing table
-            """
-            min_obj = np.inf
-            cellbox_indx = -1
-            for node_id in source_wp.routing_table.keys():
-                if (
-                    not source_wp.is_visited(node_id)
-                    and source_wp.get_obj(node_id, self.config["objective_function"])
-                    < min_obj
-                ):
-                    min_obj = source_wp.get_obj(
-                        node_id, self.config["objective_function"]
-                    )
-                    cellbox_indx = str(node_id)
-            return cellbox_indx
-
-        def consider_neighbours(source_wp, _id):
-            """
-            Get neighbours of the cell at the input index and update the routing table of the source waypoint
-            Args:
-                source_wp (SourceWaypoint): the relevant source waypoint
                 _id (str): index of the cell to get the neighbours for
-
             """
+            current_cost = wp.get_cached_cost(_id)
             neighbour_map = self.env_mesh.neighbour_graph.get_neighbour_map(
                 _id
             )  # neighbours and cases for node _id
             for case, neighbours in neighbour_map.items():
                 if neighbours:
                     for neighbour in neighbours:
-                        edges = self._neighbour_cost(_id, str(neighbour), int(case))
+                        nb_id = str(neighbour)
+                        edges = self._neighbour_cost(_id, nb_id, int(case))
                         edges_cost = sum(
-                            segment.get_variable(self.config["objective_function"])
-                            for segment in edges
+                            segment.get_variable(obj) for segment in edges
                         )
-                        new_cost = (
-                            source_wp.get_obj(_id, self.config["objective_function"])
-                            + edges_cost
-                        )
-                        if new_cost < source_wp.get_obj(
-                            str(neighbour), self.config["objective_function"]
-                        ):
-                            source_wp.update_routing_table(
-                                str(neighbour), RoutingInfo(_id, edges)
+                        new_cost = current_cost + edges_cost
+                        if new_cost < wp.get_cached_cost(nb_id):
+                            wp.update_routing_table(nb_id, RoutingInfo(_id, edges))
+                            wp.set_cached_cost(nb_id, new_cost)
+                            heapq.heappush(
+                                heap, (new_cost, wp.get_discovery_order(nb_id), nb_id)
                             )
 
-        if not self.config["early_stopping_criterion"]:
-            run_all = False
-            while not run_all:
-                # Determine the index of the cell with the minimum objective function cost that has not yet been visited
-                min_obj_indx = find_min_objective(wp)
-                logger.debug(f"min_obj >>> {min_obj_indx}")
-                # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
-                if min_obj_indx == -1:
-                    break
-                consider_neighbours(wp, min_obj_indx)
-                wp.visit(min_obj_indx)
-        else:
-            while not (
-                wp.is_all_visited() and wp.is_all_cells_visited(self._required_nodes)
+        # Manual priority queue: (cost, discovery_order, node_id). discovery_order breaks ties
+        # in favour of whichever node was discovered first, matching the original linear-scan
+        # implementation's behaviour of always finding the first (in insertion order)
+        # minimum-cost node. Stale entries (superseded by a cheaper route found later) are left
+        # in the heap and skipped over when popped, rather than removed eagerly.
+        heap = [(0.0, wp.get_discovery_order(wp.cellbox_indx), wp.cellbox_indx)]
+        early_stopping = self.config["early_stopping_criterion"]
+
+        while heap:
+            if early_stopping and wp.is_all_visited() and wp.is_all_cells_visited(
+                self._required_nodes
             ):
-                # Determine the index of the cell with the minimum objective function cost that has not yet been visited
-                min_obj_indx = find_min_objective(wp)
-                logger.debug(f"min_obj >>> {min_obj_indx}")
-                # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
-                if min_obj_indx == -1:
-                    break
-                consider_neighbours(wp, min_obj_indx)
-                wp.visit(min_obj_indx)
+                break
+            _, _, min_obj_indx = heapq.heappop(heap)
+            if wp.is_visited(min_obj_indx):
+                # Stale entry: a cheaper route to this node was already settled
+                continue
+            logger.debug(f"min_obj >>> {min_obj_indx}")
+            consider_neighbours(min_obj_indx)
+            wp.visit(min_obj_indx)
 
     def _bidirectional_search(self, wp, e_wp):
         """
