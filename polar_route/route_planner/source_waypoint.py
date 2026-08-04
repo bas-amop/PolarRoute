@@ -2,6 +2,7 @@ from polar_route.route_planner.routing_info import RoutingInfo
 from polar_route.route_planner.waypoint import Waypoint
 import numpy as np
 import logging
+import heapq
 
 # Module logger
 logger = logging.getLogger(__name__)
@@ -46,6 +47,16 @@ class SourceWaypoint(Waypoint):
         # order) minimum-cost node from the routing table.
         self._discovery_order = {self.cellbox_indx: 0}
         self._next_discovery_order = 1
+        # Priority queue of (cost, discovery_order, node_id) entries, used to find the
+        # cheapest not-yet-visited node in O(log n) instead of scanning `routing_table`
+        # linearly. Stored on the SourceWaypoint itself (rather than as a local variable in
+        # the search loop) so it persists correctly across multiple calls that reuse this
+        # same object - e.g. bidirectional search reuses the same forward `wp` across
+        # several destination waypoints, and the same backward `bwd_wp` across several
+        # source waypoints sharing a destination. Entries are never eagerly removed when
+        # superseded by a cheaper one; `peek_min_unvisited`/`pop_min_unvisited` lazily skip
+        # over stale entries (already visited, or superseded by a cheaper recorded cost).
+        self._heap = [(0.0, 0, self.cellbox_indx)]
 
     def update_routing_table(self, indx, routing_info):
         """
@@ -68,8 +79,9 @@ class SourceWaypoint(Waypoint):
 
     def set_cached_cost(self, indx, cost):
         """
-        Records the current best-known objective function cost to reach the given node, and
-        assigns it a discovery order the first time it's set.
+        Records the current best-known objective function cost to reach the given node,
+        assigns it a discovery order the first time it's set, and pushes it onto the
+        priority queue so it will be considered by `peek_min_unvisited`/`pop_min_unvisited`.
         Args:
             indx (str): the index of the cell to update
             cost (float): the new best-known cost to reach this cell
@@ -79,6 +91,7 @@ class SourceWaypoint(Waypoint):
             self._discovery_order[indx] = self._next_discovery_order
             self._next_discovery_order += 1
         self._cost_cache[indx] = cost
+        heapq.heappush(self._heap, (cost, self._discovery_order[indx], indx))
 
     def get_discovery_order(self, indx):
         """
@@ -88,6 +101,37 @@ class SourceWaypoint(Waypoint):
             indx (str): the index of the cell to look up
         """
         return self._discovery_order[str(indx)]
+
+    def peek_min_unvisited(self):
+        """
+        Returns (indx, cost) of the cheapest not-yet-visited node currently known, without
+        removing it, so it remains available if this frontier ends up not being expanded this
+        round (e.g. the other direction's frontier is cheaper this iteration in bidirectional
+        search). Lazily discards stale entries from the front of the heap along the way: ones
+        for nodes already visited, or superseded by a since-improved (cheaper) cost.
+        Returns:
+            (indx, cost): (-1, np.inf) if there are no remaining unvisited candidates.
+        """
+        while self._heap:
+            cost, _, indx = self._heap[0]
+            if self.is_visited(indx) or cost > self.get_cached_cost(indx):
+                heapq.heappop(self._heap)
+                continue
+            return indx, cost
+        return -1, np.inf
+
+    def pop_min_unvisited(self):
+        """
+        Removes and returns (indx, cost) of the cheapest not-yet-visited node, as found by
+        `peek_min_unvisited`. Call this once the caller has committed to expanding this node
+        (i.e. it's about to be marked visited).
+        Returns:
+            (indx, cost): (-1, np.inf) if there are no remaining unvisited candidates.
+        """
+        indx, cost = self.peek_min_unvisited()
+        if indx != -1:
+            heapq.heappop(self._heap)
+        return indx, cost
 
     def visit(self, cellbox_indx):
         """

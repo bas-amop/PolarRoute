@@ -11,7 +11,6 @@ import logging
 import itertools
 import copy
 import math
-import heapq
 from polar_route.route_planner.route import Route
 from polar_route.route_planner.source_waypoint import SourceWaypoint
 from polar_route.route_planner.waypoint import Waypoint
@@ -591,7 +590,7 @@ class RoutePlanner:
         def consider_neighbours(_id):
             """
             Get neighbours of the cell at the input index and update the routing table (and cached
-            cost) of the source waypoint, pushing any improved neighbours onto the heap
+            cost) of the source waypoint
             Args:
                 _id (str): index of the cell to get the neighbours for
             """
@@ -611,27 +610,18 @@ class RoutePlanner:
                         if new_cost < wp.get_cached_cost(nb_id):
                             wp.update_routing_table(nb_id, RoutingInfo(_id, edges))
                             wp.set_cached_cost(nb_id, new_cost)
-                            heapq.heappush(
-                                heap, (new_cost, wp.get_discovery_order(nb_id), nb_id)
-                            )
 
-        # Manual priority queue: (cost, discovery_order, node_id). discovery_order breaks ties
-        # in favour of whichever node was discovered first, matching the original linear-scan
-        # implementation's behaviour of always finding the first (in insertion order)
-        # minimum-cost node. Stale entries (superseded by a cheaper route found later) are left
-        # in the heap and skipped over when popped, rather than removed eagerly.
-        heap = [(0.0, wp.get_discovery_order(wp.cellbox_indx), wp.cellbox_indx)]
         early_stopping = self.config["early_stopping_criterion"]
 
-        while heap:
+        while True:
             if early_stopping and wp.is_all_visited() and wp.is_all_cells_visited(
                 self._required_nodes
             ):
                 break
-            _, _, min_obj_indx = heapq.heappop(heap)
-            if wp.is_visited(min_obj_indx):
-                # Stale entry: a cheaper route to this node was already settled
-                continue
+            min_obj_indx, _ = wp.pop_min_unvisited()
+            # If min_obj_indx is -1 then no route possible, and we stop search for this waypoint
+            if min_obj_indx == -1:
+                break
             logger.debug(f"min_obj >>> {min_obj_indx}")
             consider_neighbours(min_obj_indx)
             wp.visit(min_obj_indx)
@@ -661,21 +651,6 @@ class RoutePlanner:
             self._backward_wps[key] = SourceWaypoint(e_wp, [])
         bwd_wp = self._backward_wps[key]
 
-        def find_min_objective(source_wp):
-            """
-            Finds the index and cost of the unvisited cell in the source waypoint's routing
-            table with the minimum cost for the given objective function
-            """
-            min_obj = np.inf
-            cellbox_indx = -1
-            for node_id in source_wp.routing_table.keys():
-                if not source_wp.is_visited(node_id):
-                    node_obj = source_wp.get_obj(node_id, obj)
-                    if node_obj < min_obj:
-                        min_obj = node_obj
-                        cellbox_indx = str(node_id)
-            return cellbox_indx, min_obj
-
         best_meeting = [np.inf, None]  # [cost, node] - mutated by the closures below
 
         def consider_neighbours(_id):
@@ -684,6 +659,7 @@ class RoutePlanner:
             whether any of these edges cross into the (already settled) backward frontier,
             which would represent a valid candidate meeting point.
             """
+            current_cost = wp.get_cached_cost(_id)
             neighbour_map = self.env_mesh.neighbour_graph.get_neighbour_map(_id)
             for case, neighbours in neighbour_map.items():
                 if neighbours:
@@ -693,15 +669,12 @@ class RoutePlanner:
                         edges_cost = sum(
                             segment.get_variable(obj) for segment in edges
                         )
-                        new_cost = wp.get_obj(_id, obj) + edges_cost
-                        if new_cost < wp.get_obj(nb_id, obj):
+                        new_cost = current_cost + edges_cost
+                        if new_cost < wp.get_cached_cost(nb_id):
                             wp.update_routing_table(nb_id, RoutingInfo(_id, edges))
+                            wp.set_cached_cost(nb_id, new_cost)
                         if bwd_wp.is_visited(nb_id):
-                            total = (
-                                wp.get_obj(_id, obj)
-                                + edges_cost
-                                + bwd_wp.get_obj(nb_id, obj)
-                            )
+                            total = new_cost + bwd_wp.get_cached_cost(nb_id)
                             if total < best_meeting[0]:
                                 best_meeting[0] = total
                                 best_meeting[1] = nb_id
@@ -716,6 +689,7 @@ class RoutePlanner:
             (already settled) forward frontier, which would represent a valid candidate meeting
             point.
             """
+            current_cost = bwd_wp.get_cached_cost(_id)
             neighbour_map = self.env_mesh.neighbour_graph.get_neighbour_map(_id)
             for neighbours in neighbour_map.values():
                 if neighbours:
@@ -738,15 +712,12 @@ class RoutePlanner:
                         edges_cost = sum(
                             segment.get_variable(obj) for segment in edges
                         )
-                        new_cost = bwd_wp.get_obj(_id, obj) + edges_cost
-                        if new_cost < bwd_wp.get_obj(pred_id, obj):
+                        new_cost = current_cost + edges_cost
+                        if new_cost < bwd_wp.get_cached_cost(pred_id):
                             bwd_wp.update_routing_table(pred_id, RoutingInfo(_id, edges))
+                            bwd_wp.set_cached_cost(pred_id, new_cost)
                         if wp.is_visited(pred_id):
-                            total = (
-                                wp.get_obj(pred_id, obj)
-                                + edges_cost
-                                + bwd_wp.get_obj(_id, obj)
-                            )
+                            total = wp.get_cached_cost(pred_id) + edges_cost + current_cost
                             if total < best_meeting[0]:
                                 best_meeting[0] = total
                                 best_meeting[1] = pred_id
@@ -755,11 +726,15 @@ class RoutePlanner:
         while not (done and wp.is_all_cells_visited(self._required_nodes)):
             progressed = False
 
-            # Scan both frontiers once per iteration. These same costs are reused below both
-            # to select which node to expand and (before expanding) to check the standard
-            # bidirectional stopping rule, avoiding a redundant rescan after expansion.
-            fwd_indx, fwd_cost = find_min_objective(wp)
-            bwd_indx, bwd_cost = find_min_objective(bwd_wp) if not done else (-1, np.inf)
+            # Peek (without removing) the cheapest not-yet-visited node in each frontier's
+            # heap. These same costs are reused below both to select which node to expand and
+            # (before expanding) to check the standard bidirectional stopping rule, avoiding a
+            # redundant rescan after expansion. Using peek rather than pop here means a
+            # frontier that isn't expanded this round (e.g. backward, once `done` becomes
+            # True) leaves its candidate available for a later call reusing the same
+            # `wp`/`bwd_wp` (e.g. the next destination or source waypoint).
+            fwd_indx, fwd_cost = wp.peek_min_unvisited()
+            bwd_indx, bwd_cost = bwd_wp.peek_min_unvisited() if not done else (-1, np.inf)
 
             if not done:
                 # Standard bidirectional stopping rule: once the sum of the smallest remaining
@@ -776,12 +751,14 @@ class RoutePlanner:
 
             # Expand the forward frontier by one node
             if fwd_indx != -1:
+                wp.pop_min_unvisited()
                 progressed = True
                 consider_neighbours(fwd_indx)
                 wp.visit(fwd_indx)
 
             # Expand the backward frontier by one node
             if not done and bwd_indx != -1:
+                bwd_wp.pop_min_unvisited()
                 progressed = True
                 consider_predecessors(bwd_indx)
                 bwd_wp.visit(bwd_indx)
