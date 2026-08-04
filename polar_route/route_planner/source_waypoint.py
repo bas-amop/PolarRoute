@@ -33,6 +33,20 @@ class SourceWaypoint(Waypoint):
         # add routing information to itself, empty list of segments as distance = 0
         self.routing_table[self.cellbox_indx] = RoutingInfo(self.cellbox_indx, [])
 
+        # Cache of the current best-known objective function cost to reach each node,
+        # keyed by cellbox index. Used by the Dijkstra search loop (route_planner.py) to
+        # avoid recomputing costs by recursively walking the routing table's parent chain
+        # (via get_obj) on every iteration. Only valid for the single objective function
+        # used by that search (each SourceWaypoint is only ever searched with one
+        # objective function over its lifetime).
+        self._cost_cache = {self.cellbox_indx: 0.0}
+        # Order in which each node was first discovered, used as a heap tie-breaker so that,
+        # among nodes with equal cost, the earliest-discovered one is preferred - matching the
+        # original linear-scan implementation's behaviour of picking the first (in insertion
+        # order) minimum-cost node from the routing table.
+        self._discovery_order = {self.cellbox_indx: 0}
+        self._next_discovery_order = 1
+
     def update_routing_table(self, indx, routing_info):
         """
         Updates the source waypoint's routing table for a particular node with the given routing info
@@ -41,6 +55,39 @@ class SourceWaypoint(Waypoint):
             routing_info (RoutingInfo): the routing info to be added
         """
         self.routing_table[indx] = routing_info
+
+    def get_cached_cost(self, indx):
+        """
+        Returns the current best-known objective function cost to reach the given node, as
+        maintained incrementally by `set_cached_cost`. Returns `np.inf` if the node hasn't been
+        discovered yet.
+        Args:
+            indx (str): the index of the cell to look up
+        """
+        return self._cost_cache.get(str(indx), np.inf)
+
+    def set_cached_cost(self, indx, cost):
+        """
+        Records the current best-known objective function cost to reach the given node, and
+        assigns it a discovery order the first time it's set.
+        Args:
+            indx (str): the index of the cell to update
+            cost (float): the new best-known cost to reach this cell
+        """
+        indx = str(indx)
+        if indx not in self._discovery_order:
+            self._discovery_order[indx] = self._next_discovery_order
+            self._next_discovery_order += 1
+        self._cost_cache[indx] = cost
+
+    def get_discovery_order(self, indx):
+        """
+        Returns the order in which the given node was first discovered (assigned by
+        `set_cached_cost`), used as a heap tie-breaker.
+        Args:
+            indx (str): the index of the cell to look up
+        """
+        return self._discovery_order[str(indx)]
 
     def visit(self, cellbox_indx):
         """
