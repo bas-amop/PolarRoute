@@ -477,5 +477,5 @@ class NewtonianDistance:
             cross_points = [np.nan, np.nan]
             cell_points = [np.nan, np.nan]
 
-        logger.debug(f"NewtonianDistance.value >> TravelTime >> {travel_time}")
+        logger.debug("NewtonianDistance.value >> TravelTime >> %s", travel_time)
         return travel_time, cross_points, cell_points, self.case
