@@ -354,7 +354,17 @@ def route_calc(df, from_wp, to_wp, mesh, route_type):
 
     Returns:
         user_path (dict): User defined route in geojson format with calculated cost information
+    
+    Raises:
+        ValueError: If route_type is not 'dijkstra' or 'smoothed'
     """
+    # Validate route type
+    if route_type not in {"dijkstra", "smoothed"}:
+        raise ValueError(
+            f"Invalid route_type '{route_type}'. "
+            "Expected either 'dijkstra' or 'smoothed'."
+        )
+    
     # Flag indicating whether should compute route length using dijkstra or smoothed method
     dijkstra_route = True if route_type == "dijkstra" else False
 
