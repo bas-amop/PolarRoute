@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="https://cdn.web.bas.ac.uk/bas-style-kit/0.7.3/img/favicon/favicon-16x16.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1941,12 +1941,12 @@
 
 <h1 id="route-planning">Route Planning<a class="headerlink" href="#route-planning" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="nt">&quot;objective_function&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;traveltime&quot;</span><span class="p">,</span>
-<span class="nt">&quot;path_variables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">  </span><span class="s2">&quot;fuel&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s2">&quot;traveltime&quot;</span>
+<span class="nt">"objective_function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"traveltime"</span><span class="p">,</span>
+<span class="nt">"path_variables"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="s2">"fuel"</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">"traveltime"</span>
 <span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;vector_names&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uC&quot;</span><span class="p">,</span><span class="s2">&quot;vC&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="nt">"vector_names"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"uC"</span><span class="p">,</span><span class="s2">"vC"</span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>above is the minimal set of configuration parameters necessary to run the route planner where the variables are as follows:</p>
@@ -1956,21 +1956,21 @@
 <li><code>vector_names</code> <em>(list&lt;(string)&gt;)</em> : The definition of the horizontal and vertical components of the vector acting on the ship in each cell. Data for these names must be within the cells of the input mesh.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="nt">&quot;objective_function&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;traveltime&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;path_variables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;fuel&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;traveltime&quot;</span>
+<span class="nt">"objective_function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"traveltime"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"path_variables"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"fuel"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"traveltime"</span>
 <span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;vector_names&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uC&quot;</span><span class="p">,</span><span class="s2">&quot;vC&quot;</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;time_unit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;days&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;adjust_waypoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;zero_currents&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;fixed_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;waypoint_splitting&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;smoothing_max_iterations&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;smoothing_blocked_sic&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;smoothing_merge_separation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1e-3</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;smoothing_converged_separation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1e-3</span>
+<span class="w">  </span><span class="nt">"vector_names"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"uC"</span><span class="p">,</span><span class="s2">"vC"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"time_unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"days"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"adjust_waypoints"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"zero_currents"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"fixed_speed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"waypoint_splitting"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"smoothing_max_iterations"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"smoothing_blocked_sic"</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"smoothing_merge_separation"</span><span class="p">:</span><span class="w"> </span><span class="mf">1e-3</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"smoothing_converged_separation"</span><span class="p">:</span><span class="w"> </span><span class="mf">1e-3</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>above is the full set of configuration parameters that can be used for route planning, where the additional variables are as follows:</p>
@@ -2042,7 +2042,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

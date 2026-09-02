@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="https://cdn.web.bas.ac.uk/bas-style-kit/0.7.3/img/favicon/favicon-16x16.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1148,6 +1148,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#polar_route.route_calc.route_geojson_to_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        route_geojson_to_df
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polar_route.route_calc.traveltime_distance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2121,6 +2132,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#polar_route.route_calc.route_geojson_to_df" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        route_geojson_to_df
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polar_route.route_calc.traveltime_distance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2510,7 +2532,7 @@ Args:
 
 
 <h2 id="polar_route.route_calc.route_calc" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">route_calc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">from_wp</span><span class="p">,</span> <span class="n">to_wp</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">route_type</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">route_calc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">from_wp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_wp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">route_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 <a href="#polar_route.route_calc.route_calc" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -2536,11 +2558,15 @@ Args:
                 <code>df</code>
             </td>
             <td>
-                  <code><span title="DataFrame">DataFrame</span></code>
+                  <code><span title="DataFrame">DataFrame</span> or <span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Route info in dataframe format</p>
+                <p>Route info in dataframe format, or a route geojson (either
+a FeatureCollection with a "features" key, or a full pipeline output containing
+a "paths" key with a nested FeatureCollection). When a geojson is supplied,
+<code>from_wp</code>, <code>to_wp</code> and <code>route_type</code> are read from its properties and any values
+passed for those arguments are ignored.</p>
               </div>
             </td>
             <td>
@@ -2556,11 +2582,11 @@ Args:
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Name of start waypoint</p>
+                <p>Name of start waypoint (ignored when <code>df</code> is a geojson)</p>
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2572,11 +2598,11 @@ Args:
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Name of end waypoint</p>
+                <p>Name of end waypoint (ignored when <code>df</code> is a geojson)</p>
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2592,7 +2618,7 @@ Args:
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2604,11 +2630,12 @@ Args:
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Type of route being calculated, either 'dijkstra' or 'smoothed'</p>
+                <p>Type of route being calculated, either 'dijkstra' or 'smoothed'
+(ignored when <code>df</code> is a geojson)</p>
               </div>
             </td>
             <td>
-                <em>required</em>
+                  <code>None</code>
             </td>
           </tr>
       </tbody>
@@ -2645,8 +2672,112 @@ Args:
 <div class="doc doc-object doc-function">
 
 
+<h2 id="polar_route.route_calc.route_geojson_to_df" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">route_geojson_to_df</span><span class="p">(</span><span class="n">route_json</span><span class="p">)</span></code>
+
+<a href="#polar_route.route_calc.route_geojson_to_df" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Convert a route geojson into the DataFrame format used internally by route_calc.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>route_json</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Route in geojson format, either a FeatureCollection with a
+"features" key, or a full pipeline output containing a "paths" key with a
+nested FeatureCollection.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>df</code></td>            <td>
+                  <code><span title="DataFrame">DataFrame</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dataframe with route info (Long, Lat columns)</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>from_wp</code></td>            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of start waypoint</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>to_wp</code></td>            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of end waypoint</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>route_type</code></td>            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Type of route, either 'smoothed' or 'dijkstra'</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h2 id="polar_route.route_calc.traveltime_distance" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">traveltime_distance</span><span class="p">(</span><span class="n">cellbox</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="n">vector_x</span><span class="o">=</span><span class="s1">&#39;uC&#39;</span><span class="p">,</span> <span class="n">vector_y</span><span class="o">=</span><span class="s1">&#39;vC&#39;</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dijkstra</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">traveltime_distance</span><span class="p">(</span><span class="n">cellbox</span><span class="p">,</span> <span class="n">wp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="s1">'speed'</span><span class="p">,</span> <span class="n">vector_x</span><span class="o">=</span><span class="s1">'uC'</span><span class="p">,</span> <span class="n">vector_y</span><span class="o">=</span><span class="s1">'vC'</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dijkstra</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 <a href="#polar_route.route_calc.traveltime_distance" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -2883,7 +3014,7 @@ Args:
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

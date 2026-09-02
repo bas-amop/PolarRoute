@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="https://cdn.web.bas.ac.uk/bas-style-kit/0.7.3/img/favicon/favicon-16x16.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2282,7 +2282,7 @@ within a python interpreter.</p>
 <p>Loading configuration from <em>json</em> file:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="c1"># Read in config file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.config.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/grf_example.config.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>    
 </code></pre></div>
 <p>The <code>EnvironmentMesh</code> object can then be initialised. This mesh object will be constructed using the parameters in its
@@ -2296,7 +2296,7 @@ for a more in-depth explanation. The</code>EnvironmentMesh` object can then be c
 <span class="n">mesh</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
 <span class="c1"># Save output file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.mesh.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/grf_example.mesh.json'</span><span class="p">,</span> <span class="s1">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>    
 </code></pre></div>
 <div class="admonition note">
@@ -2312,11 +2312,11 @@ digital environment in <em>json</em> format and vessel specific configuration pa
 be loaded from a file, or created within any python interpreter.</p>
 <p>Loading mesh and vessel from <em>json</em> files:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Loading digital environment from file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.mesh.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/grf_example.mesh.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  
 
 <span class="c1"># Loading vessel configuration parameters from file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/ship.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/ship.json'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">vessel</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> 
 </code></pre></div>
 <p>The <code>VesselPerformanceModeller</code> object can then be initialised. This can be used to simulate the performance of the
@@ -2331,7 +2331,7 @@ be used by the CLI entry-point :ref:<code>optimise_routes</code>, or the json ob
 console.</p>
 <div class="highlight"><pre><span></span><code><span class="n">vessel_mesh</span> <span class="o">=</span> <span class="n">vp</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 <span class="c1"># Save to output file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.vessel.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/grf_example.vessel.json'</span><span class="p">,</span> <span class="s1">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">vessel_mesh</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="route-optimisation">Route Optimisation<a class="headerlink" href="#route-optimisation" title="Permanent link">&para;</a></h3>
@@ -2346,16 +2346,16 @@ routes under <code>routes_smoothed</code> after running <code>.compute_smooth_ro
 store the waypoints information used in route construction. For further details about the structure of the outputs of the
 route planner please see the :ref:<code>Outputs</code> section of this documentation.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">polar_route.route_planner.route_planner</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoutePlanner</span>
-<span class="n">rp</span> <span class="o">=</span> <span class="n">RoutePlanner</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.vessel.json&#39;</span><span class="p">,</span> 
-                    <span class="s1">&#39;/path/to/traveltime.config.json&#39;</span><span class="p">)</span>
+<span class="n">rp</span> <span class="o">=</span> <span class="n">RoutePlanner</span><span class="p">(</span><span class="s1">'/path/to/grf_example.vessel.json'</span><span class="p">,</span> 
+                    <span class="s1">'/path/to/traveltime.config.json'</span><span class="p">)</span>
 <span class="c1"># Calculate optimal dijkstra path between waypoints</span>
-<span class="n">rp</span><span class="o">.</span><span class="n">compute_routes</span><span class="p">(</span><span class="s1">&#39;/path/to/waypoints_example.csv&#39;</span><span class="p">)</span>
+<span class="n">rp</span><span class="o">.</span><span class="n">compute_routes</span><span class="p">(</span><span class="s1">'/path/to/waypoints_example.csv'</span><span class="p">)</span>
 <span class="c1"># Smooth the dijkstra routes</span>
 <span class="n">rp</span><span class="o">.</span><span class="n">compute_smoothed_routes</span><span class="p">()</span>
 
 <span class="n">route_mesh</span> <span class="o">=</span> <span class="n">rp</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 <span class="c1"># Save to output file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/path/to/grf_example.route.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/path/to/grf_example.route.json'</span><span class="p">,</span> <span class="s1">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">route_mesh</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="visualising-outputs">Visualising Outputs<a class="headerlink" href="#visualising-outputs" title="Permanent link">&para;</a></h3>
@@ -2367,14 +2367,14 @@ included in the distribution of PolarRoute, but can be installed using the follo
 any python interpreter:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">bas_geoplot.interactive</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>
 
-<span class="n">mesh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mesh_json</span><span class="p">[</span><span class="s1">&#39;cellboxes&#39;</span><span class="p">])</span>
-<span class="nb">map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;GRF Example&quot;</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mesh_json</span><span class="p">[</span><span class="s1">'cellboxes'</span><span class="p">])</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"GRF Example"</span><span class="p">)</span>
 
-<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;MeshGrid&#39;</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">&#39;cx&#39;</span><span class="p">)</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;SIC&#39;</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">&#39;SIC&#39;</span><span class="p">)</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Elevation&#39;</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">&#39;Elev&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">Vectors</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="s1">&#39;Currents&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">&#39;Currents&#39;</span><span class="p">)</span>
-<span class="nb">map</span><span class="o">.</span><span class="n">Vectors</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Winds&#39;</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">&#39;Winds&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">'MeshGrid'</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">'cx'</span><span class="p">)</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">'SIC'</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">'SIC'</span><span class="p">)</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">Maps</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">'Elevation'</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">'Elev'</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">Vectors</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="s1">'Currents'</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">'Currents'</span><span class="p">)</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">Vectors</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">'Winds'</span><span class="p">,</span> <span class="n">predefined</span><span class="o">=</span><span class="s1">'Winds'</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="nb">map</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
@@ -2434,7 +2434,7 @@ any python interpreter:</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.action.edit"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
